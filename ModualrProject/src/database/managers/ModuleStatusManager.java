@@ -1,6 +1,6 @@
 package database.managers;
 
-public class Phone
+public class ModuleStatusManager
 {
 
 }
