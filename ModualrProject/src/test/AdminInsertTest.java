@@ -2,11 +2,12 @@ package test;
 
 import database.bean.Admin;
 import database.managers.AdminManager;
+import exception.InvalidPrimaryKeyException;
 
 public class AdminInsertTest
 {
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws InvalidPrimaryKeyException
     {
 	Admin theAdmin = new Admin();
 

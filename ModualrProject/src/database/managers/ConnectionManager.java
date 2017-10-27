@@ -29,13 +29,10 @@ public class ConnectionManager
     public static ConnectionManager getInstance() {
 	if ( instance == null )
 	{
-	    if( openConnection() ){
-		instance =  new ConnectionManager();
-	    }
-	    else
-		return null;
-
+	    instance =  new ConnectionManager();
+	    
 	}
+	
 	return instance;
     }
 
@@ -44,7 +41,7 @@ public class ConnectionManager
 	try
 	{
 	    conn = DriverManager.getConnection(MYSQLURL, USERNAME, PASSWORD );
-	    System.out.println("Connected");
+	    
 	    return true;
 	}
 	catch (SQLException e)
@@ -58,6 +55,12 @@ public class ConnectionManager
     /**THis gets the only {@code COnnection } object in this project*/
     public Connection getConnection() 
     {
+	if( conn == null ){
+	    if( openConnection() )
+		return conn;
+	    return null;
+	}
+	    
 	return conn;
     }
     
@@ -69,7 +72,7 @@ public class ConnectionManager
 	    if( conn != null )
 		conn.close();
 	    conn = null;
-	    System.out.println( "Connection closed");
+	   
 	}
 	catch (SQLException e)
 	{
