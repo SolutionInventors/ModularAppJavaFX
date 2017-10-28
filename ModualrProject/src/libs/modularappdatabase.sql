@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2017 at 05:00 PM
+-- Generation Time: Oct 28, 2017 at 12:04 AM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -26,6 +26,17 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAdmin` (IN `name` VARCHAR(30), IN `pass` VARCHAR(30))  NO SQL
+begin
+SELECT username, password FROM admin
+	WHERE username = name AND password = pass ;
+end$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllAdmin` ()  NO SQL
+BEGIN 
+SELECT* FROM admin;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllModules` ()  BEGIN
 
 SELECT * FROM module;
@@ -40,7 +51,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllStudents` ()  BEGIN
            phone.phone_number as 'Phone Number'
      FROM student
      JOIN phone 
-     	ON phone.student_id = student.id_card_number;
+     	ON phone.student_id = student.id_card_number
+     GROUP BY student.id_card_number;
+        
 end$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getStudent` (IN `card_number` VARCHAR(50))  BEGIN
@@ -85,6 +98,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `updateAdminPassword` (IN `theUser` 
     WHERE username = theUser AND password = oldPass;
 end$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateAdminUsername` (IN `oldUsername` VARCHAR(20), IN `pass` VARCHAR(20), IN `newUserName` VARCHAR(20))  BEGIN
+	UPDATE admin SET username = newUserName
+    WHERE username = oldUsername AND password = pass;
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -95,16 +113,16 @@ DELIMITER ;
 
 CREATE TABLE `admin` (
   `username` varchar(200) COLLATE latin1_bin NOT NULL,
-  `password` varchar(500) COLLATE latin1_bin DEFAULT NULL
+  `password` varchar(500) COLLATE latin1_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`username`, `password`) VALUES('Og', 'Chidi@chi.com');
-INSERT INTO `admin` (`username`, `password`) VALUES('Oguejifor', 'Chidi@chi.com');
-INSERT INTO `admin` (`username`, `password`) VALUES('chi', 'fred');
+INSERT INTO `admin` (`username`, `password`) VALUES
+('chi', 'fred'),
+('pwd', 'Chidi@chi.com');
 
 -- --------------------------------------------------------
 
@@ -114,8 +132,8 @@ INSERT INTO `admin` (`username`, `password`) VALUES('chi', 'fred');
 
 CREATE TABLE `module` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) COLLATE latin1_bin DEFAULT NULL,
-  `units` int(11) DEFAULT NULL
+  `name` varchar(100) COLLATE latin1_bin NOT NULL,
+  `units` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 -- --------------------------------------------------------
@@ -127,9 +145,9 @@ CREATE TABLE `module` (
 CREATE TABLE `module_status` (
   `module_id` int(11) DEFAULT NULL,
   `student_id` varchar(50) COLLATE latin1_bin DEFAULT NULL,
-  `paymentStatus` tinyint(1) DEFAULT NULL,
-  `bookingStatus` tinyint(1) DEFAULT NULL,
-  `attended` tinyint(1) DEFAULT NULL,
+  `paymentStatus` tinyint(1) NOT NULL,
+  `bookingStatus` tinyint(1) NOT NULL,
+  `attended` tinyint(1) NOT NULL,
   `resuult` varchar(4) COLLATE latin1_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
@@ -141,15 +159,16 @@ CREATE TABLE `module_status` (
 
 CREATE TABLE `phone` (
   `student_id` varchar(50) COLLATE latin1_bin DEFAULT NULL,
-  `phone_number` varchar(20) COLLATE latin1_bin DEFAULT NULL
+  `phone_number` varchar(20) COLLATE latin1_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Dumping data for table `phone`
 --
 
-INSERT INTO `phone` (`student_id`, `phone_number`) VALUES('EYY-C3', '80222192');
-INSERT INTO `phone` (`student_id`, `phone_number`) VALUES('EYY-C3', '08021213322');
+INSERT INTO `phone` (`student_id`, `phone_number`) VALUES
+('EYY-C3', '80222192'),
+('EYY-C3', '08021213322');
 
 -- --------------------------------------------------------
 
@@ -159,18 +178,19 @@ INSERT INTO `phone` (`student_id`, `phone_number`) VALUES('EYY-C3', '08021213322
 
 CREATE TABLE `student` (
   `id_card_number` varchar(50) COLLATE latin1_bin NOT NULL,
-  `firstName` varchar(30) COLLATE latin1_bin DEFAULT NULL,
-  `lastName` varchar(30) COLLATE latin1_bin DEFAULT NULL,
-  `active` tinyint(1) DEFAULT NULL,
-  `emailAddress` varchar(150) COLLATE latin1_bin DEFAULT NULL
+  `firstName` varchar(30) COLLATE latin1_bin NOT NULL,
+  `lastName` varchar(30) COLLATE latin1_bin NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `emailAddress` varchar(150) COLLATE latin1_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Dumping data for table `student`
 --
 
-INSERT INTO `student` (`id_card_number`, `firstName`, `lastName`, `active`, `emailAddress`) VALUES('EYY-C3', 'Chidiebere', 'Steven', 0, 'professorchidi@yahoo.com');
-INSERT INTO `student` (`id_card_number`, `firstName`, `lastName`, `active`, `emailAddress`) VALUES('Ety-C32', 'Chidi', 'Fres', 1, 'Chidi@Chidi');
+INSERT INTO `student` (`id_card_number`, `firstName`, `lastName`, `active`, `emailAddress`) VALUES
+('EYY-C3', 'Chidiebere', 'Steven', 0, 'professorchidi@yahoo.com'),
+('Ety-C32', 'Chidi', 'Fres', 1, 'Chidi@Chidi');
 
 --
 -- Indexes for dumped tables
