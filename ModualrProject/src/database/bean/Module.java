@@ -1,15 +1,15 @@
 package database.bean;
 
 /**
- * This class represents the attributes of the {@code Module} table in the database
+ * An object of {@code Module} represents a single row of the {@code Module} table in the database
  * @author Oguejiofor Chidiebere
  *
  */
-public class Module
+public class Module  implements Bean
 {
     private String name;
     private int numberOfUnits;
-    private int id;
+   
     
     /**
      * Gets the name of this {@code Module}
@@ -46,22 +46,6 @@ public class Module
         this.numberOfUnits = numberOfUnits;
     }
     
-    /**
-     * Gets the id of this {@code Module}
-     * @return
-     */
-    public int getId()
-    {
-        return id;
-    }
     
-    /**
-     * Sets the id of this {@code Module}
-     * @param the int value id
-     */
-    public void setId(int id)
-    {
-        this.id = id;
-    }
     
 }

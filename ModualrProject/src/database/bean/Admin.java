@@ -1,14 +1,20 @@
 package database.bean;
 
 /**
- * This class represents the {@code Admin} entity the database
+ * This class represents a single row in the {@code Admin} table in the database
  * @author Oguejiofor Chidiebere
  *
  */
-public class Admin {
+public class Admin implements Bean
+{
     private String username;
     private String password;
     
+    public Admin( String username, String password )
+    {
+	setUsername(username);
+	setPassword(password);
+    }
     /**
      * Gets this object's username
      * @return String representing the username

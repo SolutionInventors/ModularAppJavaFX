@@ -1,7 +1,8 @@
 package database.bean;
 
 /**This class represents a single row in the Phone table*/
-public class Phone {
+public class Phone  implements Bean
+{
     private int id;
     private int number;
     

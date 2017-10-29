@@ -39,7 +39,7 @@ public class AdminManager
 	
 	try(
 		CallableStatement  statement = 
-			getCallableStatement( 
+			DatabaseManager.getCallableStatement( 
 				"{CALL insertAdmin(?, ? ) } ", 
 				admin.getUsername(), admin.getPassword());
 	 )
@@ -84,7 +84,7 @@ public class AdminManager
 
 	try(
 		CallableStatement  statement = 
-			getCallableStatement( 
+			DatabaseManager.getCallableStatement( 
 				"{CALL updateAdmin(?, ?, ?, ?  ) } ", 
 				oldAdmin.getUsername(),  oldAdmin.getPassword() , 
 				newAdmin.getUsername() , newAdmin.getPassword());
@@ -120,7 +120,7 @@ public class AdminManager
 	final String GET_ALL_ADMIN = "{Call getAllAdminFrom(?) }";
 	try(
 		CallableStatement  statement = 
-			getCallableStatement( GET_ALL_ADMIN, startIndex );
+			DatabaseManager.getCallableStatement( GET_ALL_ADMIN, startIndex );
 
 	   )
 	{
@@ -129,9 +129,8 @@ public class AdminManager
 	    Admin admin;
 	    while( result.next() )
 	    {
-		admin = new Admin();
-		admin.setUsername( result.getString("username") );
-		admin.setPassword( result.getString( "password" ) );
+		admin = new Admin(result.getString("username"), result.getString( "password" ));
+		
 		list.add( admin );
 	    }
 	    return list.toArray( new Admin[ list.size() ] );
@@ -147,12 +146,16 @@ public class AdminManager
 
     }
 
-
+    /** 
+     * Gets the total {@code Admin} objects in the table
+     * @return
+     * @throws SQLException
+     */
     public static int getTotalAdmin() throws SQLException{
 	ResultSet result = null;
 	try(
 		CallableStatement  statement = 
-			getCallableStatement( "{Call getTotalAdmin() }");
+			DatabaseManager.getCallableStatement( "{Call getTotalAdmin() }");
 
 		)
 	{
@@ -200,7 +203,7 @@ public class AdminManager
 	try
 	( 
         	CallableStatement  statement = 
-        		getCallableStatement( GET_ADMIN, admin.getUsername(), admin.getPassword() );)
+        		DatabaseManager.getCallableStatement( GET_ADMIN, admin.getUsername(), admin.getPassword() );)
 	{
 	    result = statement.executeQuery();
 	    result.last();
@@ -220,17 +223,5 @@ public class AdminManager
     }
 
 
-    private static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException{
-	Connection conn = ConnectionManager.getInstance().getConnection();
-	
-	CallableStatement statement =  conn.prepareCall(
-		sqlCall,
-		ResultSet.TYPE_FORWARD_ONLY,
-		ResultSet.CONCUR_READ_ONLY);
-
-
-	for( int i =  0 ; i < arguments.length ; i++ )
-	    statement.setObject( i+1 , arguments[ i ] );
-	return statement;
-    }
+    
 }

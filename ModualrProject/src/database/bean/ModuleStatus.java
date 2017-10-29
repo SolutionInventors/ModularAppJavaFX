@@ -9,7 +9,7 @@ import exception.InvalidResultException;
  *
  */
 
-public class ModuleStatus
+public class ModuleStatus  implements Bean
 {
     /**Foreign key from the Module table*/
     private int moduleId;

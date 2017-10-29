@@ -1,6 +1,7 @@
 package database.bean;
 
-public class Student {
+public class Student  implements Bean 
+{
     private String idCardNumber;
     private String firstName;
     private String lastName;
