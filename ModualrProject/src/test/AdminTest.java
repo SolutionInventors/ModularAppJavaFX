@@ -4,6 +4,8 @@ import java.sql.SQLException;
 
 import database.bean.Admin;
 import database.managers.AdminManager;
+import database.managers.BeanType;
+import database.managers.DatabaseManager;
 import exception.InvalidPrimaryKeyException;
 
 public class AdminTest
@@ -15,22 +17,19 @@ public class AdminTest
 	
 	System.out.println( "Total Admin: "  + AdminManager.getTotalAdmin());
 	//Updating Admin username......
-	Admin oldAdmin = new Admin();
-	Admin newAdmin = new Admin();
 	
 	String oldUserName = TestUtils.getStringInput("Please input old user name: " );
 	String oldPass = TestUtils.getStringInput("Please input old user password: ");
 	String newUserName = TestUtils.getStringInput("Please input new username: "); 
 	
-	oldAdmin.setUsername(oldUserName);
-	oldAdmin.setPassword( oldPass );
-	newAdmin.setUsername( newUserName );
-	newAdmin.setPassword( oldAdmin.getPassword() );
+	
+	Admin oldAdmin = new Admin(oldUserName,oldPass );
+	Admin newAdmin = new Admin(newUserName, oldAdmin.getPassword());
 	
 	boolean succesful = false ;
 	try
 	{
-	    succesful = AdminManager.updateAdmin( oldAdmin, newAdmin);
+	    succesful = AdminManager.update( oldAdmin, newAdmin);
 	}
 	catch (InvalidPrimaryKeyException e){
 	    System.err.println( "The new  username already exists and "
@@ -44,7 +43,7 @@ public class AdminTest
 	else
 	    System.out.println("Update failed! User old user probably not  in database");
 
-	TestUtils.displayAll( AdminManager.getAllAdmin( 1 ) ) ;
+	TestUtils.displayAll( DatabaseManager.getAllBean( BeanType.ADMIN, 0 ) ) ;
     }
 
     

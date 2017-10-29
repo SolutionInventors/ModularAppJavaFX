@@ -1,7 +1,7 @@
 package test;
 
 import database.bean.Admin;
-import database.managers.AdminManager;
+import database.managers.DatabaseManager;
 import exception.InvalidPrimaryKeyException;
 
 public class AdminInsertTest
@@ -9,11 +9,9 @@ public class AdminInsertTest
 
     public static void main(String[] args) throws InvalidPrimaryKeyException
     {
-	Admin theAdmin = new Admin();
+	Admin theAdmin = new Admin("Og", "Chidi@chi.com");
 
-	theAdmin.setUsername("Og");
-	theAdmin.setPassword( "Chidi@chi.com");
-	boolean added = AdminManager.insertAdmin( theAdmin );
+	boolean added = DatabaseManager.insert( theAdmin );
 	if ( added )
 	    System.out.println( "Added successfully" );
 	else

@@ -11,6 +11,10 @@ public class Module  implements Bean
     private int numberOfUnits;
    
     
+    public Module( String name , int units ){
+	setName( name );
+	setNumberOfUnits(units);
+    }
     /**
      * Gets the name of this {@code Module}
      * @return {@code String}

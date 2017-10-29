@@ -2,6 +2,8 @@ package test;
 
 import database.bean.Admin;
 import database.managers.AdminManager;
+import database.managers.BeanType;
+import database.managers.DatabaseManager;
 import exception.InvalidPrimaryKeyException;
 
 public class UpdateAdiminPasswordTest
@@ -10,19 +12,19 @@ public class UpdateAdiminPasswordTest
     public static void main(String[] args) throws InvalidPrimaryKeyException
     {
 	//Update Password test
-	Admin theAdmin = new Admin();
-	Admin newAdmin = new Admin();
 	
-	TestUtils.displayAll( AdminManager.getAllAdmin(0));
+	TestUtils.displayAll( DatabaseManager.getAllBean( BeanType.ADMIN,0));
 	
-	theAdmin.setUsername(TestUtils.getStringInput( "Input old admin username: "));
-	theAdmin.setPassword( TestUtils.getStringInput( "Input old admin password: "));
+	String oldUsername = TestUtils.getStringInput( "Input old admin username: ");
+	String oldPass = TestUtils.getStringInput("Input old admin password: ");
+	String newPass = TestUtils.getStringInput( "Input New Password: " ) ;
 	
-	newAdmin.setPassword( TestUtils.getStringInput( "Input New Password: " ) );
-	newAdmin.setUsername( theAdmin.getUsername());
+
+	Admin theAdmin = new Admin(oldUsername, oldPass);
+	Admin newAdmin = new Admin( oldUsername, newPass );
 	
 	
-	boolean added = AdminManager.updateAdmin( theAdmin, newAdmin );
+	boolean added = AdminManager.update( theAdmin, newAdmin );
 	if ( added )
 	    System.out.println( "Update successful" );
 	else

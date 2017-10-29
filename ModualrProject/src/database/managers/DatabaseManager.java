@@ -28,15 +28,32 @@ public class DatabaseManager
     
     public static <E extends Bean >boolean insert( E bean ) throws InvalidPrimaryKeyException
     {
-	if ( bean instanceof Admin ) return AdminManager.insertAdmin( (Admin) bean );
+	if ( bean instanceof Admin ) return AdminManager.insert( (Admin) bean );
 	
 	return false;
 	
     }
 
-
-    public static Admin[] getAllAdmin(int startIndex)
+    /**
+     * Gets the first 30 occurence of a specified {@code BeanType} in the database
+     * This method can retrieve info from all the tables in the database. Data returned
+     * can be manipulated via the beaType
+     * Returns an empty array when the index is too large
+     * should be used with method getTotalAdmin* Gets 
+     * @param startIndex
+     * @return
+     */
+    public static <T extends Bean> T[] getAllBean( BeanType beanType, int startIndex)
     {
-	return AdminManager.getAllAdmin( startIndex );
+	switch (beanType)
+	{
+	    case ADMIN:
+		return  (T[]) AdminManager.getAllAdmin( startIndex );
+	    
+	    default:
+		return null;
+		
+	}
+	
     }
 }

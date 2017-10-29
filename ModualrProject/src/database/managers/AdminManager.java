@@ -11,6 +11,8 @@ import java.util.Arrays;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import database.bean.Admin;
+import database.bean.Module;
+import exception.InvalidAdminException;
 import exception.InvalidPrimaryKeyException;
 
 /**
@@ -28,7 +30,7 @@ public class AdminManager
      * @return {@code true } only when the {@code Admin} was added successfully
      * @throws InvalidPrimaryKeyException when the {@code Admin } object is invalid
      */
-    public static boolean insertAdmin( Admin admin  ) throws InvalidPrimaryKeyException
+    public static boolean insert( Admin admin  ) throws InvalidPrimaryKeyException
     {
 	if( !validateAdmin( admin ) )
 	{
@@ -73,7 +75,7 @@ public class AdminManager
      * @return {@code true } only when the {@code Admin} was added successfully
      * @throws InvalidPrimaryKeyException  when the {@code Admin } is null or its username contians spaces
      */
-    public static boolean updateAdmin( Admin oldAdmin, Admin newAdmin) 
+    public static boolean update( Admin oldAdmin, Admin newAdmin) 
 	    throws InvalidPrimaryKeyException
     {
 	if( !validateAdmin( oldAdmin ) )
@@ -222,6 +224,39 @@ public class AdminManager
 	return false;
     }
 
+    /**This method deletes a {@code Admin } from the databasse.
+     * it returns true if the operation was successful.<br>
+     * Note that the an {@code Admin } cannot delete himself
+     * 
+     * @param currentAdmin the {@code Admin }object that is logged in.
+     * @param AdminToDelete the existing {@code Module} to delete from the database
+     * @return {@code true} when delete was successful
+     * @throws InvalidAdminException when the {@code Admin } object is not in the database 
+     */
+    public static boolean delete( Admin currentAdmin, Admin adminToDelete ) throws InvalidAdminException{
+	
+	if( !AdminManager.exists( currentAdmin )  ||
+		currentAdmin.getUsername().equals( adminToDelete.getUsername())){
+	    throw new InvalidAdminException();
+	}
+	
+	try(
+		CallableStatement  statement = 
+			DatabaseManager.getCallableStatement( "{call deleteAdmin(?)}" );
+	   )
+	{
+	    statement.setString( 1 , adminToDelete.getUsername() );
+	    int affected = statement.executeUpdate();
+	    
+	    if ( affected == 1 ) return true;
+	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	}
+	return false;
+    }
+    
 
     
 }
