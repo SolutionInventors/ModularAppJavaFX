@@ -3,25 +3,32 @@ package database.bean;
 /**This class represents a single row in the Phone table*/
 public class Phone  implements Bean
 {
-    private int id;
-    private int number;
+    private String studentId;
+    private String number;
     
-    public int getId()
-    {
-        return id;
+    public Phone( String id , String phoneNumber ){
+	setId( id );
+	setNumber(phoneNumber);
+	
     }
-    public void setId(int id)
+
+    public String getStudentId()
     {
-        this.id = id;
+	return studentId;
     }
-    public int getNumber()
+
+    public void setId(String id)
     {
-        return number;
+	this.studentId = id;
     }
-    public void setNumber(int number)
+
+    public String getNumber()
     {
-        this.number = number;
+	return number;
     }
-    
-    
+
+    public void setNumber(String number)
+    {
+	this.number = number;
+    } 
 }

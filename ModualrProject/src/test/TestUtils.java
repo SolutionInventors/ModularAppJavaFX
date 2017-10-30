@@ -3,6 +3,7 @@ package test;
 import java.util.Scanner;
 
 import database.bean.Admin;
+import database.bean.Student;
 
 public class TestUtils
 {
@@ -27,5 +28,17 @@ public class TestUtils
 	System.out.println("\n----------------------------------");
 	
    }
+
+    public static void displayAllActiveStudents(Student[] activeStudents)
+    {
+	System.out.println("----------------------------------\n");
+	System.out.println("Students:");
+	for ( int i = 0 ; i < activeStudents.length ; i++ ){
+	    System.out.println( (i+1) + ".\tFirstName: " + activeStudents[i].getName() + 
+		    		"\n\tIdCardNumber: " + activeStudents[i].getIdCardNumber() +"\n");
+	}
+	System.out.println("\n----------------------------------");
+ 
+    }
    
 }
