@@ -8,13 +8,19 @@ import java.sql.Statement;
 
 import database.bean.Admin;
 import database.bean.Bean;
+import database.bean.Module;
+import database.bean.ModuleStatus;
+import database.bean.Phone;
+import database.bean.Student;
+import exception.InvalidBeanException;
+import exception.InvalidCompositeKeyException;
 import exception.InvalidPrimaryKeyException;
 
 public class DatabaseManager
 {
     public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
-	
+
 	CallableStatement statement =  conn.prepareCall(
 		sqlCall,
 		ResultSet.TYPE_FORWARD_ONLY,
@@ -25,24 +31,72 @@ public class DatabaseManager
 	    statement.setObject( i+1 , arguments[ i ] );
 	return statement;
     }
-    
-    
-    public static <E extends Bean >boolean insert( E bean ) throws InvalidPrimaryKeyException
+
+
+
+
+    public static <E extends Bean >boolean insert( Admin currenAdmin , E bean ) throws InvalidPrimaryKeyException, InvalidBeanException
     {
-	if ( bean instanceof Admin )
-	    try
+	try{
+	    if( AdminManager.isInDatabase( currenAdmin ) )
 	    {
-		return AdminManager.insert( (Admin) bean );
+		switch( bean.getClass().getSimpleName() ) {
+		    case "Admin" :
+			return AdminManager.insert( (Admin) bean );
+		    case  "Module":
+			return ModuleManager.insert( (Module) bean );
+		    case "ModuleStatus":
+			return ModuleStatusManager.insert( (ModuleStatus) bean );
+		    case "Phone":
+			return PhoneManager.insert( (Phone) bean );
+		    case "Student":
+			return StudentManager.insert( (Student) bean);
+		    default:
+			return false;
+
+		}
 	    }
-	    catch (SQLException e)
-	    {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
-	
+	}
+	catch( SQLException  e ){
+	    e.printStackTrace();
+	}
+
 	return false;
-	
     }
+    
+    
+
+    public static <E extends Bean >boolean update( Admin currenAdmin , E oldBean, E newBean ) throws InvalidPrimaryKeyException, 
+     InvalidCompositeKeyException, InvalidBeanException
+    {
+	if( !oldBean.getClass().equals( newBean.getClass() ))
+	    throw new InvalidBeanException("The two bean objects must be of the same type");
+	try{
+	    if( AdminManager.isInDatabase( currenAdmin ) )
+	    {
+		switch( oldBean.getClass().getSimpleName() ) {
+		    case "Admin" :
+			return AdminManager.update( (Admin) oldBean, (Admin) newBean );
+		    case  "Module":
+			return ModuleManager.update(  (Module) oldBean, (Module) newBean );
+		    case "ModuleStatus":
+			return ModuleStatusManager.update(  (ModuleStatus) oldBean ,(ModuleStatus)  newBean );
+		    case "Phone":
+			return PhoneManager.update( (Phone) oldBean, (Phone) newBean );
+		    case "Student":
+			return StudentManager.update( (Student) oldBean, (Student)  newBean );
+		    default:
+			return false;
+
+		}
+	    }
+	}
+	catch( SQLException  e ){
+	    e.printStackTrace();
+	}
+	return false;
+    }
+    
 
     /**
      * Gets the first 30 occurence of a specified {@code BeanType} in the database
@@ -57,18 +111,18 @@ public class DatabaseManager
     {
 	try {
 	    switch (beanType)
-		{
-		    case ADMIN:
-			return  (T[]) AdminManager.getAllAdmin( startIndex );
-		    
-		    default:
-			return null;
-			
-		}
+	    {
+		case ADMIN:
+		    return  (T[]) AdminManager.getAllAdmin( startIndex );
+
+		default:
+		    return null;
+
+	    }
 	}
 	catch( SQLException e )
 	{
-	    
+
 	}
 	return null;
     }

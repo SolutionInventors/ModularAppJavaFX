@@ -5,4 +5,27 @@ package database.bean;
  * @author Oguejiofor Chidiebere
  *
  */
-public interface Bean{}
+public interface Bean{
+
+    public static <T extends Bean >boolean isValid( T bean )
+    {
+	switch( bean.getClass().getSimpleName() )
+	{
+	    case "Admin":
+		return Admin.isValid( (Admin) bean );
+	    case "Phone":
+		return Phone.isValid( (Phone) bean );
+	    case "Module":
+		return Module.isValid( (Module) bean );
+	    case "ModuleStatus":
+		return ModuleStatus.isValid( (ModuleStatus) bean );
+	    case "Student":
+		return Student.isValid( (Student) bean );
+	    default :
+		return false;
+	}
+    }
+    
+    
+    
+}

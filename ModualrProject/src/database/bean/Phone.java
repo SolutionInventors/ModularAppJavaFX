@@ -31,4 +31,16 @@ public class Phone  implements Bean
     {
 	this.number = number;
     } 
+    
+    /**
+     * Returns {@code true} if the Phone object can be put in the database
+     * @param phone the {@code Phone} object to check
+     * @return boolean
+     */
+    public static boolean isValid( Phone phone ){
+	if( phone != null && phone.getStudentId() != null && phone.getNumber() != null)
+	    return true;
+
+	return false;
+    }
 }

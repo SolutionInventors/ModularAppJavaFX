@@ -15,6 +15,10 @@ public class Admin implements Bean
 	setUsername(username);
 	setPassword(password);
     }
+    public Admin()
+    {
+	// TODO Auto-generated constructor stub
+    }
     /**
      * Gets this object's username
      * @return String representing the username

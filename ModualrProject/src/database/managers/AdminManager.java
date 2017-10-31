@@ -15,7 +15,7 @@ import exception.InvalidPrimaryKeyException;
  * @author Oguejiofor Chidiebere
  *
  */
-public class AdminManager
+public class AdminManager 
 {
     /**
      * Inserts a new {@code Admin } to the database.<br>
@@ -181,5 +181,7 @@ public class AdminManager
 
 	return false;
     }
+
+  
 
 }

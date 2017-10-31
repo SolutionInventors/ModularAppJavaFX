@@ -1,7 +1,5 @@
 package database.managers;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -10,9 +8,7 @@ import java.util.ArrayList;
 
 import database.bean.Admin;
 import database.bean.ModuleStatus;
-import database.bean.Phone;
-import database.bean.Student;
-import exception.UpdateException;
+import exception.InvalidCompositeKeyException;
 
 public class ModuleStatusManager
 {
@@ -34,13 +30,13 @@ public class ModuleStatusManager
     }
 
     public static boolean update( ModuleStatus old, ModuleStatus newStatus ) 
-	    throws SQLException, UpdateException
+	    throws SQLException, InvalidCompositeKeyException
     {
 	boolean valid = old.getModuleName().equals( newStatus.getModuleName() ) && 
 		old.getStudentId().equals( newStatus.getStudentId() ) ;
 
 	if( !valid )  {
-	    throw new UpdateException( "The two ModuleStatus do not have "
+	    throw new InvalidCompositeKeyException( "The two ModuleStatus obejects do not have "
 	    	+ "the same foreign key values");
 	}
 	CallableStatement statement = DatabaseManager.getCallableStatement( 

@@ -35,8 +35,8 @@ public class PhoneManager
      * @return {@code true } when the update is successful
      * @throws SQLException when an a database exception occurs
      */
-    public boolean updatePhoneNumber( Phone oldPhone, Phone newPhone ) throws SQLException{
-	if( isValid( oldPhone ) && oldPhone.getStudentId().equals( newPhone.getStudentId())){
+    public static boolean update( Phone oldPhone, Phone newPhone ) throws SQLException{
+	if( Phone.isValid( oldPhone ) && oldPhone.getStudentId().equals( newPhone.getStudentId())){
 	    CallableStatement statement = 
 		    DatabaseManager.getCallableStatement( 
 			    "{CALL updatePhone(?, ? ) } ", 
@@ -57,7 +57,7 @@ public class PhoneManager
      * @throws SQLException when a special database error occurs
      */
     public static boolean delete( Phone phone ) throws SQLException{
-	if( !isValid( phone ) ) return false;
+	if( !Phone.isValid( phone ) ) return false;
 	CallableStatement  statement = 
 		DatabaseManager.getCallableStatement( 
 			"{CALL deletePhone(?, ? ) } ", 
@@ -72,17 +72,7 @@ public class PhoneManager
 	return false;
     }
 
-    /**
-     * Returns {@code true} if the Phone object can be put in the database
-     * @param phone the {@code Phone} object to check
-     * @return boolean
-     */
-    public static boolean isValid( Phone phone ){
-	if( phone != null && phone.getStudentId() != null && phone.getNumber() != null)
-	    return true;
-
-	return false;
-    }
+    
 
     /**
      * Gets an array of {@code Phone} that contains all the number of a particular {@code student}

@@ -177,12 +177,7 @@ public class ModuleStatus  implements Bean
 	this.id = id;
     }
 
-    public static boolean isValid(ModuleStatus newModuleStatus)
-    {
-	// TODO Auto-generated method stub
-	return false;
-    }
-
+    
     public Date getDateRegistered()
     {
 	return dateRegistered;
@@ -191,6 +186,14 @@ public class ModuleStatus  implements Bean
     public void setDateRegistered(Date dateRegistered)
     {
 	this.dateRegistered = dateRegistered;
+    }
+
+    public static boolean isValid(ModuleStatus status)
+    {
+	if( status.getStudentId() !=  null && 
+		status.getStudentId() != null 	)
+	    return true;
+	return false;
     }
  
 }
