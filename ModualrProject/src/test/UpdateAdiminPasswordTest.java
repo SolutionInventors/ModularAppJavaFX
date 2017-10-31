@@ -1,5 +1,7 @@
 package test;
 
+import java.sql.SQLException;
+
 import database.bean.Admin;
 import database.managers.AdminManager;
 import database.managers.BeanType;
@@ -9,7 +11,7 @@ import exception.InvalidPrimaryKeyException;
 public class UpdateAdiminPasswordTest
 {
 
-    public static void main(String[] args) throws InvalidPrimaryKeyException
+    public static void main(String[] args) throws InvalidPrimaryKeyException, SQLException
     {
 	//Update Password test
 	

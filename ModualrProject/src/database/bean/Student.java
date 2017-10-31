@@ -12,6 +12,7 @@ public class Student  implements Bean
     private boolean active;
     private String emailAddress;
     private File image;
+    private Phone[] phoneNumbers;
     
     public Student(String id, String fName, String lName, String mail, boolean active)
     {
@@ -104,6 +105,16 @@ public class Student  implements Bean
 	else
 	    throw new InvalidImageFormatException("The student image is inalid and thus cannot be set");
 	
+    }
+
+    public Phone[] getPhoneNumbers()
+    {
+	return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(Phone[] phoneNumbers)
+    {
+	this.phoneNumbers = phoneNumbers;
     }
 
 }

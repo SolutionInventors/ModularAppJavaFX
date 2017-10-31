@@ -1,11 +1,17 @@
 package database.managers;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.CallableStatement;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import database.bean.Admin;
 import database.bean.ModuleStatus;
+import database.bean.Phone;
+import database.bean.Student;
 import exception.UpdateException;
 
 public class ModuleStatusManager
@@ -49,6 +55,31 @@ public class ModuleStatusManager
 	return false;
     }
     
+    public static ModuleStatus[] getModuleStatusByDate( Date date, int startIndex ) throws SQLException{
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( 
+			"{CALL getModuleStatusByDate(?,?) } " , date, startIndex);
+	ResultSet result = statement.executeQuery();
+
+	ArrayList<ModuleStatus > list = new ArrayList<ModuleStatus>();
+
+	while ( result.next() )
+	{
+	    ModuleStatus status = new ModuleStatus();
+
+	    status.setId( result.getInt( "Id" ) );
+	    status.setDateRegistered( result.getDate( "dateRegistered" ) );
+	    status.setModuleName( result.getString( "module_name" ) );
+	    status.setStudentId( result.getString( "student_id" ) );
+	    status.setPaymentStatus(result.getBoolean( "paymentStatus" ) );
+	    status.setBookingStatus(result.getBoolean( "bookingStatus" ) );
+	    status.setResult( result.getString("result") );
+	    list.add(status);
+	    
+	}
+	return list.toArray( new ModuleStatus[ list.size()] );
+	
+    }
     public static boolean delete ( Admin currentAdmin , ModuleStatus status ) throws SQLException{
 	
 	if ( AdminManager.isInDatabase( currentAdmin )) {

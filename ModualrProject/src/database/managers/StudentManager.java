@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.bean.Admin;
+import database.bean.Phone;
 import database.bean.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
@@ -100,12 +101,25 @@ public class StudentManager
 	    File studentImage = new File(student.getName().replace(" ", "-")  + ".jpg");
 
 	    getImageFromStream(result, studentImage);
+	    Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
 	    student.setImage( studentImage );
+	    student.setPhoneNumbers( numbers );
 	    list.add( student );
 
 
 	}
 	return list.toArray( new Student[ list.size()] );
+    }
+
+    private static Phone[] getPhoneNumbers(String studentId, String string)
+    {
+	String[] numbers = string.split( "," );
+	ArrayList<Phone> list = new ArrayList<>();
+	for( int i = 0 ; i < numbers.length ; i++ ){
+	    Phone phone = new Phone(studentId, numbers[i].replaceAll(" ", "" ) );
+	    list.add( phone );
+	}
+	return list.toArray( new Phone[ list.size() ] );
     }
 
     /**
@@ -165,6 +179,9 @@ public class StudentManager
 
 		getImageFromStream(result, studentImage);
 		student.setImage( studentImage );
+		Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
+		student.setImage( studentImage );
+		student.setPhoneNumbers( numbers );
 		list.add( student );
 	    }
 	    catch (IOException e)
