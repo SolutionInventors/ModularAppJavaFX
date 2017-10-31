@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import database.bean.Admin;
 import database.bean.Bean;
@@ -17,7 +18,7 @@ public class DatabaseManager
 	CallableStatement statement =  conn.prepareCall(
 		sqlCall,
 		ResultSet.TYPE_FORWARD_ONLY,
-		ResultSet.CONCUR_READ_ONLY);
+		ResultSet.CONCUR_READ_ONLY, Statement.RETURN_GENERATED_KEYS);
 
 
 	for( int i =  0 ; i < arguments.length ; i++ )
@@ -28,7 +29,16 @@ public class DatabaseManager
     
     public static <E extends Bean >boolean insert( E bean ) throws InvalidPrimaryKeyException
     {
-	if ( bean instanceof Admin ) return AdminManager.insert( (Admin) bean );
+	if ( bean instanceof Admin )
+	    try
+	    {
+		return AdminManager.insert( (Admin) bean );
+	    }
+	    catch (SQLException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
 	
 	return false;
 	
@@ -45,15 +55,21 @@ public class DatabaseManager
      */
     public static <T extends Bean> T[] getAllBean( BeanType beanType, int startIndex)
     {
-	switch (beanType)
-	{
-	    case ADMIN:
-		return  (T[]) AdminManager.getAllAdmin( startIndex );
-	    
-	    default:
-		return null;
-		
+	try {
+	    switch (beanType)
+		{
+		    case ADMIN:
+			return  (T[]) AdminManager.getAllAdmin( startIndex );
+		    
+		    default:
+			return null;
+			
+		}
 	}
-	
+	catch( SQLException e )
+	{
+	    
+	}
+	return null;
     }
 }

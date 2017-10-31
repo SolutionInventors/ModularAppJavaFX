@@ -50,6 +50,22 @@ public class Module  implements Bean
         this.numberOfUnits = numberOfUnits;
     }
     
-    
+    /** 
+     * Checks that a {@code Module } object by ensuring that the object is not null,
+     * its name attribute is not {@code null} and its units is greater than 0.
+     * Note that it does not connect to the database but ensures that the {@code Module} 
+     * object can be put perform transactions on the database
+     * 
+     * @param module the {@code Module} object to be validated
+     * @return true when the {@code Module } is valid
+     */
+    public static boolean isValid(Module module)
+    {
+	if( module != null && module.getName() != null  && module.getNumberOfUnits() >0)
+	{
+	    return true;
+	}
+	return false;
+    }
     
 }

@@ -1,17 +1,11 @@
 package database.managers;
 
 import java.sql.CallableStatement;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import database.bean.Admin;
-import database.bean.Module;
 import exception.InvalidAdminException;
 import exception.InvalidPrimaryKeyException;
 
@@ -29,37 +23,24 @@ public class AdminManager
      * @param admin the {@code Admin} object to be inserted
      * @return {@code true } only when the {@code Admin} was added successfully
      * @throws InvalidPrimaryKeyException when the {@code Admin } object is invalid
+     * @throws SQLException 
      */
-    public static boolean insert( Admin admin  ) throws InvalidPrimaryKeyException
+    public static boolean insert( Admin admin  ) throws InvalidPrimaryKeyException, SQLException
     {
-	if( !validateAdmin( admin ) )
+	if( !Admin.isValid( admin ) )
 	{
 	    throw new InvalidPrimaryKeyException 
 	    ( "The admin object cannot contain spaces and it cannot be null" );
 	}
 
-	
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( 
-				"{CALL insertAdmin(?, ? ) } ", 
-				admin.getUsername(), admin.getPassword());
-	 )
-	{
-	    int affected = statement.executeUpdate();
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( 
+			"{CALL insertAdmin(?, ? ) } ", 
+			admin.getUsername(), admin.getPassword());
+	int affected = statement.executeUpdate();
 
-	    if( affected > 0 )
-		return true;
-	}
-	catch (SQLException e)
-	{
-
-	    e.printStackTrace();
-	    return false;
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	if( affected > 0 )
+	    return true;
 
 	return false;
     }
@@ -74,35 +55,26 @@ public class AdminManager
      * @param admin the {@code Admin} object to be inserted
      * @return {@code true } only when the {@code Admin} was added successfully
      * @throws InvalidPrimaryKeyException  when the {@code Admin } is null or its username contians spaces
+     * @throws SQLException 
      */
     public static boolean update( Admin oldAdmin, Admin newAdmin) 
-	    throws InvalidPrimaryKeyException
+	    throws InvalidPrimaryKeyException, SQLException
     {
-	if( !validateAdmin( oldAdmin ) )
+	if( !Admin.isValid( oldAdmin ) )
 	{
 	    throw new InvalidPrimaryKeyException
 	    ( "The admin object cannot contain spaces and it cannot be null");
 	}
 
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( 
-				"{CALL updateAdmin(?, ?, ?, ?  ) } ", 
-				oldAdmin.getUsername(),  oldAdmin.getPassword() , 
-				newAdmin.getUsername() , newAdmin.getPassword());
-	 )
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
-	}
-	catch (SQLException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( 
+			"{CALL updateAdmin(?, ?, ?, ?  ) } ", 
+			oldAdmin.getUsername(),  oldAdmin.getPassword() , 
+			newAdmin.getUsername() , newAdmin.getPassword());
+
+	int affected = statement.executeUpdate();
+	if( affected > 0 ) return true;
+
 
 	return false;
     }
@@ -115,36 +87,28 @@ public class AdminManager
      * should be used with method getTotalAdmin
      * 
      * @return an array of {@code Admin } object
+     * @throws SQLException 
      */
-    public static Admin[] getAllAdmin(int startIndex ) 
+    public static Admin[] getAllAdmin(int startIndex ) throws SQLException 
     {
 	ResultSet result = null;
 	final String GET_ALL_ADMIN = "{Call getAllAdminFrom(?) }";
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( GET_ALL_ADMIN, startIndex );
 
-	   )
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( GET_ALL_ADMIN, startIndex );
+
+
+	result = statement.executeQuery();
+	ArrayList<Admin> list = new ArrayList<>();
+	Admin admin;
+	while( result.next() )
 	{
-	    result = statement.executeQuery();
-	    ArrayList<Admin> list = new ArrayList<>();
-	    Admin admin;
-	    while( result.next() )
-	    {
-		admin = new Admin(result.getString("username"), result.getString( "password" ));
-		
-		list.add( admin );
-	    }
-	    return list.toArray( new Admin[ list.size() ] );
+	    admin = new Admin(result.getString("username"), result.getString( "password" ));
+
+	    list.add( admin );
 	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	    return null;
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	return list.toArray( new Admin[ list.size() ] );
+
 
     }
 
@@ -155,71 +119,38 @@ public class AdminManager
      */
     public static int getTotalAdmin() throws SQLException{
 	ResultSet result = null;
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( "{Call getTotalAdmin() }");
 
-		)
-	{
-	    result = statement.executeQuery();
-	    if( result.next() )
-		return result.getInt( 1 );
-	    return 0 ;
-	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	    throw e;
-	}
-	finally {
-	    if( result != null )  result.close();
-	    ConnectionManager.close();
-	   
-	}
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( "{Call getTotalAdmin() }");
+
+
+	result = statement.executeQuery();
+	if( result.next() )
+	    return result.getInt( 1 );
+	return 0 ;
+
+
     }
-    /**
-     * Returns true if the admin is valid. <br>
-     * It checks that the {@code Admin } object is not {@code null } and 
-     * it does not contain a space
-     * @param admin the {@code Admin } object
-     * @return {@code true } when the {@code Admin } is valid
-     */
-    public static boolean validateAdmin ( Admin admin ){
-	if( admin !=  null  && admin.getUsername() != null && 
-		admin.getPassword() != null && !admin.getUsername().contains( " " ) )
-	{
-	    return true;
-	}
-	return false;
-    }
+    
 
     /**
      * Returns {@code true } if the {@code Admin } is in the database
      * @param admin the {@code Admin } to check for in the database
      * @return {@code true } when the {@code Admin } exists
+     * @throws SQLException 
      */
-    public static boolean exists( Admin admin )
+    public static boolean isInDatabase( Admin admin ) throws SQLException
     {
 	final String GET_ADMIN = "{Call getAdmin( ? , ? ) }";
 	ResultSet result = null;
-	try
-	( 
-        	CallableStatement  statement = 
-        		DatabaseManager.getCallableStatement( GET_ADMIN, admin.getUsername(), admin.getPassword() );)
-	{
-	    result = statement.executeQuery();
-	    result.last();
-	    if ( result.getRow() == 1 )
-		return true ;
-	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
 
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( GET_ADMIN, admin.getUsername(), admin.getPassword() );
+	result = statement.executeQuery();
+	result.last();
+	if ( result.getRow() == 1 )
+	    return true ;
+
 
 	return false;
     }
@@ -232,31 +163,23 @@ public class AdminManager
      * @param AdminToDelete the existing {@code Module} to delete from the database
      * @return {@code true} when delete was successful
      * @throws InvalidAdminException when the {@code Admin } object is not in the database 
+     * @throws SQLException 
      */
-    public static boolean delete( Admin currentAdmin, Admin adminToDelete ) throws InvalidAdminException{
-	
-	if( !AdminManager.exists( currentAdmin )  ||
+    public static boolean delete( Admin currentAdmin, Admin adminToDelete ) throws InvalidAdminException, SQLException{
+
+	if( !AdminManager.isInDatabase( currentAdmin )  ||
 		currentAdmin.getUsername().equals( adminToDelete.getUsername())){
 	    throw new InvalidAdminException();
 	}
-	
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( "{call deleteAdmin(?)}" );
-	   )
-	{
-	    statement.setString( 1 , adminToDelete.getUsername() );
-	    int affected = statement.executeUpdate();
-	    
-	    if ( affected == 1 ) return true;
-	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	}
+
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( "{call deleteAdmin(?)}" );
+	statement.setString( 1 , adminToDelete.getUsername() );
+	int affected = statement.executeUpdate();
+
+	if ( affected == 1 ) return true;
+
 	return false;
     }
-    
 
-    
 }

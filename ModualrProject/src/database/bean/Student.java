@@ -1,5 +1,9 @@
 package database.bean;
 
+import java.io.File;
+
+import exception.InvalidImageFormatException;
+
 public class Student  implements Bean 
 {
     private String idCardNumber;
@@ -7,7 +11,8 @@ public class Student  implements Bean
     private String lastName;
     private boolean active;
     private String emailAddress;
-
+    private File image;
+    
     public Student(String id, String fName, String lName, String mail, boolean active)
     {
 	setIdCardNumber(id);
@@ -75,10 +80,30 @@ public class Student  implements Bean
     private static boolean validateName(Student student)
     {
 	if( student.getFirstName().matches( "[A-Za-z]*") && 
-		student.getLastName().matches( "[A-Za-z]* " )){
+		student.getLastName().matches( "[A-Za-z]*" )){
 	    return true;
 	}
 	return false;
+    }
+
+    public File getImage()
+    {
+	return image;
+    }
+
+    public void setImage(File image) throws InvalidImageFormatException
+    {
+	
+	String name = image.getName();
+	name = name.substring(name.lastIndexOf( "."), name.length() );
+	
+	boolean isValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp");
+	
+	if( isValid)
+	    this.image = image;
+	else
+	    throw new InvalidImageFormatException("The student image is inalid and thus cannot be set");
+	
     }
 
 }

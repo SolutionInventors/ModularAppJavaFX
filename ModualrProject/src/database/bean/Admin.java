@@ -51,4 +51,20 @@ public class Admin implements Bean
         this.password = password;
     }
     
+    /**
+     * Returns true if the{@code Admin} object specified as an arguement can
+     * be added to the database <br>
+     * It checks that the {@code Admin } object is not {@code null } and 
+     * the username does not contain a space
+     * @param admin the {@code Admin } object
+     * @return {@code true } when the {@code Admin } is valid
+     */
+    public static boolean isValid ( Admin admin ){
+	if( admin !=  null  && admin.getUsername() != null && 
+		admin.getPassword() != null && !admin.getUsername().contains( " " ) )
+	{
+	    return true;
+	}
+	return false;
+    }
 }

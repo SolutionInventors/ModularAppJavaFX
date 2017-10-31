@@ -1,6 +1,8 @@
 package database.bean;
 
-import exception.InvalidResultException;
+
+
+import java.sql.Date;
 
 /**
  * Objects of this {@code ModuleStatus} represent a single row of the 
@@ -11,37 +13,59 @@ import exception.InvalidResultException;
 
 public class ModuleStatus  implements Bean
 {
+    
+    private int id;
     /**Foreign key from the Module table*/
-    private int moduleId;
+    private String moduleName;
     /**Foreign key from the Student table*/
-    private int studentId;
+    private String studentId;
     
     private boolean paymentStatus;
     private boolean bookingStatus;
     private boolean attended;
     private String result;
     
+    private Date dateRegistered;
+    
+    public ModuleStatus(){}
+    
+    public ModuleStatus(  int id , String moduleId, String studentId){
+	setId( id );
+	setModuleName(moduleId);
+	setStudentId(studentId);
+	
+    }
+    
+    public ModuleStatus( int id , String moduleName , String studentId, boolean paid,
+	    boolean booked, boolean attended, String result )
+    {
+	this( id, moduleName, studentId);
+	setPaymentStatus( paid );
+	setBookingStatus(booked);
+	setAttended(attended);
+	setResult(result);
+    }
     /**
      * Gets the moduleId of this object
      * @return int
      */
-    public int getModuleId()
+    public String getModuleName()
     {
-        return moduleId;
+        return moduleName;
     }
     /**
      * Sets this object's moduleId
-     * @param moduleId
+     * @param moduleName
      */
-    public void setModuleId(int moduleId)
+    public void setModuleName(String moduleName)
     {
-        this.moduleId = moduleId;
+        this.moduleName = moduleName;
     }
     
     /**
      *Gets this object's studentId
      */
-    public int getStudentId()
+    public String getStudentId()
     {
         return studentId;
     }
@@ -50,7 +74,7 @@ public class ModuleStatus  implements Bean
      * Sets this object's studentId
      * @param moduleId
      */
-    public void setStudentId(int studentId)
+    public void setStudentId(String studentId)
     {
         this.studentId = studentId;
     }
@@ -70,6 +94,7 @@ public class ModuleStatus  implements Bean
      */
     public void setPaymentStatus(boolean paymentStatus)
     {
+	
         this.paymentStatus = paymentStatus;
     }
     
@@ -83,10 +108,15 @@ public class ModuleStatus  implements Bean
         return bookingStatus;
     }
     
-    /** Sets the booking status of this object*/
+    /** Sets the booking status of this object. Note that
+     * the payment statsu must be {@code true }  before bookingStatus can
+     * be true.<br>This method sets the bookingStatus to {@code false} if the
+     * paymentStatus is {@code false }
+     * 
+     */
     public void setBookingStatus(boolean bookingStatus)
     {
-        this.bookingStatus = bookingStatus;
+	this.bookingStatus = hasPaid() ? bookingStatus : false;
     }
     
     /**Returns true when the student( with this object's studentId )
@@ -98,14 +128,21 @@ public class ModuleStatus  implements Bean
     {
         return attended;
     }
+    
+    /** Sets the attended attribute of this object. Note that
+     * this object's booking status must be {@code true }  before this {@code ModuleStatus}
+     * attended attribute  can be {@code true}
+     * be true.<br>
+     * The attended would be set to {@code false } if the attended bookingStatus is {@code false}
+     * 
+     */
     public void setAttended(boolean attended)
     {
-	
-        this.attended = attended;
+        this.attended = hasBooked() ? attended : false;
     }
     
     /**
-     * Returns eitther PASS or FAIL indicatig that the course was passed or failed
+     * Returns either PASS or FAIL indicates that the course was passed or failed
      * 
      * @return String
      */
@@ -117,11 +154,11 @@ public class ModuleStatus  implements Bean
     
     /**
      * Sets the result of this ModuleStatus 
-     * the result must be either "PASS" or "FAIL"
+     * the result must be either "PASS" or "FAIL". <br>
+     *  Sets the result to null if the argument is invalid
      * @param result
-     * @throws InvalidResultException  when the result is neither "pass" nor "fail"
-     */
-    public void setResult(String result) throws InvalidResultException
+    */
+    public void setResult(String result) 
     {
 	if( result.toLowerCase().equals("pass" ) || 
 	    result.toLowerCase().equals("fail") )
@@ -129,8 +166,31 @@ public class ModuleStatus  implements Bean
 	    this.result = result;
 	}
 	else
-	    throw new InvalidResultException("The result must be either pass or fail");
+	   this.result = null;
     }
-    
-    
+    public int getId()
+    {
+	return id;
+    }
+    public void setId(int id)
+    {
+	this.id = id;
+    }
+
+    public static boolean isValid(ModuleStatus newModuleStatus)
+    {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    public Date getDateRegistered()
+    {
+	return dateRegistered;
+    }
+
+    public void setDateRegistered(Date dateRegistered)
+    {
+	this.dateRegistered = dateRegistered;
+    }
+ 
 }

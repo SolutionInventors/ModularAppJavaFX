@@ -20,86 +20,52 @@ public class ModuleManager
      * @return {@code true } only when the {@code Module} was added successfully
      * @throws InvalidPrimaryKeyException when the name attribute of the {@code Module } object 
      * already exists or is null
+     * @throws SQLException 
      */
-    public static boolean insert( Module newModule  ) throws InvalidPrimaryKeyException
+    public static boolean insert( Module newModule  ) throws InvalidPrimaryKeyException, SQLException
     {
-	if( !isValid( newModule ) || !exists( newModule ))
+	if( !Module.isValid( newModule ) || !exists( newModule ))
 	{
 	    throw new InvalidPrimaryKeyException 
 	    ( "The Module object is invalid. Ensure that the module does not exist" );
 	}
 
-	try(
-		CallableStatement  statement = 
+
+	CallableStatement  statement = 
 		DatabaseManager.getCallableStatement( 
 			"{CALL insertModule(?, ? ) } ", 
 			newModule.getName(), newModule.getNumberOfUnits());
-		)
-	{
-	    int affected = statement.executeUpdate();
 
-	    if( affected > 0 )
-		return true;
-	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	    return false;
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	int affected = statement.executeUpdate();
+
+	if( affected > 0 )
+	    return true;
+
 
 	return false;
     }
 
-    /** Checks if a {@code Module } is already in the database*/
-    public static boolean exists( Module module )
+    /** Checks if a {@code Module } is already in the database
+     * @throws SQLException */
+    public static boolean exists( Module module ) throws SQLException
     {
 	ResultSet result = null;
-	try
-	( 
-		CallableStatement  statement = 
+
+	CallableStatement  statement = 
 		DatabaseManager.getCallableStatement( 
 			"{Call getModule( ? ) }", module.getName());
-		)
+	result = statement.executeQuery();
+	result.last();
+	if ( result.getRow() == 1 )
 	{
-	    result = statement.executeQuery();
-	    result.last();
-	    if ( result.getRow() == 1 )
-	    {
-		module.setNumberOfUnits( result.getInt("units"));
-		return true ;
-	    }
+	    module.setNumberOfUnits( result.getInt("units"));
+	    return true ;
 	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
 
-	}
-	finally {
-	    ConnectionManager.close();
-	}
 	return false;
     }
 
-    /** 
-     * Checks that a {@code Module } object by ensuring that the object is not null,
-     * its name attribute is not {@code null} and its units is greater than 0.
-     * Note that it does not connect to the database but ensures that the {@code Module} 
-     * object can be put perform transactions on the database
-     * 
-     * @param module the {@code Module} object to be validated
-     * @return true when the {@code Module } is valid
-     */
-    public static boolean isValid(Module module)
-    {
-	if( module != null && module.getName() != null  && module.getNumberOfUnits() >0)
-	{
-	    return true;
-	}
-	return false;
-    }
+    
 
     /**Updates an existing {@code Module } object with to the new one specified
      * in the second argument.<br>
@@ -110,34 +76,23 @@ public class ModuleManager
      * @param newModule  the {@code Module} object with the new values
      * @return {@code true} when the update is successful
      * @throws InvalidPrimaryKeyException
+     * @throws SQLException 
      */
-    public static boolean update( Module oldModule, Module newModule ) throws InvalidPrimaryKeyException
+    public static boolean update( Module oldModule, Module newModule ) throws InvalidPrimaryKeyException, SQLException
     {
-	if( !isValid( newModule ) )
+	if( !Module.isValid( newModule ) )
 	{
 	    throw new InvalidPrimaryKeyException 
 	    ( "The Module object is invalid. Ensure that the module does not contain  null values" );
 	}
-
-	try(
-		CallableStatement  statement = 
+	CallableStatement  statement = 
 		DatabaseManager.getCallableStatement( 
 			"{CALL updateModule(?, ?, ? ) } ", 
 			oldModule.getName() , 
 			newModule.getName() , newModule.getNumberOfUnits());
-		)
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
-	}
-	catch (SQLException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	int affected = statement.executeUpdate();
+	if( affected > 0 ) return true;
+
 
 	return false;
     }
@@ -149,63 +104,41 @@ public class ModuleManager
      */
     public static int getTotalModule() throws SQLException{
 	ResultSet result = null;
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( "{Call getTotalModule() }");
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( "{Call getTotalModule() }");
 
-		)
-	{
-	    result = statement.executeQuery();
-	    if( result.next() )
-		return result.getInt( 1 );
-	    return 0 ;
-	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	    throw e;
-	}
-	finally {
-	    if( result != null )  result.close();
-	    ConnectionManager.close();
-	   
-	}
+
+	result = statement.executeQuery();
+	if( result.next() )
+	    return result.getInt( 1 );
+	return 0 ;
+
     }
 
-   /** Gets the first 30 {@code Module} in the Module Table from a specified index as an array.
-    * Note that the first Module has index 0 
-    * Returns an empty array when the index is too large
-    * should be used with method getTotalAdmin
-    * 
-    * @return an array of {@code Module } objects
-    */
-    
-    public static Module[] getAll( int startIndex ){
-	ResultSet result = null;
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( "{call getAllModules()}", startIndex );
+    /** Gets the first 30 {@code Module} in the Module Table from a specified index as an array.
+     * Note that the first Module has index 0 
+     * Returns an empty array when the index is too large
+     * should be used with method getTotalAdmin
+     * 
+     * @return an array of {@code Module } objects
+     * @throws SQLException 
+     */
 
-	   )
+    public static Module[] getAll( int startIndex ) throws SQLException{
+	ResultSet result = null;
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( "{call getAllModules()}", startIndex );
+
+	result = statement.executeQuery();
+	ArrayList<Module> list = new ArrayList<>();
+	Module module;
+	while( result.next() )
 	{
-	    result = statement.executeQuery();
-	    ArrayList<Module> list = new ArrayList<>();
-	    Module module;
-	    while( result.next() )
-	    {
-		module = new Module( result.getString("name" ) , result.getInt( "units" ) );
-		list.add( module );
-	    }
-	    return list.toArray( new Module[ list.size() ] );
+	    module = new Module( result.getString("name" ) , result.getInt( "units" ) );
+	    list.add( module );
 	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	    return null;
-	}
-	finally {
-	    ConnectionManager.close();
-	}
+	return list.toArray( new Module[ list.size() ] );
+
     }
 
     /**This method deletes a {@code Module } from the databasse.
@@ -215,25 +148,20 @@ public class ModuleManager
      * @param moduleToDelete the existing {@code Module} to delete from the database
      * @return {@code true} when delete was successful
      * @throws InvalidAdminException when the {@code Admin } object is not in the database 
+     * @throws SQLException 
      */
-    public static boolean delete( Admin currentAdmin, Module moduleToDelete ) throws InvalidAdminException{
-	
-	if( !AdminManager.exists( currentAdmin ) ) throw new InvalidAdminException();
-	
-	try(
-		CallableStatement  statement = 
-			DatabaseManager.getCallableStatement( "{call deleteModule(?)}" );
-	   )
-	{
-	    statement.setString( 1 , moduleToDelete.getName() );
-	    int affected = statement.executeUpdate();
-	    
-	    if ( affected == 1 ) return true;
-	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	}
+    public static boolean delete( Admin currentAdmin, Module moduleToDelete ) throws InvalidAdminException, SQLException{
+
+	if( !AdminManager.isInDatabase( currentAdmin ) ) throw new InvalidAdminException();
+
+	CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( "{call deleteModule(?)}" );
+
+	statement.setString( 1 , moduleToDelete.getName() );
+	int affected = statement.executeUpdate();
+
+	if ( affected == 1 ) return true;
+
 	return false;
     }
 }
