@@ -41,7 +41,6 @@ public class ConnectionManager
 	try
 	{
 	    conn = DriverManager.getConnection(MYSQLURL, USERNAME, PASSWORD );
-	    
 	    return true;
 	}
 	catch (SQLException e)
@@ -51,6 +50,8 @@ public class ConnectionManager
 	}
 	return false;
     }
+
+    
     
     /**THis gets the only {@code COnnection } object in this project*/
     public Connection getConnection() 

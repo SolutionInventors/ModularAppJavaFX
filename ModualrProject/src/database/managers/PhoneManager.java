@@ -12,16 +12,20 @@ public class PhoneManager
 {
     public static boolean insert( Phone phone ) throws SQLException {
 
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL insertPhone(?, ? ) } ", 
-			phone.getStudentId(), phone.getNumber());
-
-	int affected = statement.executeUpdate();
-	statement.close();
-	ConnectionManager.close();
-	if( affected > 0 )
-	    return true;
+	CallableStatement  statement =  null;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( 
+	    		"{CALL insertPhone(?, ? ) } ", 
+	    		phone.getStudentId(), phone.getNumber());
+	    int affected = statement.executeUpdate();
+	    if( affected > 0 )
+	        return true;
+	}
+	finally
+	{
+	   if( statement != null ) statement.close();
+	}
 
 	return false;
     }
@@ -37,18 +41,24 @@ public class PhoneManager
      */
     public static boolean update( Phone oldPhone, Phone newPhone ) throws SQLException{
 	if( Phone.isValid( oldPhone ) && oldPhone.getStudentId().equals( newPhone.getStudentId())){
-	    CallableStatement statement = 
-		    DatabaseManager.getCallableStatement( 
+	    CallableStatement statement =  null;
+	    try
+	    {
+		statement = DatabaseManager.getCallableStatement( 
 			    "{CALL updatePhone(?, ? ) } ", 
 			    oldPhone.getStudentId(), oldPhone.getNumber(), 
 			    newPhone.getNumber() );
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
-	    
-	    
+		int affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+	    }
+	    finally
+	    {
+		if( statement!= null ) statement.close();
+	    }
 	}
 	return false;
     }
+    
     /**Deletes a particular phone number from the database
      * Returns true if a value was deleted or false if the {@code Phone} object 
      * does not exist
@@ -56,23 +66,28 @@ public class PhoneManager
      * @return {@code true} when the value was successfully deleted
      * @throws SQLException when a special database error occurs
      */
-    public static boolean delete( Phone phone ) throws SQLException{
+    public static boolean delete( Phone phone ) throws SQLException
+    {
 	if( !Phone.isValid( phone ) ) return false;
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL deletePhone(?, ? ) } ", 
-			phone.getStudentId(), phone.getNumber());
+	 CallableStatement  statement = null;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( 
+	    		"{CALL deletePhone(?, ? ) } ", 
+	    		phone.getStudentId(), phone.getNumber());
 
-	int affected = statement.executeUpdate();
-	statement.close();
-	ConnectionManager.close();
-	if( affected > 0 )
-	    return true;
+	    int affected = statement.executeUpdate();
+	    
+	    if( affected > 0 )
+	        return true;
+	}
+	finally
+	{
+	   if( statement != null ) statement.close();
+	}
 
 	return false;
     }
-
-    
 
     /**
      * Gets an array of {@code Phone} that contains all the number of a particular {@code student}
@@ -86,23 +101,29 @@ public class PhoneManager
 	if( student.getIdCardNumber()  ==  null ){
 	    return null;
 	}
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL getPhoneAllPhone(? ) } ", 
-			student.getIdCardNumber());
+	CallableStatement  statement = null;
+	ResultSet result  = null;
+	ArrayList<Phone> list;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( 
+	    		"{CALL getPhoneAllPhone(? ) } ", 
+	    		student.getIdCardNumber());
 
-	statement.setString( 1, student.getIdCardNumber() );
-	ResultSet result  = statement.executeQuery();
-	ArrayList<Phone> list = new ArrayList<Phone>();
+	    statement.setString( 1, student.getIdCardNumber() );
+	    result  = statement.executeQuery();
+	    list = new ArrayList<Phone>();
 
-	while(  result.next() )
-	    list.add( new Phone( result.getString("student_id") , 
-		    result.getString("phoneNumber" )));
-
-	statement.close();
-	ConnectionManager.close();
+	    while(  result.next() )
+	        list.add( new Phone( result.getString("student_id") , 
+	    	    result.getString("phoneNumber" )));
+	}
+	finally
+	{
+	    if( result != null ) result.close();
+	    if( statement != null ) statement.close();
+	}
 	return list.toArray( new Phone[ list.size() ] );
-
     }
 
 

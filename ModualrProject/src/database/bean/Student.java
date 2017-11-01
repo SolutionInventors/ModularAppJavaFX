@@ -1,6 +1,7 @@
 package database.bean;
 
 import java.io.File;
+import java.sql.Date;
 
 import exception.InvalidImageFormatException;
 
@@ -12,6 +13,7 @@ public class Student  implements Bean
     private boolean active;
     private String emailAddress;
     private File image;
+    private Date dateAdmitted;
     private Phone[] phoneNumbers;
     
     public Student(String id, String fName, String lName, String mail, boolean active)
@@ -116,5 +118,16 @@ public class Student  implements Bean
     {
 	this.phoneNumbers = phoneNumbers;
     }
+
+    public void setDateAdmitted(Date date)
+    {
+	dateAdmitted = date;
+    }
+    
+    public Date getDateAdmitted()
+    {
+	return dateAdmitted ;
+    }
+    
 
 }

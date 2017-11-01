@@ -63,15 +63,18 @@ public class DatabaseManager
 
 	return false;
     }
-    
-    
+
+
 
     public static <E extends Bean >boolean update( Admin currenAdmin , E oldBean, E newBean ) throws InvalidPrimaryKeyException, 
-     InvalidCompositeKeyException, InvalidBeanException
+    	InvalidCompositeKeyException, InvalidBeanException
     {
-	if( !oldBean.getClass().equals( newBean.getClass() ))
-	    throw new InvalidBeanException("The two bean objects must be of the same type");
 	try{
+	    ConnectionManager.getInstance().getConnection().setAutoCommit( false );;
+
+	    if( !oldBean.getClass().equals( newBean.getClass() ))
+		throw new InvalidBeanException("The two bean objects must be of the same type");
+
 	    if( AdminManager.isInDatabase( currenAdmin ) )
 	    {
 		switch( oldBean.getClass().getSimpleName() ) {
@@ -96,7 +99,7 @@ public class DatabaseManager
 	}
 	return false;
     }
-    
+
 
     /**
      * Gets the first 30 occurence of a specified {@code BeanType} in the database

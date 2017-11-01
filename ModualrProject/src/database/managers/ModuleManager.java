@@ -30,16 +30,21 @@ public class ModuleManager
 	    ( "The Module object is invalid. Ensure that the module does not exist" );
 	}
 
+	CallableStatement  statement = null;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( 
+	    		"{CALL insertModule(?, ? ) } ", 
+	    		newModule.getName(), newModule.getNumberOfUnits());
+	    int affected = statement.executeUpdate();
 
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL insertModule(?, ? ) } ", 
-			newModule.getName(), newModule.getNumberOfUnits());
-
-	int affected = statement.executeUpdate();
-
-	if( affected > 0 )
-	    return true;
+	    if( affected > 0 )
+	        return true;
+	}
+	finally
+	{
+	    if( statement != null ) statement.close();
+	}
 
 
 	return false;
@@ -50,16 +55,25 @@ public class ModuleManager
     public static boolean exists( Module module ) throws SQLException
     {
 	ResultSet result = null;
-
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{Call getModule( ? ) }", module.getName());
-	result = statement.executeQuery();
-	result.last();
-	if ( result.getRow() == 1 )
+	CallableStatement  statement =  null;
+	try
 	{
-	    module.setNumberOfUnits( result.getInt("units"));
-	    return true ;
+	    statement = 
+	    	DatabaseManager.getCallableStatement( 
+	    		"{Call getModule( ? ) }", module.getName());
+	    result = statement.executeQuery();
+	    result.last();
+	    if ( result.getRow() == 1 )
+	    {
+	        module.setNumberOfUnits( result.getInt("units"));
+	        return true ;
+	    }
+	}
+	finally
+	{
+	    if( result != null ) result.close();
+	    if( statement != null ) statement.close();
+	    
 	}
 
 	return false;
@@ -85,13 +99,20 @@ public class ModuleManager
 	    throw new InvalidPrimaryKeyException 
 	    ( "The Module object is invalid. Ensure that the module does not contain  null values" );
 	}
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL updateModule(?, ?, ? ) } ", 
-			oldModule.getName() , 
-			newModule.getName() , newModule.getNumberOfUnits());
-	int affected = statement.executeUpdate();
-	if( affected > 0 ) return true;
+	CallableStatement  statement =  null;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( 
+	    		"{CALL updateModule(?, ?, ? ) } ", 
+	    		oldModule.getName() , 
+	    		newModule.getName() , newModule.getNumberOfUnits());
+	    int affected = statement.executeUpdate();
+	    if( affected > 0 ) return true;
+	}
+	finally
+	{
+	    if( statement !=null ) statement.close();
+	}
 
 
 	return false;
@@ -104,13 +125,21 @@ public class ModuleManager
      */
     public static int getTotalModule() throws SQLException{
 	ResultSet result = null;
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( "{Call getTotalModule() }");
+	CallableStatement  statement = null;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( 
+		    "{Call getTotalModule() }");
 
-
-	result = statement.executeQuery();
-	if( result.next() )
-	    return result.getInt( 1 );
+	    result = statement.executeQuery();
+	    if( result.next() )
+	        return result.getInt( 1 );
+	}
+	finally
+	{
+	   if( result != null ) result.close();
+	   if( statement != null ) statement.close();
+	}
 	return 0 ;
 
     }
@@ -126,16 +155,24 @@ public class ModuleManager
 
     public static Module[] getAll( int startIndex ) throws SQLException{
 	ResultSet result = null;
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( "{call getAllModules()}", startIndex );
-
-	result = statement.executeQuery();
-	ArrayList<Module> list = new ArrayList<>();
-	Module module;
-	while( result.next() )
+	CallableStatement  statement = null;
+	ArrayList<Module> list = new ArrayList<>();;
+	try
 	{
-	    module = new Module( result.getString("name" ) , result.getInt( "units" ) );
-	    list.add( module );
+	    statement =DatabaseManager.getCallableStatement( "{call getAllModules()}", startIndex );
+
+	    result = statement.executeQuery();
+	    Module module;
+	    while( result.next() )
+	    {
+	        module = new Module( result.getString("name" ) , result.getInt( "units" ) );
+	        list.add( module );
+	    }
+	}
+	finally 
+	{
+	   if( result!= null ) result.close();
+	   if( statement != null ) statement.close();
 	}
 	return list.toArray( new Module[ list.size() ] );
 
@@ -153,14 +190,19 @@ public class ModuleManager
     public static boolean delete( Admin currentAdmin, Module moduleToDelete ) throws InvalidAdminException, SQLException{
 
 	if( !AdminManager.isInDatabase( currentAdmin ) ) throw new InvalidAdminException();
+	CallableStatement  statement = null;
+	try
+	{
+	    statement = DatabaseManager.getCallableStatement( "{call deleteModule(?)}" );
+	    statement.setString( 1 , moduleToDelete.getName() );
+	    int affected = statement.executeUpdate();
 
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( "{call deleteModule(?)}" );
-
-	statement.setString( 1 , moduleToDelete.getName() );
-	int affected = statement.executeUpdate();
-
-	if ( affected == 1 ) return true;
+	    if ( affected == 1 ) return true;
+	}
+	finally
+	{
+	    if( statement  != null ) statement.close();
+	}
 
 	return false;
     }

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.Admin;
@@ -16,6 +17,7 @@ import database.bean.Phone;
 import database.bean.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import exception.InvalidImageFormatException;
 
 public class StudentManager
 {
@@ -35,39 +37,46 @@ public class StudentManager
 	}
 
 	FileInputStream inputStream = null ;
+	CallableStatement  statement= null;
 	try
 	{
 	    inputStream = new FileInputStream(newStudent.getImage());
+	    statement = 
+		    DatabaseManager.getCallableStatement( 
+			    "{CALL insertStudent(?, ?, ?, ?, ?, ? ) } ", newStudent.getIdCardNumber(),
+			    newStudent.getFirstName(), newStudent.getLastName() ,
+			    newStudent.getEmailAddress(), inputStream );
+
+	    statement.setBinaryStream( "studentImage", inputStream);
+	    statement.registerOutParameter("currentDate", Types.DATE );
+	    int affected = statement.executeUpdate();
+
+	    if( affected > 0 ){
+		newStudent.setDateAdmitted( statement.getDate("currentDate" ));
+		return true;
+	    }
+
+
 	}
 	catch (FileNotFoundException e)
 	{
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL insertStudent(?, ?, ?, ?, ? ) } ", newStudent.getIdCardNumber(),
-			newStudent.getFirstName(), newStudent.getLastName() ,
-			newStudent.getEmailAddress(), inputStream );
+	finally{
 
-	statement.setBinaryStream( "studentImage", inputStream);
-	int affected = statement.executeUpdate();
-	try
-	{
-	    if( inputStream != null )
-		inputStream.close();
+	    try
+	    {
+		if( inputStream != null ) inputStream.close();
+	    }
+	    catch (IOException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+
+	    if( statement!= null ) statement.close();
 	}
-	catch (IOException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-
-	statement.close();
-	ConnectionManager.close();
-	if( affected > 0 )
-	    return true;
-
 	return false;
     }
 
@@ -83,31 +92,39 @@ public class StudentManager
      * @throws ClassNotFoundException 
      */
     public static Student[] getAllActiveStudents( int startIndex) throws SQLException, IOException, ClassNotFoundException{
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL getAllActiveStudents(?) } ");
-
-	statement.setInt( 1, startIndex );
-	ResultSet result = statement.executeQuery();
-
-	ArrayList<Student > list = new ArrayList<Student>();
-
-	while ( result.next() )
+	ArrayList<Student> list;
+	CallableStatement  statement = null;
+	ResultSet result = null ;
+	try
 	{
-	    String name[] = result.getString("Name" ).split(" " );
-	    Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
-		    result.getString("Email"), result.getBoolean( "Active"));
+	    statement = DatabaseManager.getCallableStatement( 
+		    "{CALL getAllActiveStudents(?) } ");
 
-	    File studentImage = new File(student.getName().replace(" ", "-")  + ".jpg");
+	    statement.setInt( 1, startIndex );
+	    result = statement.executeQuery();
 
-	    getImageFromStream(result, studentImage);
-	    Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
-	    student.setImage( studentImage );
-	    student.setPhoneNumbers( numbers );
-	    list.add( student );
+	    list = new ArrayList<Student>();
 
+	    while ( result.next() )
+	    {
+		String name[] = result.getString("Name" ).split(" " );
+		Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
+			result.getString("Email"), result.getBoolean( "Active"));
+		student.setDateAdmitted( result.getDate( "dateRegistered" )) ;
+		File studentImage = new File(student.getName().replace(" ", "-")  + ".jpg");
 
+		getImageFromStream(result, studentImage);
+		Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
+		student.setImage( studentImage );
+		student.setPhoneNumbers( numbers );
+		list.add( student );
+	    }
 	}
+	finally
+	{
+	    if (statement!= null ) statement.close();
+	    if( result != null ) result.close();
+	} 
 	return list.toArray( new Student[ list.size()] );
     }
 
@@ -159,35 +176,43 @@ public class StudentManager
      * 
      */
     public static Student[] getAllInactiveStudents( int startIndex) throws SQLException{
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			"{CALL getAllInactiveStudents(?) } ");
-
-	statement.setInt( 1, startIndex );
-	ResultSet result = statement.executeQuery();
-
-	ArrayList<Student > list = new ArrayList<Student>();
-
-	while ( result.next() )
+	CallableStatement  statement = null ;
+	ResultSet result = null;
+	ArrayList<Student> list = new ArrayList<Student>();;
+	try
 	{
-	    try
-	    {
-		String name[] = result.getString("Name" ).split(" " );
-		Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
-			result.getString("Email"), result.getBoolean( "Active"));
-		File studentImage = new File(student.getName().trim().replace(" ", "-")  + ".jpg");
+	    statement = DatabaseManager.getCallableStatement( 
+		    "{CALL getAllInactiveStudents(?) } ");
+	    statement.setInt( 1, startIndex );
+	    result = statement.executeQuery();
 
-		getImageFromStream(result, studentImage);
-		student.setImage( studentImage );
-		Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
-		student.setImage( studentImage );
-		student.setPhoneNumbers( numbers );
-		list.add( student );
-	    }
-	    catch (IOException e)
+	    while ( result.next() )
 	    {
-		e.printStackTrace();
-	    } 
+		try
+		{
+		    String name[] = result.getString("Name" ).split(" " );
+		    Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
+			    result.getString("Email"), result.getBoolean( "Active"));
+		    student.setDateAdmitted( result.getDate( "dateRegistered" )) ;
+		    File studentImage = new File(student.getName().trim().replace(" ", "-")  + ".jpg");
+
+		    getImageFromStream(result, studentImage);
+		    student.setImage( studentImage );
+		    Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
+		    student.setImage( studentImage );
+		    student.setPhoneNumbers( numbers );
+		    list.add( student );
+		}
+		catch (IOException e)
+		{
+		    e.printStackTrace();
+		} 
+	    }
+	}
+	finally 
+	{
+	    if( result!=null) result.close();
+	    if( statement!= null ) statement.close();
 	}
 	return list.toArray( new Student[ list.size()] );
     }
@@ -208,16 +233,13 @@ public class StudentManager
 	else if( !existingStudent.getIdCardNumber().equals( updatedStudent.getIdCardNumber() ) )
 	    throw new InvalidBeanException("The new student must have the same id as the existing Student");
 
-	try( FileInputStream input =  new FileInputStream( updatedStudent.getImage( ));)
+	try( FileInputStream input =  new FileInputStream( updatedStudent.getImage( ));
+		CallableStatement  statement = DatabaseManager.getCallableStatement( 
+			"{CALL updateStudent(?, ?,?,?, ?) } ", updatedStudent.getIdCardNumber(),
+			updatedStudent.getFirstName(), updatedStudent.getLastName(), updatedStudent.isActive(),
+			updatedStudent.getEmailAddress(), input );)
 	{
-	    CallableStatement  statement = 
-		    DatabaseManager.getCallableStatement( 
-			    "{CALL updateStudent(?, ?,?,?, ?) } ", updatedStudent.getIdCardNumber(),
-			    updatedStudent.getFirstName(), updatedStudent.getLastName(), updatedStudent.isActive(),
-			    updatedStudent.getEmailAddress(), input );
-
 	    int affected = statement.executeUpdate();
-
 	    if( affected == 1 ) return true;
 	}
 	catch ( IOException e)
@@ -237,16 +259,17 @@ public class StudentManager
     public static int getStudentsCount( boolean active) throws SQLException
     {
 	String sql = active ? "{CALL getActiveStudentsCount() } " :"{CALL getInactiveStudentsCount() } ";
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( 
-			sql);
-
-	ResultSet result = statement.executeQuery();
-
-
-	if( result.next() )
-	    return result.getInt( 1 ) ;
-
+	ResultSet result  = null;
+	try(  CallableStatement  statement = DatabaseManager.getCallableStatement( sql);)
+	{
+	    result = statement.executeQuery();
+	    if( result.next() )
+		return result.getInt( 1 ) ;
+	}
+	finally
+	{
+	    if( result!= null ) result.close();
+	}
 	return 0;
 
     }
@@ -268,14 +291,14 @@ public class StudentManager
 	    throw new InvalidAdminException();
 	}
 
-	CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( "{call deleteStudent(?)}" );
-
-	statement.setString( 1 , studentToDelete.getIdCardNumber() );
-	int affected = statement.executeUpdate();
-
-	if ( affected == 1 ) return true;
-
+	try(CallableStatement  statement = DatabaseManager.getCallableStatement( 
+	    				"{call deleteStudent(?)}" );)
+	{
+	    statement.setString( 1 , studentToDelete.getIdCardNumber() );
+	    int affected = statement.executeUpdate();
+	    if ( affected == 1 ) return true;
+	}
+	
 	return false;
     }
 }
