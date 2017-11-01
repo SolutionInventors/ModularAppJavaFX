@@ -3,7 +3,6 @@ package database.managers;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import database.bean.Admin;
@@ -191,12 +190,8 @@ public class AdminManager
      * @throws InvalidAdminException when the {@code Admin } object is not in the database 
      * @throws SQLException 
      */
-    public static boolean delete( Admin currentAdmin, Admin adminToDelete ) throws InvalidAdminException, SQLException{
+    public static boolean delete( Admin adminToDelete ) throws SQLException{
 
-	if( !AdminManager.isInDatabase( currentAdmin )  ||
-		currentAdmin.getUsername().equals( adminToDelete.getUsername())){
-	    throw new InvalidAdminException();
-	}
 	CallableStatement  statement = null;
 	try
 	{

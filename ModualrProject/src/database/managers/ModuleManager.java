@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.bean.Admin;
 import database.bean.Module;
 import exception.InvalidAdminException;
 import exception.InvalidPrimaryKeyException;
@@ -187,9 +186,8 @@ public class ModuleManager
      * @throws InvalidAdminException when the {@code Admin } object is not in the database 
      * @throws SQLException 
      */
-    public static boolean delete( Admin currentAdmin, Module moduleToDelete ) throws InvalidAdminException, SQLException{
+    public static boolean delete(  Module moduleToDelete ) throws SQLException{
 
-	if( !AdminManager.isInDatabase( currentAdmin ) ) throw new InvalidAdminException();
 	CallableStatement  statement = null;
 	try
 	{

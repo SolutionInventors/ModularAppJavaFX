@@ -126,7 +126,7 @@ public class ModuleStatusManager
      * @return {@code true} if the {@code ModuleStatus } is in the database
      * @throws SQLException when an error occurs
      */
-    public static boolean exists( ModuleStatus status ) throws SQLException{
+    public static boolean isInDatabase( ModuleStatus status ) throws SQLException{
 	CallableStatement statement = null;
 	ResultSet result  =null;
 	try

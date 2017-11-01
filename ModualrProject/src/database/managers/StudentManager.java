@@ -12,12 +12,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import database.bean.Admin;
 import database.bean.Phone;
 import database.bean.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
-import exception.InvalidImageFormatException;
 
 public class StudentManager
 {
@@ -285,11 +283,7 @@ public class StudentManager
      * @throws InvalidAdminException when the {@code Admin } object is not in the database 
      * @throws SQLException 
      */
-    public static boolean delete( Admin currentAdmin, Student studentToDelete ) throws InvalidAdminException, SQLException{
-
-	if( !AdminManager.isInDatabase( currentAdmin )  ){
-	    throw new InvalidAdminException();
-	}
+    public static boolean delete( Student studentToDelete ) throws InvalidAdminException, SQLException{
 
 	try(CallableStatement  statement = DatabaseManager.getCallableStatement( 
 	    				"{call deleteStudent(?)}" );)
