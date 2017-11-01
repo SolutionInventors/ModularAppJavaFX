@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.bean.Admin;
 import database.bean.ModuleStatus;
 import exception.InvalidCompositeKeyException;
 
