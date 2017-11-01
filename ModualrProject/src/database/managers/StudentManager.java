@@ -89,7 +89,7 @@ public class StudentManager
      * @throws IOException 
      * @throws ClassNotFoundException 
      */
-    public static Student[] getAllActiveStudents( int startIndex) throws SQLException, IOException, ClassNotFoundException{
+    public static Student[] getAllActiveStudents( int startIndex) throws SQLException{
 	ArrayList<Student> list;
 	CallableStatement  statement = null;
 	ResultSet result = null ;
@@ -143,7 +143,7 @@ public class StudentManager
      * @throws SQLException
      * @throws IOException 
      */
-    private static void getImageFromStream(ResultSet result, File studentImage) throws SQLException, IOException
+    private static void getImageFromStream(ResultSet result, File studentImage) throws SQLException
     {
 	InputStream input = null ;
 	FileOutputStream output = null;
@@ -156,9 +156,23 @@ public class StudentManager
 		output.write( buffer );
 	    }
 	}
-	finally{
-	    if( input != null ) input.close();
-	    if( output != null ) output.close();
+
+	catch (IOException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	finally
+	{
+	    try
+	    {
+		if( input != null ) input.close();
+		if( output != null ) output.close();
+	    }
+	    catch (IOException e)
+	    {
+		e.printStackTrace();
+	    }
 	}
 
     }
@@ -186,25 +200,20 @@ public class StudentManager
 
 	    while ( result.next() )
 	    {
-		try
-		{
-		    String name[] = result.getString("Name" ).split(" " );
-		    Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
-			    result.getString("Email"), result.getBoolean( "Active"));
-		    student.setDateAdmitted( result.getDate( "dateRegistered" )) ;
-		    File studentImage = new File(student.getName().trim().replace(" ", "-")  + ".jpg");
 
-		    getImageFromStream(result, studentImage);
-		    student.setImage( studentImage );
-		    Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
-		    student.setImage( studentImage );
-		    student.setPhoneNumbers( numbers );
-		    list.add( student );
-		}
-		catch (IOException e)
-		{
-		    e.printStackTrace();
-		} 
+		String name[] = result.getString("Name" ).split(" " );
+		Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
+			result.getString("Email"), result.getBoolean( "Active"));
+		student.setDateAdmitted( result.getDate( "dateRegistered" )) ;
+		File studentImage = new File(student.getName().trim().replace(" ", "-")  + ".jpg");
+
+		getImageFromStream(result, studentImage);
+		student.setImage( studentImage );
+		Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
+		student.setImage( studentImage );
+		student.setPhoneNumbers( numbers );
+		list.add( student );
+
 	    }
 	}
 	finally 
@@ -286,13 +295,13 @@ public class StudentManager
     public static boolean delete( Student studentToDelete ) throws InvalidAdminException, SQLException{
 
 	try(CallableStatement  statement = DatabaseManager.getCallableStatement( 
-	    				"{call deleteStudent(?)}" );)
+		"{call deleteStudent(?)}" );)
 	{
 	    statement.setString( 1 , studentToDelete.getIdCardNumber() );
 	    int affected = statement.executeUpdate();
 	    if ( affected == 1 ) return true;
 	}
-	
+
 	return false;
     }
 }
