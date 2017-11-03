@@ -183,21 +183,21 @@ public class DatabaseManager
 	return false;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Bean > T[] getAll( int startIndex, QueryType queryType ) throws SQLException
+    public Bean[] getAll( int startIndex, QueryType queryType ) throws SQLException
     {
 	switch( queryType )
 	{
 	    case MODULES:
-		return (T[]) ModuleManager.getAll(startIndex);
+		return  ModuleManager.getAll(startIndex);
 	    case ALL_ACTIVE_STUDENTS:
-		return (T[]) StudentManager.getAllActiveStudents(startIndex);
+		return  StudentManager.getAllActiveStudents(startIndex);
 	    case ALL_INACTIVE_STUDENTS:
-		return (T[]) StudentManager.getAllInactiveStudents( startIndex);
+		return  StudentManager.getAllInactiveStudents( startIndex);
 	    default:
 		break;
 	}
-	
 	return null;
     }
+    
+    
 }
