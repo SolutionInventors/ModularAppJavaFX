@@ -72,7 +72,7 @@ public class DatabaseManager
 		case  "Module":
 		    return ModuleManager.insert( (Module) bean );
 		case "ModuleRegister":
-		    return ModuleStatusManager.insert( (ModuleRegister) bean );
+		    return ModuleRegisterManager.insert( (ModuleRegister) bean );
 		case "Phone":
 		    return PhoneManager.insert( (Phone) bean );
 		case "Student":
@@ -121,7 +121,7 @@ public class DatabaseManager
 		case  "Module":
 		    return ModuleManager.update(  (Module) oldBean, (Module) newBean );
 		case "ModuleRegister":
-		    return ModuleStatusManager.update(  (ModuleRegister) oldBean ,(ModuleRegister)  newBean );
+		    return ModuleRegisterManager.update(  (ModuleRegister) oldBean ,(ModuleRegister)  newBean );
 		case "Phone":
 		    return PhoneManager.update( (Phone) oldBean, (Phone) newBean );
 		case "Student":
@@ -168,7 +168,7 @@ public class DatabaseManager
 		case  "Module":
 		    return ModuleManager.delete(  (Module) beanToDelete );
 		case "ModuleRegister":
-		    return ModuleStatusManager.delete(  (ModuleRegister) beanToDelete );
+		    return ModuleRegisterManager.delete(  (ModuleRegister) beanToDelete );
 		case "Phone":
 		    return PhoneManager.delete( (Phone) beanToDelete );
 		case "Student":
