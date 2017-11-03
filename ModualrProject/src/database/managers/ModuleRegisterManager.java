@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import database.bean.ModuleRegister;
 import exception.InvalidCompositeKeyException;
 
-public class ModuleStatusManager
+public class ModuleRegisterManager
 {
     public static boolean insert( ModuleRegister newStatus) throws  SQLException{
 	CallableStatement  statement = null;
