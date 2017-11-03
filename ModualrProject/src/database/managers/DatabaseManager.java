@@ -9,7 +9,7 @@ import java.sql.Statement;
 import database.bean.Admin;
 import database.bean.Bean;
 import database.bean.Module;
-import database.bean.ModuleStatus;
+import database.bean.ModuleRegister;
 import database.bean.Phone;
 import database.bean.Student;
 import exception.InvalidAdminException;
@@ -71,8 +71,8 @@ public class DatabaseManager
 		    return AdminManager.insert( (Admin) bean );
 		case  "Module":
 		    return ModuleManager.insert( (Module) bean );
-		case "ModuleStatus":
-		    return ModuleStatusManager.insert( (ModuleStatus) bean );
+		case "ModuleRegister":
+		    return ModuleStatusManager.insert( (ModuleRegister) bean );
 		case "Phone":
 		    return PhoneManager.insert( (Phone) bean );
 		case "Student":
@@ -99,7 +99,7 @@ public class DatabaseManager
      * @return true when the transaction was successful
      * @throws InvalidPrimaryKeyException when the primary key is invalid
      * @throws InvalidCompositeKeyException when the composite key is invalid. Can be thrown
-     * when working with {@code ModuleStatus} objects
+     * when working with {@code ModuleRegister} objects
      * @throws InvalidBeanException when the two {@code Bean} objects are of different
      * type
      * @throws InvalidAdminException when the Admin that wants to make the change is not in
@@ -120,8 +120,8 @@ public class DatabaseManager
 		    return AdminManager.update( (Admin) oldBean, (Admin) newBean );
 		case  "Module":
 		    return ModuleManager.update(  (Module) oldBean, (Module) newBean );
-		case "ModuleStatus":
-		    return ModuleStatusManager.update(  (ModuleStatus) oldBean ,(ModuleStatus)  newBean );
+		case "ModuleRegister":
+		    return ModuleStatusManager.update(  (ModuleRegister) oldBean ,(ModuleRegister)  newBean );
 		case "Phone":
 		    return PhoneManager.update( (Phone) oldBean, (Phone) newBean );
 		case "Student":
@@ -167,8 +167,8 @@ public class DatabaseManager
 		    return AdminManager.delete( (Admin) beanToDelete );
 		case  "Module":
 		    return ModuleManager.delete(  (Module) beanToDelete );
-		case "ModuleStatus":
-		    return ModuleStatusManager.delete(  (ModuleStatus) beanToDelete );
+		case "ModuleRegister":
+		    return ModuleStatusManager.delete(  (ModuleRegister) beanToDelete );
 		case "Phone":
 		    return PhoneManager.delete( (Phone) beanToDelete );
 		case "Student":

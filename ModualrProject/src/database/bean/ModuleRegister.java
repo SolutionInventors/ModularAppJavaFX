@@ -5,13 +5,13 @@ package database.bean;
 import java.sql.Date;
 
 /**
- * Objects of this {@code ModuleStatus} represent a single row of the 
- * {@code ModuleStatus } table in the database
+ * Objects of this {@code ModuleRegister} represent a single row of the 
+ * {@code ModuleRegister } table in the database
  * @author Oguejiofor Chidiebere
  *
  */
 
-public class ModuleStatus  implements Bean
+public class ModuleRegister  implements Bean
 {
     
     private int id;
@@ -27,16 +27,16 @@ public class ModuleStatus  implements Bean
     
     private Date dateRegistered;
     
-    public ModuleStatus(){}
+    public ModuleRegister(){}
     
-    public ModuleStatus(  int id , String moduleId, String studentId){
+    public ModuleRegister(  int id , String moduleId, String studentId){
 	setId( id );
 	setModuleName(moduleId);
 	setStudentId(studentId);
 	
     }
     
-    public ModuleStatus( int id , String moduleName , String studentId, boolean paid,
+    public ModuleRegister( int id , String moduleName , String studentId, boolean paid,
 	    boolean booked, boolean attended, String result )
     {
 	this( id, moduleName, studentId);
@@ -89,7 +89,7 @@ public class ModuleStatus  implements Bean
     }
     
     /**
-     * Sets the payment status of this ModuleStatus
+     * Sets the payment status of this ModuleRegister
      * @param paymentStatus
      */
     public void setPaymentStatus(boolean paymentStatus)
@@ -130,7 +130,7 @@ public class ModuleStatus  implements Bean
     }
     
     /** Sets the attended attribute of this object. Note that
-     * this object's booking status must be {@code true }  before this {@code ModuleStatus}
+     * this object's booking status must be {@code true }  before this {@code ModuleRegister}
      * attended attribute  can be {@code true}
      * be true.<br>
      * The attended would be set to {@code false } if the attended bookingStatus is {@code false}
@@ -153,7 +153,7 @@ public class ModuleStatus  implements Bean
     }
     
     /**
-     * Sets the result of this ModuleStatus 
+     * Sets the result of this ModuleRegister 
      * the result must be either "PASS" or "FAIL". <br>
      *  Sets the result to null if the argument is invalid
      * @param result
@@ -188,7 +188,7 @@ public class ModuleStatus  implements Bean
 	this.dateRegistered = dateRegistered;
     }
 
-    public static boolean isValid(ModuleStatus status)
+    public static boolean isValid(ModuleRegister status)
     {
 	if( status.getStudentId() !=  null && 
 		status.getStudentId() != null 	)

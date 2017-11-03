@@ -17,8 +17,8 @@ public interface Bean{
 		return Phone.isValid( (Phone) bean );
 	    case "Module":
 		return Module.isValid( (Module) bean );
-	    case "ModuleStatus":
-		return ModuleStatus.isValid( (ModuleStatus) bean );
+	    case "ModuleRegister":
+		return ModuleRegister.isValid( (ModuleRegister) bean );
 	    case "Student":
 		return Student.isValid( (Student) bean );
 	    default :

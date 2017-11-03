@@ -6,12 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.bean.ModuleStatus;
+import database.bean.ModuleRegister;
 import exception.InvalidCompositeKeyException;
 
 public class ModuleStatusManager
 {
-    public static boolean insert( ModuleStatus newStatus) throws  SQLException{
+    public static boolean insert( ModuleRegister newStatus) throws  SQLException{
 	CallableStatement  statement = null;
 	ResultSet result = null;
 	try
@@ -37,14 +37,14 @@ public class ModuleStatusManager
 	return false;
     }
 
-    public static boolean update( ModuleStatus old, ModuleStatus newStatus ) 
+    public static boolean update( ModuleRegister old, ModuleRegister newStatus ) 
 	    throws SQLException, InvalidCompositeKeyException
     {
 	boolean valid = old.getModuleName().equals( newStatus.getModuleName() ) && 
 		old.getStudentId().equals( newStatus.getStudentId() ) ;
 
 	if( !valid )  {
-	    throw new InvalidCompositeKeyException( "The two ModuleStatus obejects do not have "
+	    throw new InvalidCompositeKeyException( "The two ModuleRegister obejects do not have "
 		    + "the same foreign key values");
 	}
 	CallableStatement statement = null;
@@ -65,10 +65,10 @@ public class ModuleStatusManager
 	return false;
     }
 
-    public static ModuleStatus[] getModuleStatusByDate( Date date, int startIndex ) throws SQLException{
+    public static ModuleRegister[] getModuleStatusByDate( Date date, int startIndex ) throws SQLException{
 	CallableStatement  statement = null;
 	ResultSet result = null;
-	ArrayList<ModuleStatus> list = new ArrayList<ModuleStatus>();;
+	ArrayList<ModuleRegister> list = new ArrayList<ModuleRegister>();;
 	try
 	{
 	    statement = DatabaseManager.getCallableStatement( 
@@ -76,7 +76,7 @@ public class ModuleStatusManager
 	    result = statement.executeQuery();
 	    while ( result.next() )
 	    {
-	        ModuleStatus status = new ModuleStatus();
+	        ModuleRegister status = new ModuleRegister();
 	        status.setId( result.getInt( "Id" ) );
 	        status.setDateRegistered( result.getDate( "dateRegistered" ) );
 	        status.setModuleName( result.getString( "module_name" ) );
@@ -93,10 +93,10 @@ public class ModuleStatusManager
 	   if( statement!= null ) statement.close();
 	}
 	
-	return list.toArray( new ModuleStatus[ list.size()] );
+	return list.toArray( new ModuleRegister[ list.size()] );
 
     }
-    public static boolean delete ( ModuleStatus status ) throws SQLException
+    public static boolean delete ( ModuleRegister status ) throws SQLException
     {
 	CallableStatement statement =null;
 	try
@@ -116,16 +116,16 @@ public class ModuleStatusManager
 	return false;
     }
 
-    /**This method uses the student id and module name of the {@code ModuleStatus}
-     * passed to it as an argument to determine if that {@code ModuleStatus } object is
+    /**This method uses the student id and module name of the {@code ModuleRegister}
+     * passed to it as an argument to determine if that {@code ModuleRegister } object is
      * in the database. It also updates the status passed to it as an argument
      * 
-     * @param status the {@code ModuleStatus } to be checked. This object would be updated if
-     * the {@code ModuleStatus} if this method returns {@code true}
-     * @return {@code true} if the {@code ModuleStatus } is in the database
+     * @param status the {@code ModuleRegister } to be checked. This object would be updated if
+     * the {@code ModuleRegister} if this method returns {@code true}
+     * @return {@code true} if the {@code ModuleRegister } is in the database
      * @throws SQLException when an error occurs
      */
-    public static boolean isInDatabase( ModuleStatus status ) throws SQLException{
+    public static boolean isInDatabase( ModuleRegister status ) throws SQLException{
 	CallableStatement statement = null;
 	ResultSet result  =null;
 	try
