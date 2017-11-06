@@ -38,9 +38,8 @@ public class StudentManager
 	CallableStatement  statement= null;
 	try
 	{
-	    inputStream = new FileInputStream(newStudent.getImage());
-	    statement = 
-		    DatabaseManager.getCallableStatement( 
+	    inputStream = new FileInputStream(newStudent.getBioData().getImage());
+	    statement = sDatabaseManager.getCallableStatement( 
 			    "{CALL insertStudent(?, ?, ?, ?, ?, ? ) } ", newStudent.getIdCardNumber(),
 			    newStudent.getFirstName(), newStudent.getLastName() ,
 			    newStudent.getEmailAddress(), inputStream );
@@ -92,6 +91,7 @@ public class StudentManager
     public static Student[] getAllActiveStudents( int startIndex) throws SQLException{
 	ArrayList<Student> list;
 	CallableStatement  statement = null;
+
 	ResultSet result = null ;
 	try
 	{
@@ -108,13 +108,13 @@ public class StudentManager
 		String name[] = result.getString("Name" ).split(" " );
 		Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
 			result.getString("Email"), result.getBoolean( "Active"));
-		student.setDateAdmitted( result.getDate( "dateRegistered" )) ;
+		student.setDateAdmitted( result.getDate( "dateAdmitted" )) ;
 		File studentImage = new File(student.getName().replace(" ", "-")  + ".jpg");
 
 		getImageFromStream(result, studentImage);
-		Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
 		student.setImage( studentImage );
-		student.setPhoneNumbers( numbers );
+
+
 		list.add( student );
 	    }
 	}
@@ -126,15 +126,47 @@ public class StudentManager
 	return list.toArray( new Student[ list.size()] );
     }
 
-    private static Phone[] getPhoneNumbers(String studentId, String string)
+    private static void updateStudentPhoneNumbers(Student student) 
     {
-	String[] numbers = string.split( "," );
-	ArrayList<Phone> list = new ArrayList<>();
-	for( int i = 0 ; i < numbers.length ; i++ ){
-	    Phone phone = new Phone(studentId, numbers[i].replaceAll(" ", "" ) );
-	    list.add( phone );
+	ResultSet result = null;
+	try(  CallableStatement statement = DatabaseManager.getCallableStatement( 
+		"{CALL getStudentPhoneNumbers(?) } "); ) 
+	{
+	    statement.setString(0, student.getIdCardNumber() );
+	    result = statement.executeQuery();
+	    ArrayList<Phone> list = new ArrayList<>();
+	    if( result.next() ){
+		String[] numbers = result.getString(0).split( "," );
+		for( int i = 0 ; i < numbers.length ; i++ )
+		{
+		    Phone phone = new Phone(student.getIdCardNumber()
+			    , numbers[i].replaceAll(" ", "" ) );
+		    list.add( phone );
+		}
+		student.setPhoneNumbers( list.toArray( new Phone[ list.size() ] ) );
+	    }
+
+
 	}
-	return list.toArray( new Phone[ list.size() ] );
+	catch (SQLException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	finally{
+	    if( result != null )
+		try
+	    {
+		    result.close();
+	    }
+	    catch (SQLException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+
+	}
+
     }
 
     /**
@@ -209,9 +241,8 @@ public class StudentManager
 
 		getImageFromStream(result, studentImage);
 		student.setImage( studentImage );
-		Phone[] numbers = getPhoneNumbers( student.getIdCardNumber() , result.getString( "Numbers" ) );
+		updateStudentPhoneNumbers( student );
 		student.setImage( studentImage );
-		student.setPhoneNumbers( numbers );
 		list.add( student );
 
 	    }

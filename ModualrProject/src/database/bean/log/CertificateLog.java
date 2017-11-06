@@ -2,7 +2,7 @@ package database.bean.log;
 
 import java.sql.Date;
 
-public class CertificateLog
+public class CertificateLog implements Log
 {
     private Date dateOfOperation;
     private int id;

@@ -61,14 +61,14 @@ public class DatabaseManager
      * For example, if the username of an {@code Admin} is null or contains space.<br>
      * This can be prevented by calling the {@code Bean } object's static method sisValid 
      * @throws InvalidAdminException when the current Admin is not in the database
+     * @throws SQLException 
      */
-    public static <E extends Bean >boolean insert( Admin currentAdmin , E bean ) throws InvalidPrimaryKeyException, InvalidBeanException, InvalidAdminException, SQLException
+    public static <E extends Bean >boolean insert( Admin currentAdmin , E bean ) throws InvalidPrimaryKeyException, 
+    	InvalidBeanException, InvalidAdminException, SQLException
     {
 	validateAdmin( currentAdmin );
 	try{
 	    switch( bean.getClass().getSimpleName() ) {
-		case "Admin" :
-		    return AdminManager.insert( (Admin) bean );
 		case  "Module":
 		    return ModuleManager.insert( (Module) bean );
 		case "ModuleRegister":
@@ -163,8 +163,6 @@ public class DatabaseManager
 	    validateAdmin(currenAdmin);
 
 	    switch( beanToDelete.getClass().getSimpleName() ) {
-		case "Admin" :
-		    return AdminManager.delete( (Admin) beanToDelete );
 		case  "Module":
 		    return ModuleManager.delete(  (Module) beanToDelete );
 		case "ModuleRegister":

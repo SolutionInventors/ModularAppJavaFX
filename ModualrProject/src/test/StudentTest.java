@@ -15,9 +15,9 @@ public class StudentTest
 
     public static void main(String[] args) throws SQLException, InvalidBeanException, ClassNotFoundException, IOException
     {
-	TestUtils.displayAllActiveStudents( StudentManager.getAllActiveStudents(0) );
+	TestUtils.displayAllStudents( StudentManager.getAllActiveStudents(0) );
 	//**Insert a student..
-	
+	System.out.println("INSERT A NEW STUDENT/N-----------");
 	JFileChooser fileChooser = new JFileChooser();
 	fileChooser.showOpenDialog( null );
 	
@@ -26,10 +26,12 @@ public class StudentTest
 	String lName =  TestUtils.getStringInput( "Input last name: " );
 	String mail =  TestUtils.getStringInput( "Input e-mail: " );
 	String id = TestUtils.getStringInput("Input unique student id: " );
-	Student student = new Student("id", fName, lName, mail, false );
+	Student student = new Student(id, fName, lName, mail, false );
 	
 	student.setImage( file );
 	StudentManager.insert( student );
+	
+	System.out.println( "Student inputed succssfully" );
 	
 	
 	

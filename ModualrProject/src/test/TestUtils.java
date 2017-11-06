@@ -29,13 +29,15 @@ public class TestUtils
 	
    }
 
-    public static void displayAllActiveStudents(Student[] activeStudents)
+    public static void displayAllStudents(Student[] students)
     {
 	System.out.println("----------------------------------\n");
 	System.out.println("Students:");
-	for ( int i = 0 ; i < activeStudents.length ; i++ ){
-	    System.out.println( (i+1) + ".\tFirstName: " + activeStudents[i].getName() + 
-		    		"\n\tIdCardNumber: " + activeStudents[i].getIdCardNumber() +"\n");
+	for ( int i = 0 ; i < students.length ; i++ ){
+	    System.out.println( (i+1) + ".\tFirstName: " + students[i].getName() + 
+		    		"\n\tIdCardNumber: " + students[i].getIdCardNumber() +
+		    		"\n\tNumbers: " + students[i].getPhoneNumbers() + 
+		    		"\n\tDate Admitted: " + students[i].getDateAdmitted() +"\n");
 	}
 	System.out.println("\n----------------------------------");
  

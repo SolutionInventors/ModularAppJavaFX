@@ -2,7 +2,7 @@ package database.bean.log;
 
 import java.sql.Date;
 
-public class PaymentLog
+public class PaymentLog implements Log
 {
     private LogType operationType;
     private Date dateOfOperation;

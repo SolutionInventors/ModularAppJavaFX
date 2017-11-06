@@ -1,6 +1,6 @@
 package database.bean.log;
 
-public class StudentLog
+public class StudentLog implements Log
 {
     private String studentId;
     private LogType operationType;

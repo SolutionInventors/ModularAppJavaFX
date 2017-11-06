@@ -18,41 +18,6 @@ import exception.InvalidPrimaryKeyException;
 public class AdminManager 
 {
     /**
-     * Inserts a new {@code Admin } to the database.<br>
-     * Returns {@code true } only when the insert was successful. 
-     * @param admin the {@code Admin} object to be inserted
-     * @return {@code true } only when the {@code Admin} was added successfully
-     * @throws InvalidPrimaryKeyException when the {@code Admin } object is invalid
-     * @throws SQLException 
-     */
-    public static boolean insert( Admin admin  ) throws InvalidPrimaryKeyException, SQLException
-    {
-	if( !Admin.isValid( admin ) )
-	{
-	    throw new InvalidPrimaryKeyException 
-	    ( "The admin object cannot contain spaces and it cannot be null" );
-	}
-	CallableStatement  statement = null;
-
-	try
-	{
-	    statement = DatabaseManager.getCallableStatement( 
-		    "{CALL insertAdmin(?, ? ) } ", 
-		    admin.getUsername(), admin.getPassword());
-	    int affected = statement.executeUpdate();
-
-	    if( affected > 0 )
-		return true;
-	}
-	finally{
-	    if( statement != null )
-		statement.close();
-	}
-
-	return false;
-    }
-
-    /**
      * Updates an existing {@code Admin } to a new {@code Admin} 
      * Note that the changes would not be commited if the connection object's 
      * auto-commiting is set to {@code true} <br>
@@ -177,35 +142,6 @@ public class AdminManager
 	   if( result !=null ) result.close();
 	   if( statement!= null ) statement.close();
 	}
-	return false;
-    }
-
-    /**This method deletes a {@code Admin } from the databasse.
-     * it returns true if the operation was successful.<br>
-     * Note that the an {@code Admin } cannot delete himself
-     * 
-     * @param currentAdmin the {@code Admin }object that is logged in.
-     * @param AdminToDelete the existing {@code Module} to delete from the database
-     * @return {@code true} when delete was successful
-     * @throws InvalidAdminException when the {@code Admin } object is not in the database 
-     * @throws SQLException 
-     */
-    public static boolean delete( Admin adminToDelete ) throws SQLException{
-
-	CallableStatement  statement = null;
-	try
-	{
-	    statement = DatabaseManager.getCallableStatement( "{call deleteAdmin(?)}" );
-	    statement.setString( 1 , adminToDelete.getUsername() );
-	    int affected = statement.executeUpdate();
-
-	    if ( affected == 1 ) return true;
-	}
-	finally
-	{
-	    if(  statement != null ) statement.close();
-	}
-
 	return false;
     }
 

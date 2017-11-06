@@ -1,11 +1,7 @@
 package database.bean.log;
 
-public class RegisterLog
+public class RegisterLog implements Log
 {
 
-    public RegisterLog()
-    {
-	// TODO Auto-generated constructor stub
-    }
 
 }
