@@ -1,20 +1,33 @@
 package database.bean;
 
+import exception.InvalidBeanException;
+
+/**
+ * This object represents a single entity of a {@code CertificateModule} in 
+ * the database and can be used to add a {@code Module } as a requirement
+ * for getting a  {@code Certificate}. Deletes and Inserts represent removing
+ * a {@code Module} from the list of {@code Certificate } requirements and
+ * adding a {@code Module} to the list respectively. <br>
+ * Note that  inserts and deletes are the only transactions that can be performed on 
+ * a {@code CertificateModule}
+ * @author Oguejiofor Chidiebere
+ *
+ */
 public class CertificateModule implements Bean
 {
-    private int certificateId;
+    private String certificateName;
     private  String moduleName;
     
     public CertificateModule(){}
 
-    public int getCertificateId()
+    public String getCertificateName()
     {
-        return certificateId;
+        return certificateName;
     }
 
-    public void setCertificateId(int id)
+    public void setCertificateName(String name)
     {
-        this.certificateId = id;
+        this.certificateName = name;
     }
 
     public String getModuleName()
@@ -27,4 +40,18 @@ public class CertificateModule implements Bean
         this.moduleName = moduleName;
     }
 
+    public static boolean isValid( CertificateModule certModule)
+    {
+	String modName = certModule.getModuleName();
+	String certName = certModule.getCertificateName();
+	
+	if(  ( modName != null  && certName != null && 
+		Bean.hasOnlyLetters(certName)) ){
+	    return true;
+	}
+	
+	return false;
+	
+	
+    }
 }

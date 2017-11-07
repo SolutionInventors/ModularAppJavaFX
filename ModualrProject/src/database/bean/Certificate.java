@@ -4,7 +4,6 @@ import java.sql.Date;
 
 public class Certificate
 {
-    private int id;
     private Date dateCreated;
     private String name;
     
@@ -13,20 +12,10 @@ public class Certificate
     public  Certificate( int id , Date dateCreated, String name ) {
 	setDateCreated( dateCreated );
 	setName(name);
-	setId( id );
 	
     }
 
-    public int getId()
-    {
-        return id;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
-    }
-
+   
     public Date getDateCreated()
     {
         return dateCreated;
@@ -47,4 +36,10 @@ public class Certificate
         this.name = name;
     }
 
+    public static boolean isValid(Certificate cert)
+    {
+	return Bean.hasOnlyLetters( cert.getName());
+    }
+
+    
 }

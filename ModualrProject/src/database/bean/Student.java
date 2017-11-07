@@ -11,6 +11,7 @@ public class Student  implements Bean
     private String certificateIssued;
     private Date dateAdmitted;
     private Phone[] phoneNumbers;
+    private Biodata bio;
     
     public Student(String id, Biodata data, String mail, boolean active)
     {
@@ -97,5 +98,15 @@ public class Student  implements Bean
     public void setCertificateIssued(String certificateIssued)
     {
 	this.certificateIssued = certificateIssued;
+    }
+
+    public Biodata getBio()
+    {
+	return bio;
+    }
+
+    public void setBio(Biodata bio)
+    {
+	this.bio = bio;
     }
 }

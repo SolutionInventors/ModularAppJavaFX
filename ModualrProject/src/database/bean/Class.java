@@ -29,4 +29,10 @@ public class Class
         this.dateCreated = dateCreated;
     }
 
+    public static boolean isValid(Class newClass)
+    {
+	return Bean.hasOnlyLetters( newClass.getName());
+    }
+
+    
 }

@@ -39,7 +39,7 @@ public class StudentManager
 	try
 	{
 	    inputStream = new FileInputStream(newStudent.getBioData().getImage());
-	    statement = sDatabaseManager.getCallableStatement( 
+	    statement = DatabaseManager.getCallableStatement( 
 			    "{CALL insertStudent(?, ?, ?, ?, ?, ? ) } ", newStudent.getIdCardNumber(),
 			    newStudent.getFirstName(), newStudent.getLastName() ,
 			    newStudent.getEmailAddress(), inputStream );

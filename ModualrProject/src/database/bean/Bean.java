@@ -27,5 +27,15 @@ public interface Bean{
     }
     
     
+    public static boolean hasOnlyLetters( String word)
+    {
+	if( word.trim().matches( "[[A-Za-z]* [A-Za-z]*]*") ){
+	    return true;
+	}
+	
+	return false;
+    }
+
+    
     
 }

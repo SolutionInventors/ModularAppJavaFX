@@ -16,7 +16,7 @@ public class PhoneManager
 	try
 	{
 	    statement = DatabaseManager.getCallableStatement( 
-	    		"{CALL insertPhone(?, ? ) } ", 
+	    		"{CALL addPhone(?, ? ) } ", 
 	    		phone.getStudentId(), phone.getNumber());
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 )
@@ -45,7 +45,7 @@ public class PhoneManager
 	    try
 	    {
 		statement = DatabaseManager.getCallableStatement( 
-			    "{CALL updatePhone(?, ? ) } ", 
+			    "{CALL updatePhone(?, ? ,?) } ", 
 			    oldPhone.getStudentId(), oldPhone.getNumber(), 
 			    newPhone.getNumber() );
 		int affected = statement.executeUpdate();
@@ -73,7 +73,7 @@ public class PhoneManager
 	try
 	{
 	    statement = DatabaseManager.getCallableStatement( 
-	    		"{CALL deletePhone(?, ? ) } ", 
+	    		"{CALL deletePhoneNumber(?, ? ) } ", 
 	    		phone.getStudentId(), phone.getNumber());
 
 	    int affected = statement.executeUpdate();

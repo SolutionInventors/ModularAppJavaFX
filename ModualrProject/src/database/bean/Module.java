@@ -9,7 +9,7 @@ public class Module  implements Bean
 {
     private String name;
     private int numberOfUnits;
-   
+    private double amountPerUnit;
     
     public Module( String name , int units ){
 	setName( name );
@@ -50,6 +50,14 @@ public class Module  implements Bean
         this.numberOfUnits = numberOfUnits;
     }
     
+    public double getAmountPerUnit()
+    {
+	return amountPerUnit;
+    }
+    public void setAmountPerUnit(double amountPerUnit)
+    {
+	this.amountPerUnit = amountPerUnit;
+    }
     /** 
      * Checks that a {@code Module } object by ensuring that the object is not null,
      * its name attribute is not {@code null} and its units is greater than 0.
