@@ -12,8 +12,10 @@ import exception.InvalidPrimaryKeyException;
 
 public class ModuleManager
 {
-    public static boolean  insert( Module newModule ) throws SQLException, InvalidBeanException
+    public static boolean  addNewModule( Module newModule ) 
+	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
 	if( Module.isValid( newModule ) )
 	    throw new InvalidBeanException( "The bean is invalid" );
@@ -26,7 +28,7 @@ public class ModuleManager
 	
     }
     
-    public static boolean update( Module newModule , Module oldModule ) throws SQLException
+    public static boolean updateModule( Module newModule , Module oldModule ) throws SQLException
     {
 	CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call updateModule( ?,?,?,?, ? }" , oldModule.getName() , 
@@ -39,10 +41,12 @@ public class ModuleManager
 	
     }
     
-    public static boolean delete( Module existingModule) throws SQLException 
+    public static boolean removeModule( Module existingModule) 
+	    throws SQLException, InvalidAdminException 
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call updateModule( ? }" , existingModule.getName() );
+		("{call removeModule( ? }" , existingModule.getName() );
 	
 	int affected = statement.executeUpdate();
 	if( affected > 0 ) return true;

@@ -41,6 +41,7 @@ public class ConnectionManager
 	try
 	{
 	    conn = DriverManager.getConnection(MYSQLURL, USERNAME, PASSWORD );
+	    System.out.println( "Connected" );
 	    return true;
 	}
 	catch (SQLException e)
@@ -72,6 +73,7 @@ public class ConnectionManager
 	{
 	    if( conn != null )
 		conn.close();
+	    System.out.println("Disconnected!!");
 	    conn = null;
 	   
 	}

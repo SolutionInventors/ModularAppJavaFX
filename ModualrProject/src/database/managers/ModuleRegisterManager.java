@@ -1,18 +1,16 @@
 package database.managers;
 
-import java.sql.CallableStatement;
-import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import database.bean.ModuleRegister;
-import exception.InvalidCompositeKeyException;
+import exception.InvalidAdminException;
 
 public class ModuleRegisterManager
 {
-    public static boolean insert( ModuleRegister register) throws  SQLException
+    public static boolean insert( ModuleRegister register) 
+	    throws  SQLException, InvalidAdminException
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	return false;
     }
     

@@ -16,7 +16,8 @@ public class InvalidAdminException extends Exception
 
     public InvalidAdminException()
     {
-	super( "The admin is not in the database" );
+	super( "The admin is not in the database and "
+		+ "thus cannot make changes to it" );
     }
 
     /**

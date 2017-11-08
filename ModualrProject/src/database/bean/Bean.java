@@ -36,6 +36,5 @@ public interface Bean{
 	return false;
     }
 
-    
-    
+   
 }

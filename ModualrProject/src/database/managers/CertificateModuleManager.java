@@ -4,12 +4,17 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 
 import database.bean.CertificateModule;
+import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
 public class CertificateModuleManager
 {
 
-    public boolean insert( CertificateModule certModule) throws SQLException, InvalidBeanException{
+    public boolean addModuleToCertificate( CertificateModule certModule) 
+	    throws SQLException, InvalidBeanException, InvalidAdminException
+    {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
 	if( !CertificateModule.isValid( certModule ) ) 
 	    throw new InvalidBeanException("A CertificateModule data is invalid");
 	
@@ -24,9 +29,11 @@ public class CertificateModuleManager
 	return false;
     }
 
-    public boolean delete( CertificateModule certModule ) 
-	    throws InvalidBeanException, SQLException
+    public boolean removeModuleFromCertificate( CertificateModule certModule ) 
+	    throws InvalidBeanException, SQLException, InvalidAdminException
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
 	if( !CertificateModule.isValid( certModule ) ) 
 	    throw new InvalidBeanException("A CertificateModule data is invalid");
 	
@@ -43,7 +50,11 @@ public class CertificateModuleManager
 
     
 
-    public boolean isInDatabase( CertificateModule certModule ){
+    public boolean isInDatabase( CertificateModule certModule ) 
+	    throws InvalidAdminException
+    {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
 	return false;
     }
 }

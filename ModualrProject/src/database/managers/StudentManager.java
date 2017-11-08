@@ -26,8 +26,12 @@ public class StudentManager
      * @throws SQLException 
      * @throws InvalidBeanException 
      */
-    public static boolean insert( Student newStudent ) throws SQLException, InvalidBeanException{
-
+    public static boolean insert( Student newStudent ) 
+	    throws SQLException, InvalidBeanException
+    {
+	if( ! DatabaseManager.validateAdmin() ) 
+	    throw new InvalidAdminException( "The Admin that wants to make the change is ivalid");
+	
 	if( !Student.isValid(newStudent))
 	{
 	    throw new InvalidBeanException("The Student object cannot be inserted "

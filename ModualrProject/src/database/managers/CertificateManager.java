@@ -7,6 +7,7 @@ import java.sql.Types;
 
 import database.bean.Admin;
 import database.bean.Certificate;
+import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
 public class CertificateManager
@@ -19,10 +20,13 @@ public class CertificateManager
      * @throws SQLException when an error occurs in the database level
      * @throws InvalidBeanException signals that the {@code Certificate } name is 
      * invalid
+     * @throws InvalidAdminException when the {@code Admin} that wants to make the
+     * change is invalid
      */
-    public boolean insert(  Certificate cert) 
-	    throws SQLException, InvalidBeanException
+    public boolean createCertificate(  Certificate cert) 
+	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
 	checkCertObject(cert);
 
@@ -63,8 +67,10 @@ public class CertificateManager
      * @return {@code true } if the delete was successful
      * @throws InvalidBeanException  when the certificate name is not valid
      * @throws SQLException  when an error occurs at the database level
+     * @throws InvalidAdminException 
      */
-    public boolean delete( Certificate cert ) throws InvalidBeanException, SQLException{
+    public boolean delete( Certificate cert ) throws InvalidBeanException, SQLException, InvalidAdminException{
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	checkCertObject(cert);
 
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
@@ -84,10 +90,13 @@ public class CertificateManager
      * @return {@code true} if the update was successful
      * @throws SQLException when a database error occurs
      * @throws InvalidBeanException when the newCert is invalid
+     * @throws InvalidAdminException  when the Admin that wants to make the changel
+     * is invalid
      */
     public boolean update( Certificate oldCert, Certificate newCert ) 
-	    throws SQLException, InvalidBeanException
+	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	checkCertObject( newCert);
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call updateCertificate(?,?)", oldCert.getName() , newCert.getName()))

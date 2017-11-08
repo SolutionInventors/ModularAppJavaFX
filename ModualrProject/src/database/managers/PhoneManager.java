@@ -7,53 +7,52 @@ import java.util.ArrayList;
 
 import database.bean.Phone;
 import database.bean.Student;
+import exception.InvalidAdminException;
 
 public class PhoneManager
 {
-    public static boolean insert( Phone phone ) throws SQLException {
-
-	CallableStatement  statement =  null;
-	try
+    public static boolean insert( Phone newNumber) 
+	    throws SQLException, InvalidAdminException
+    {
+	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
+	try( CallableStatement  statement  = DatabaseManager.getCallableStatement( 
+    		"{CALL addPhoneNumber(?, ? ) } ", 
+    		newNumber.getStudentId(), newNumber.getNumber());)
 	{
-	    statement = DatabaseManager.getCallableStatement( 
-	    		"{CALL addPhone(?, ? ) } ", 
-	    		phone.getStudentId(), phone.getNumber());
+	    
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 )
 	        return true;
 	}
-	finally
-	{
-	   if( statement != null ) statement.close();
-	}
-
 	return false;
     }
 
     /**
      * Updates a Student's {@code Phone} number in the database. Note that the 
-     * oldPhone and newPhone must have thesame studentId in order for it
+     * oldPhone and newPhone must have the same studentId in order for it
      * to update
      * @param oldPhone the existing {@code Phone} object in the database
      * @param newPhone the new {@code Phone} object that would replace an existing one
      * @return {@code true } when the update is successful
      * @throws SQLException when an a database exception occurs
+     * @throws InvalidAdminException when the {@code Admin} that wants to make the change is
+     * invalid 
      */
-    public static boolean update( Phone oldPhone, Phone newPhone ) throws SQLException{
+    public static boolean update( Phone oldPhone, Phone newPhone ) 
+	    throws SQLException, InvalidAdminException
+    {
+	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
 	if( Phone.isValid( oldPhone ) && oldPhone.getStudentId().equals( newPhone.getStudentId())){
-	    CallableStatement statement =  null;
-	    try
+	     
+	    try(CallableStatement statement  = DatabaseManager.getCallableStatement( 
+		    "{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentId(),
+		    oldPhone.getNumber(), newPhone.getNumber() ); )
 	    {
-		statement = DatabaseManager.getCallableStatement( 
-			    "{CALL updatePhone(?, ? ,?) } ", 
-			    oldPhone.getStudentId(), oldPhone.getNumber(), 
-			    newPhone.getNumber() );
+		
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
-	    }
-	    finally
-	    {
-		if( statement!= null ) statement.close();
 	    }
 	}
 	return false;
@@ -65,27 +64,22 @@ public class PhoneManager
      * @param phone the {@code Phone } object to be deleted
      * @return {@code true} when the value was successfully deleted
      * @throws SQLException when a special database error occurs
+     * @throws InvalidAdminException  when the {@code Admin} that wants to make
+     * the change is invalid
      */
-    public static boolean delete( Phone phone ) throws SQLException
+    public static boolean removePhone( Phone phone ) throws SQLException, InvalidAdminException
     {
+	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
 	if( !Phone.isValid( phone ) ) return false;
-	 CallableStatement  statement = null;
-	try
+	try(  CallableStatement  statement  = DatabaseManager.getCallableStatement( 
+    		"{CALL removePhoneNumber(?, ? ) } ", phone.getStudentId(), phone.getNumber());)
 	{
-	    statement = DatabaseManager.getCallableStatement( 
-	    		"{CALL deletePhoneNumber(?, ? ) } ", 
-	    		phone.getStudentId(), phone.getNumber());
-
 	    int affected = statement.executeUpdate();
 	    
 	    if( affected > 0 )
 	        return true;
 	}
-	finally
-	{
-	   if( statement != null ) statement.close();
-	}
-
 	return false;
     }
 
@@ -96,8 +90,14 @@ public class PhoneManager
      * @param student the {@code Student} whosw phone number would be retrieved
      * @return an array of of {@code Phone} 
      * @throws SQLException when a database specific error occurs.
+     * @throws InvalidAdminException when the {@code Admin} that wants to access the
+     * database the change is invalid
      */
-    public static Phone[] getPhoneNumber( Student student ) throws SQLException{
+    public static Phone[] getPhoneNumber( Student student )
+	    throws SQLException, InvalidAdminException
+    {
+	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	
 	if( student.getIdCardNumber()  ==  null ){
 	    return null;
 	}

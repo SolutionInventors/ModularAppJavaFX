@@ -8,15 +8,16 @@ import database.bean.Payment;
 public class PaymentManager
 {
     public boolean insert( Payment payment) throws SQLException{
-	CallableStatement statement =  
-		DatabaseManager.getCallableStatement
+
+	try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		("{call makePayment(?,?,?,?) }", payment.getModuleRegisterId(), 
-		 payment.getAmount(), payment.getBankName() , payment.getTellerNumber() , 
-		 payment.getPaymentDate() );
-	
-	int affected = statement.executeUpdate();
-	if( affected > 0 ) return true;
-	
+			payment.getAmount(), payment.getBankName() , payment.getTellerNumber() , 
+			payment.getPaymentDate() ) ; )
+	{
+	    int affected = statement.executeUpdate();
+	    if( affected > 0 ) return true;
+
+	}
 	return false;
     }
 
