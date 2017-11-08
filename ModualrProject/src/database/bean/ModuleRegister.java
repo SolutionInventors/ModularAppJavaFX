@@ -1,7 +1,5 @@
 package database.bean;
 
-
-
 import java.sql.Date;
 
 /**

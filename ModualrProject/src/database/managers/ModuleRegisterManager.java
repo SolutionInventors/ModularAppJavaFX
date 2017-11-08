@@ -11,8 +11,10 @@ import exception.InvalidCompositeKeyException;
 
 public class ModuleRegisterManager
 {
-    public static boolean insert( ModuleRegister newStatus) throws  SQLException
+    public static boolean insert( ModuleRegister register) throws  SQLException
     {
 	return false;
     }
+    
+    
 }

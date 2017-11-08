@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import database.bean.Admin;
 import database.bean.Certificate;
 import exception.InvalidBeanException;
 
@@ -19,9 +20,10 @@ public class CertificateManager
      * @throws InvalidBeanException signals that the {@code Certificate } name is 
      * invalid
      */
-    public boolean insert( Certificate cert) 
+    public boolean insert(  Certificate cert) 
 	    throws SQLException, InvalidBeanException
     {
+	
 	checkCertObject(cert);
 
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
