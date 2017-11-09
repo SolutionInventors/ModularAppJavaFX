@@ -2,7 +2,6 @@ package database.managers;
 
 import java.sql.SQLException;
 
-import database.bean.Admin;
 import database.bean.Biodata;
 import exception.InvalidAdminException;
 

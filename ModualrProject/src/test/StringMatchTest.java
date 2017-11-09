@@ -5,7 +5,7 @@ public class StringMatchTest
 
     public static void main(String[] args)
     {
-	String number = "Stream                                0";
+	String number = "s  ";
 	System.out.println( number);
 	number = number.trim();
 
@@ -16,7 +16,7 @@ public class StringMatchTest
 //	number = number.replace("\\s{2,}", " ");
 	
 	System.out.println( number);
-	System.out.println( number.matches("[A-Za-z]* [A-Za-z|0-9]*"));
+	System.out.println( number.matches("[A-Za-z]{1,}[\\s|A-Za-z|0-9]*"));
     }
 
 }

@@ -1,0 +1,101 @@
+package test;
+
+import java.sql.SQLException;
+
+import database.bean.Admin;
+import database.bean.Certificate;
+import database.bean.CertificateModule;
+import database.managers.BeanType;
+import database.managers.CertificateManager;
+import database.managers.CertificateModuleManager;
+import database.managers.ConnectionManager;
+import database.managers.DatabaseManager;
+import exception.InvalidAdminException;
+import exception.InvalidBeanException;
+
+public class CertificateModuleTest
+{
+
+    public static void main(String[] args)
+    {
+//	First and very important step is to specify the Admin that is 
+//	making the change as follows
+	
+	Admin currentAdmin = new Admin("Chidiebere", "Fred" );
+	DatabaseManager.setCurrentAdmin(currentAdmin); 	
+	
+//	Rest of the code
+	try
+	{
+	    TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
+	    
+	    System.out.println("---------------ADDING A MODULE FROM CERTIFICATE REQUIREMENT--------------");
+	    String certName = TestUtils.getStringInput
+		    ("Enter the existing certificate name: ");
+	    String modName = TestUtils.getStringInput
+		    ("Enter the existing module name: ");
+	    CertificateModule certMod = new CertificateModule(certName, modName);
+	    
+	    try
+	    {
+		if( CertificateModuleManager.addModuleToCertificate( certMod)) {
+		    System.out.println("Successfully created a new certificate and  "
+		    	+ "also gave updated the dateCreated attribute.");
+		    TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
+		    
+		}
+		else
+		{
+		    System.out.println("Was Unsuccessful for unknown reasons!!!");
+		}
+	    }
+	    catch (InvalidBeanException e)
+	    {
+		e.printStackTrace();
+		System.err.println( "The format of the Certificate was invalid" );
+	    }
+	    
+	    
+	    System.out.println("---------------REMOVE MODULE FROM A CERTIFICATE'S REQUIREMENT--------------");
+	    certName = TestUtils.getStringInput
+		    ("Enter the existing certificate name: ");
+	    modName = TestUtils.getStringInput
+		    ("Enter the existing module name: ");
+	    certMod = new CertificateModule(certName, modName);
+	    
+	    try
+	    {
+		if( CertificateModuleManager.removeModuleFromCertificate(certMod)){
+		    System.out.println( "CertModule was removed succcessfullly!!!");
+		    TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
+		}
+		else
+		{
+		    System.out.println("Nothing was removed! "
+		    	+ "Maybe the Certificate name you inputed is not in the database");
+		}
+	    }
+	    catch (InvalidBeanException e)
+	    {
+		System.err.println( "The format of the Modular Class was invalid" );
+		    
+	    }
+	}
+	catch ( InvalidAdminException e)
+	{
+	    System.err.println( e );
+	    System.err.println("The Admin was invalid");
+	}
+	catch (SQLException e)
+	{
+	   e.printStackTrace();
+	}
+	finally{
+//	    This is also very important. Close the ConnectionManager
+	    ConnectionManager.close();
+	}
+    }
+    
+ 
+
+}

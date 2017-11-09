@@ -3,15 +3,15 @@ package test;
 import java.sql.SQLException;
 
 import database.bean.Admin;
-import database.bean.ModularClass;
+import database.bean.Certificate;
 import database.managers.BeanType;
-import database.managers.ClassManager;
+import database.managers.CertificateManager;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class ClassTest
+public class CertificateTest
 {
 
     public static void main(String[] args)
@@ -25,19 +25,18 @@ public class ClassTest
 //	Rest of the code
 	try
 	{
+	    TestUtils.displayBean( BeanType.CERTIFICATE , 0);
 	    
-	    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
+	    System.out.println("---------------CREATING A NEW CERTIFICATE TEST--------------");
+	    String name = TestUtils.getStringInput("Enter the new certificate name: ");
 	    
-	    System.out.println("---------------CREATING A NEW CLASS TEST--------------");
-	    String name = TestUtils.getStringInput("Enter the new class name: ");
-	    
-	    ModularClass modClass = new ModularClass(name );
+	    Certificate certificate = new Certificate(name );
 	    try
 	    {
-		if( ClassManager.createNewClass(modClass) ) {
-		    System.out.println("Successfully created a new class and "
+		if( CertificateManager.createCertificate( certificate)) {
+		    System.out.println("Successfully created a new certificate and  "
 		    	+ "also gave updated the dateCreated attribute.");
-		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
+		    TestUtils.displayBean( BeanType.CERTIFICATE,  0);
 		    
 		}
 		else
@@ -48,25 +47,25 @@ public class ClassTest
 	    catch (InvalidBeanException e)
 	    {
 		e.printStackTrace();
-		System.err.println( "The format of the Modular Class was invalid" );
+		System.err.println( "The format of the Certificate was invalid" );
 	    }
 	    
 	    
-	    System.out.println("---------------REMOVING AN EXISTING CLASS TEST--------------");
-	    name = TestUtils.getStringInput("Enter the new class name: ");
+	    System.out.println("---------------REMOVING AN EXISTING CERTIFICATE TEST--------------");
+	    name = TestUtils.getStringInput("Enter the new Certificate name: ");
 	    
-	    modClass = new ModularClass(name );
+	    certificate = new Certificate(name );
 	    
 	    try
 	    {
-		if( ClassManager.removeClass(modClass ) ){
-		    System.out.println( "Class was removed succcessfullly!!!");
-		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
+		if( CertificateManager.delete(certificate)){
+		    System.out.println( "Certificate was removed succcessfullly!!!");
+		    TestUtils.displayBean( BeanType.CERTIFICATE , 0);
 		}
 		else
 		{
 		    System.out.println("Nothing was removed! "
-		    	+ "Maybe the class name you inputed is not in the database");
+		    	+ "Maybe the Certificate name you inputed is not in the database");
 		}
 	    }
 	    catch (InvalidBeanException e)
@@ -80,29 +79,26 @@ public class ClassTest
 	    name = TestUtils.getStringInput("Enter the existing class name: ");
 	    String newName = TestUtils.getStringInput("Enter the new class name: ");
 	    
-	    modClass = new ModularClass(name );
-	    ModularClass newClass = new ModularClass( newName);
+	    certificate = new Certificate(name );
+	    Certificate newCert = new Certificate( newName);
 	    try
 	    {
-		if( ClassManager.update(modClass, newClass) ){
+		if( CertificateManager.update(certificate, newCert) ){
 		    System.out.println( "Class was updated succcessfullly!!!");
-		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
+		    TestUtils.displayBean( BeanType.CERTIFICATE , 0);
 		    
 		}
 		else
 		{
-		    System.out.println("Nothing was removed! "
-		    	+ "Maybe the class name you inputed is not in the database");
+		    System.out.println("Nothing was updated! "
+		    	+ "Maybe the Certificate name you inputed is not in the database");
 		}
 	    }
 	    catch (InvalidBeanException e)
 	    {
-		System.err.println( "The format one of the ModularClass "
-			+ "objectes is invalid" );
-		    
+		System.err.println( "The format one of the Certificate "
+			+ "object(s) is invalid" );    
 	    }
-	    
-	    
 	}
 	catch ( InvalidAdminException e)
 	{
@@ -120,5 +116,5 @@ public class ClassTest
 	}
     }
     
-    
+ 
 }

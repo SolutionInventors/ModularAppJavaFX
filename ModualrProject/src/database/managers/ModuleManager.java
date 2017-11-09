@@ -3,12 +3,13 @@ package database.managers;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.Module;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
-import exception.InvalidPrimaryKeyException;
 
 public class ModuleManager
 {
@@ -17,40 +18,84 @@ public class ModuleManager
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( Module.isValid( newModule ) )
+	if( !Module.isValid( newModule,ValidationType.NEW_BEAN_VALID ) )
 	    throw new InvalidBeanException( "The bean is invalid" );
 	CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call insertModule( ?,?,?,?}" , newModule.getName() , 
+		("{call createNewModule( ?,?,?,?)}" , newModule.getName() , 
 		    newModule.getNumberOfUnits(), newModule.getAmountPerUnit());
-	int affected = statement.executeUpdate();
-	if( affected > 0 ) return true;
-	return false;
+	statement.registerOutParameter(4, Types.DATE);
 	
+	int affected = statement.executeUpdate();
+	if( affected > 0 ) {
+	    newModule.setDateCreated( statement.getDate(4 ) );
+	    return true;
+	}
+	return false;
     }
     
-    public static boolean updateModule( Module newModule , Module oldModule ) throws SQLException
+    public static boolean updateModule( Module newModule , Module existingModule ) 
+	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
+	if(!DatabaseManager.validateAdmin() ) 
+	    throw new InvalidAdminException();
+	if( !( Module.isValid( existingModule, ValidationType.EXISTING_BEAN_VALID) &&
+		Module.isValid( newModule, ValidationType.NEW_BEAN_VALID) ))
+	{
+	    throw new InvalidBeanException();
+		 
+	}
+	    
 	CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call updateModule( ?,?,?,?, ? }" , oldModule.getName() , 
+		("{call updateModule( ?,?,?,?, ?) }" , existingModule.getName() , 
 		   newModule.getName() , newModule.getNumberOfUnits(),
 		   newModule.getAmountPerUnit());
-	
+	statement.registerOutParameter( 5, Types.DATE);
 	int affected = statement.executeUpdate();
-	if( affected > 0 ) return true;
+	if( affected > 0 ) {
+	    newModule.setDateCreated( statement.getDate(5 ) );
+	    return true;
+	}
 	return false;
 	
     }
     
     public static boolean removeModule( Module existingModule) 
-	    throws SQLException, InvalidAdminException 
+	    throws SQLException, InvalidAdminException, InvalidBeanException 
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call removeModule( ? }" , existingModule.getName() );
+	if( !Module.isValid( existingModule, ValidationType.EXISTING_BEAN_VALID) )
+	    throw new InvalidBeanException();
 	
-	int affected = statement.executeUpdate();
+	CallableStatement statement = DatabaseManager.getCallableStatement
+		("{call removeModule( ? )}" , existingModule.getName() );
+	System.out.println("ModuleTo remove: "+ existingModule.getName());
+	int affected =  statement.executeUpdate(); 
 	if( affected > 0 ) return true;
 	return false;
 	
+    }
+
+    public static Module[] getModules(int startIndex) throws SQLException, InvalidAdminException
+    {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+
+	ArrayList<Module> list = new ArrayList<>();
+	try( CallableStatement statement = DatabaseManager.getCallableStatement
+		("{call getModuleByIndex(?) }", startIndex ))
+	{
+	    ResultSet result = statement.executeQuery() ;
+
+	    while( result.next() )
+	    {
+		Module tempModule = new Module( result.getString("name" ) ,
+			result.getInt("units"), result.getDouble( "amountPerUnit"));
+		tempModule.setDateCreated( result.getDate( "dateCreated" ) );
+		
+		list.add(tempModule );
+
+	    }
+	}
+	return list.toArray( new Module[ list.size() ] );
+
     }
 }

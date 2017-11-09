@@ -57,7 +57,7 @@ public class ModuleRegister  implements Bean
      */
     public void setModuleName(String moduleName)
     {
-        this.moduleName = moduleName;
+        this.moduleName = Bean.removeExtraSpaces( moduleName);
     }
     
     /**
@@ -74,7 +74,7 @@ public class ModuleRegister  implements Bean
      */
     public void setStudentId(String studentId)
     {
-        this.studentId = studentId;
+        this.studentId = Bean.removeExtraSpaces( studentId);
     }
     
     /**

@@ -6,35 +6,31 @@ package database.bean;
  *
  */
 public interface Bean{
-
-    public static <T extends Bean >boolean isValid( T bean )
-    {
-	switch( bean.getClass().getSimpleName() )
-	{
-	    case "Admin":
-		return Admin.isValid( (Admin) bean );
-	    case "Phone":
-		return Phone.isValid( (Phone) bean );
-	    case "Module":
-		return Module.isValid( (Module) bean );
-	    case "ModuleRegister":
-		return ModuleRegister.isValid( (ModuleRegister) bean );
-	    case "Student":
-		return Student.isValid( (Student) bean );
-	    default :
-		return false;
-	}
-    }
-    
     
     public static boolean hasOnlyLetters( String word)
     {
-	if( word.trim().matches( "[[A-Za-z]* [A-Za-z]*]*") ){
+	if( word.trim().matches( "[[A-za-z]{1,}\\s[A-Za-z]{0,}]{1,}") ){
 	    return true;
 	}
-	
 	return false;
     }
+    
+    /**
+     * Checks if a {@code String } passed as its argument contains numbers and letters
+     * with a letter coming first. This is used to validate class names and 
+     * module names
+     * @param word the {@code String } to be checked
+     * @return {@code true } if the word is alphanumeric 
+     */
+    public static boolean isAlphanumeric( String word ){
+	return word.matches("[A-Za-z]{1,}[\\s|A-Za-z|0-9]*");
+    }
 
+    public static String removeExtraSpaces(String name ){
+	name = name.trim();
+	while( name.matches( "\\S*\\s{2,}\\S*" ) )
+	    name =name.replaceAll("  " , " " ).replaceAll("  ", " ");
+	return name;
+    }
    
 }

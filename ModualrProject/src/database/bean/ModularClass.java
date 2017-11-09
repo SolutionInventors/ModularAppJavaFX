@@ -28,10 +28,7 @@ public class ModularClass
 
     public void setName(String name)
     {
-	name = name.trim();
-	while( name.matches( "\\S*\\s{2,}\\S*" ) )
-	    name =name.replaceAll("  " , " " ).replaceAll("  ", " ");
-        this.name = name;
+        this.name = Bean.removeExtraSpaces( name);
     }
 
     public Date getDateCreated()
@@ -46,7 +43,7 @@ public class ModularClass
 
     public static boolean isValid(ModularClass newClass)
     {
-	return newClass.getName().matches("[A-Za-z]* [A-Za-z|0-9]*");
+	return newClass.getName().matches("[A-Za-z]{1,}[\\s|A-Za-z|0-9]*");
     }
 
     

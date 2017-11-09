@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import database.bean.CertificateModule;
 import database.bean.ModularClass;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
@@ -85,7 +84,6 @@ public class ClassManager
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
 	ArrayList<ModularClass> list = new ArrayList<>();
-	
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call getClassesByIndex(? ) }", startIndex ))
 	{

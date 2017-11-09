@@ -2,10 +2,11 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 
-import database.bean.Admin;
 import database.bean.Certificate;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
@@ -23,11 +24,11 @@ public class CertificateManager
      * @throws InvalidAdminException when the {@code Admin} that wants to make the
      * change is invalid
      */
-    public boolean createCertificate(  Certificate cert) 
+    public static boolean createCertificate(  Certificate cert) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
+
 	checkCertObject(cert);
 
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
@@ -48,7 +49,7 @@ public class CertificateManager
      * @param cert
      * @throws InvalidBeanException
      */
-    public void checkCertObject(Certificate cert) throws InvalidBeanException
+    public static void checkCertObject(Certificate cert) throws InvalidBeanException
     {
 	if( ! Certificate.isValid( cert)){
 	    throw new InvalidBeanException
@@ -69,13 +70,13 @@ public class CertificateManager
      * @throws SQLException  when an error occurs at the database level
      * @throws InvalidAdminException 
      */
-    public boolean delete( Certificate cert ) throws InvalidBeanException, SQLException, InvalidAdminException{
+    public static boolean delete( Certificate cert ) throws InvalidBeanException, SQLException, InvalidAdminException{
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	checkCertObject(cert);
 
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call removeCertificarte(?)}", cert.getName())){
-	    
+		("{call removeCertificate(?)}", cert.getName())){
+
 	    int  affected = statement.executeUpdate();
 	    if( affected > 0 ) return true;
 	}
@@ -93,18 +94,42 @@ public class CertificateManager
      * @throws InvalidAdminException  when the Admin that wants to make the changel
      * is invalid
      */
-    public boolean update( Certificate oldCert, Certificate newCert ) 
+    public static boolean update( Certificate oldCert, Certificate newCert ) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	checkCertObject( newCert);
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call updateCertificate(?,?)", oldCert.getName() , newCert.getName()))
+		("{call updateCertificate(?,?)}", oldCert.getName() , newCert.getName()))
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 ) return true;
 	}
 	return false;
+    }
+
+    public static Certificate[] getCertificates(int startIndex) 
+	    throws SQLException, InvalidAdminException
+    {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+
+	ArrayList<Certificate> list = new ArrayList<>();
+	try( CallableStatement statement = DatabaseManager.getCallableStatement
+		("{call getCertificatesByIndex(? ) }", startIndex ))
+	{
+	    ResultSet result = statement.executeQuery() ;
+
+	    while( result.next() )
+	    {
+		Certificate tempCert =  new Certificate
+			(  result.getDate("dateCreated"), result.getString("name"));
+
+		list.add(tempCert );
+
+	    }
+	}
+	return list.toArray( new Certificate[ list.size() ] );
+
     }
 
 }

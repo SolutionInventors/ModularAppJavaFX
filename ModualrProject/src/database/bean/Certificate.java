@@ -9,13 +9,22 @@ public class Certificate
     
     public Certificate(){}
     
-    public  Certificate( int id , Date dateCreated, String name ) {
+    public  Certificate( Date dateCreated, String name ) {
 	setDateCreated( dateCreated );
 	setName(name);
 	
     }
 
-   
+    /**
+     * Creates a Certificate object by specifing only the name attribute. This object
+     * can now be added to the database after this constructor is used.
+     * @param name
+     */
+    public Certificate(String name)
+    {
+	setName( name );
+    }
+
     public Date getDateCreated()
     {
         return dateCreated;
@@ -33,7 +42,7 @@ public class Certificate
 
     public void setName(String name)
     {
-        this.name = name;
+        this.name = Bean.removeExtraSpaces( name );
     }
 
     public static boolean isValid(Certificate cert)
