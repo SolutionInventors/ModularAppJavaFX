@@ -1,8 +1,5 @@
 package test;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import database.managers.ConnectionManager;
 
 public class ConnectionTest

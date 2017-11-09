@@ -3,10 +3,8 @@ package test;
 import java.sql.SQLException;
 
 import database.bean.Admin;
-import database.bean.ModularClass;
 import database.bean.Module;
 import database.managers.BeanType;
-import database.managers.ClassManager;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.ModuleManager;
