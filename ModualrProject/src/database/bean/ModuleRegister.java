@@ -186,10 +186,10 @@ public class ModuleRegister  implements Bean
 	this.dateRegistered = dateRegistered;
     }
 
-    public static boolean isValid(ModuleRegister status)
+    public  boolean isValid(ValidationType type)
     {
-	if( status.getStudentId() !=  null && 
-		status.getStudentId() != null 	)
+	if( getStudentId() !=  null && 
+		getModuleName()!= null 	)
 	    return true;
 	return false;
     }

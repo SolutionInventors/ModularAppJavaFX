@@ -19,7 +19,7 @@ public class Phone  implements Bean
 
     public void setId(String id)
     {
-	this.studentId = id;
+	this.studentId = Bean.removeExtraSpaces(id );
     }
 
     public String getNumber()
@@ -29,7 +29,7 @@ public class Phone  implements Bean
 
     public void setNumber(String number)
     {
-	this.number = number;
+	this.number = Bean.removeExtraSpaces(number);
     } 
     
     /**
@@ -37,9 +37,20 @@ public class Phone  implements Bean
      * @param phone the {@code Phone} object to check
      * @return boolean
      */
-    public static boolean isValid( Phone phone ){
-	if( phone != null && phone.getStudentId() != null && phone.getNumber() != null)
-	    return true;
+    public  boolean isValid(ValidationType type){
+	
+	switch (type)
+	{
+	    case NEW_BEAN:
+		return  getStudentId() != null && getNumber() != null &&
+			Bean.isPhoneValid( getNumber());
+		    
+	    case EXISTING_BEAN:
+		return getStudentId()!= null ;
+	    default:
+		break;
+	}
+	
 
 	return false;
     }

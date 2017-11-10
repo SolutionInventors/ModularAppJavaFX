@@ -92,16 +92,16 @@ public class Module  implements Bean
      * @param module the {@code Module} object to be validated
      * @return true when the {@code Module } is valid
      */
-    public static boolean isValid(Module module, ValidationType validation )
+    public  boolean isValid( ValidationType validation )
     {
-	boolean isNameValid   =  module != null && module.getName() != null ;
-	boolean isUnitsValid = module.getNumberOfUnits() >0 ; 
+	boolean isNameValid   =  getName() != null && Bean.hasOnlyLetters(getName()) ;
+	boolean isUnitsValid = getNumberOfUnits() >0 ; 
 	
 	switch (validation)
 	{
-	    case EXISTING_BEAN_VALID:
+	    case EXISTING_BEAN:
 		return isNameValid;
-	    case NEW_BEAN_VALID:
+	    case NEW_BEAN:
 		return ( isNameValid && isUnitsValid );
 	    default:
 		return false;

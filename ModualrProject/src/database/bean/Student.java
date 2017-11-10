@@ -109,4 +109,11 @@ public class Student  implements Bean
     {
 	this.bio = bio;
     }
+
+    @Override
+    public boolean isValid(ValidationType type)
+    {
+	// TODO Auto-generated method stub
+	return false;
+    }
 }

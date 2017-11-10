@@ -5,7 +5,7 @@ import java.sql.Date;
 
 import exception.InvalidImageFormatException;
 
-public class Biodata
+public class Biodata implements Bean
 {
     private String firstName;
     private String lastName;
@@ -27,7 +27,7 @@ public class Biodata
 
     public void setFirstName(String fName)
     {
-        this.firstName = fName;
+        this.firstName = Bean.removeExtraSpaces( fName);
     }
 
     public String getLastName()
@@ -37,7 +37,7 @@ public class Biodata
 
     public void setlName(String lName)
     {
-        this.lastName = lName;
+        this.lastName = Bean.removeExtraSpaces( lName);
     }
 
     public String getStudentId()
@@ -47,7 +47,7 @@ public class Biodata
 
     public void setStudentId(String studentId)
     {
-        this.studentId = studentId;
+        this.studentId = Bean.removeExtraSpaces(studentId);
     }
 
     public String getHomeAddress()
@@ -57,7 +57,7 @@ public class Biodata
 
     public void setHomeAddress(String homeAddress)
     {
-        this.homeAddress = homeAddress;
+        this.homeAddress = Bean.removeExtraSpaces(homeAddress );
     }
 
     public String getStateOfOrigin()
@@ -67,7 +67,7 @@ public class Biodata
 
     public void setStateOfOrigin(String stateOfOrigin)
     {
-        this.stateOfOrigin = stateOfOrigin;
+        this.stateOfOrigin = Bean.removeExtraSpaces( stateOfOrigin);
     }
 
     public String getCountry()
@@ -77,7 +77,7 @@ public class Biodata
 
     public void setCountry(String country)
     {
-        this.country = country;
+        this.country = Bean.removeExtraSpaces(country );
     }
 
     public String getGender()
@@ -87,7 +87,7 @@ public class Biodata
 
     public void setGender(String gender)
     {
-        this.gender = gender;
+        this.gender = Bean.removeExtraSpaces( gender);
     }
 
     public Date getDateOfBirth()
@@ -107,7 +107,7 @@ public class Biodata
 
     public void setPlaceOfBirth(String placeOfBirth)
     {
-        this.placeOfBirth = placeOfBirth;
+        this.placeOfBirth = Bean.removeExtraSpaces( placeOfBirth);
     }
 
     public File getImage()
@@ -157,6 +157,13 @@ public class Biodata
 		data.getLastName().matches( "[A-Za-z]*" )){
 	    return true;
 	}
+	return false;
+    }
+
+    @Override
+    public boolean isValid(ValidationType type)
+    {
+	// TODO Auto-generated method stub
 	return false;
     }
 }

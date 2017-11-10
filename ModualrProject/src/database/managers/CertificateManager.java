@@ -8,6 +8,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.Certificate;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
@@ -28,9 +29,9 @@ public class CertificateManager
 	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-
-	checkCertObject(cert);
-
+	if( !cert.isValid( ValidationType.NEW_BEAN )) 
+	    throw new InvalidBeanException("The Certificate is invalid");
+	
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call createCertificate(?,?)}", cert.getName());){
 	    int affected = statement.executeUpdate();
@@ -45,17 +46,6 @@ public class CertificateManager
 	return false;
     }
 
-    /**
-     * @param cert
-     * @throws InvalidBeanException
-     */
-    public static void checkCertObject(Certificate cert) throws InvalidBeanException
-    {
-	if( ! Certificate.isValid( cert)){
-	    throw new InvalidBeanException
-	    ("The certificate object name must be only letters");
-	}
-    }
 
     /**
      * This removes an existing {@code Certificate } from the database. If the 
@@ -72,8 +62,10 @@ public class CertificateManager
      */
     public static boolean delete( Certificate cert ) throws InvalidBeanException, SQLException, InvalidAdminException{
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	checkCertObject(cert);
-
+	if( !cert.isValid( ValidationType.EXISTING_BEAN )) 
+	    throw new InvalidBeanException("The Certificate is invalid");
+	
+	
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call removeCertificate(?)}", cert.getName())){
 
@@ -98,7 +90,11 @@ public class CertificateManager
 	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	checkCertObject( newCert);
+	if( !newCert .isValid( ValidationType.NEW_BEAN ) ||
+		!oldCert.isValid(ValidationType.EXISTING_BEAN) 	) 
+	{
+	    throw new InvalidBeanException("One of the two Certificates is invalid"); 
+	}
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call updateCertificate(?,?)}", oldCert.getName() , newCert.getName()))
 	{

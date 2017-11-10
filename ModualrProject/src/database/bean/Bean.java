@@ -7,6 +7,12 @@ package database.bean;
  */
 public interface Bean{
     
+    /**
+     * Checks that a {@code String} has only letters and space.
+     * Returns {@code true } if validation is met
+     * @param word
+     * @return
+     */
     public static boolean hasOnlyLetters( String word)
     {
 	if( word.trim().matches( "[[A-za-z]{1,}\\s[A-Za-z]{0,}]{1,}") ){
@@ -15,6 +21,11 @@ public interface Bean{
 	return false;
     }
     
+    public static boolean isPhoneValid( String phoneNumber ){
+	if( phoneNumber.matches("[+|0-9][0-9]{1,}" ) ) return true;
+	
+	return false;
+    }
     /**
      * Checks if a {@code String } passed as its argument contains numbers and letters
      * with a letter coming first. This is used to validate class names and 
@@ -33,4 +44,8 @@ public interface Bean{
 	return name;
     }
    
+    public static boolean isValid( Bean bean , ValidationType type){
+	return bean.isValid(type);
+    }
+    public boolean isValid( ValidationType type);
 }

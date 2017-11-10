@@ -6,7 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.bean.Admin;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
+import exception.InvalidBeanException;
 import exception.InvalidPrimaryKeyException;
 
 /**
@@ -36,14 +38,15 @@ public class AdminManager
      * @throws SQLException 
      * @throws InvalidAdminException when the Admin that wants to make the change is
      * invalid
+     * @throws InvalidBeanException 
      */
     public static boolean update(  Admin oldAdmin, Admin newAdmin) 
-	    throws InvalidPrimaryKeyException, SQLException, InvalidAdminException
+	    throws  SQLException, InvalidAdminException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !Admin.isValid( oldAdmin ) )
+	if( !oldAdmin.isValid(ValidationType.EXISTING_BEAN) )
 	{
-	    throw new InvalidPrimaryKeyException
+	    throw new InvalidBeanException
 	    ( "The admin object cannot contain spaces and it cannot be null");
 	}
 

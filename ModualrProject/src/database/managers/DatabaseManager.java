@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import database.bean.Admin;
+import database.bean.ValidationType;
 
 public class DatabaseManager
 {
@@ -50,7 +51,7 @@ public class DatabaseManager
     
     public static boolean  validateAdmin(){
 	
-	if( Admin.isValid( getCurrentAdmin() ) )
+	if( currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
 	    return AdminManager.validateAdmin( getCurrentAdmin());
 	return false;
     }

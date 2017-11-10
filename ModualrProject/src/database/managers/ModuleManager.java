@@ -18,7 +18,7 @@ public class ModuleManager
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( !Module.isValid( newModule,ValidationType.NEW_BEAN_VALID ) )
+	if( !newModule.isValid( ValidationType.NEW_BEAN ) )
 	    throw new InvalidBeanException( "The bean is invalid" );
 	CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call createNewModule( ?,?,?,?)}" , newModule.getName() , 
@@ -38,8 +38,8 @@ public class ModuleManager
     {
 	if(!DatabaseManager.validateAdmin() ) 
 	    throw new InvalidAdminException();
-	if( !( Module.isValid( existingModule, ValidationType.EXISTING_BEAN_VALID) &&
-		Module.isValid( newModule, ValidationType.NEW_BEAN_VALID) ))
+	if( !( existingModule.isValid( ValidationType.EXISTING_BEAN) &&
+		newModule.isValid(  ValidationType.NEW_BEAN) ))
 	{
 	    throw new InvalidBeanException();
 		 
@@ -63,7 +63,7 @@ public class ModuleManager
 	    throws SQLException, InvalidAdminException, InvalidBeanException 
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !Module.isValid( existingModule, ValidationType.EXISTING_BEAN_VALID) )
+	if( !existingModule.isValid( ValidationType.EXISTING_BEAN) )
 	    throw new InvalidBeanException();
 	
 	CallableStatement statement = DatabaseManager.getCallableStatement

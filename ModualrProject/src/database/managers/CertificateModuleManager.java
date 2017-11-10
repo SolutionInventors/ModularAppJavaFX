@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.bean.CertificateModule;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
@@ -17,7 +18,7 @@ public class CertificateModuleManager
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( !CertificateModule.isValid( certModule ) ) 
+	if( !certModule.isValid( ValidationType.NEW_BEAN) ) 
 	    throw new InvalidBeanException("A CertificateModule data is invalid");
 	
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
@@ -36,7 +37,7 @@ public class CertificateModuleManager
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( !CertificateModule.isValid( certModule ) ) 
+	if( !certModule.isValid( ValidationType.EXISTING_BEAN)) 
 	    throw new InvalidBeanException("A CertificateModule data is invalid");
 	
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
@@ -75,11 +76,5 @@ public class CertificateModuleManager
 	return list.toArray( new CertificateModule[ list.size() ] );
 
     }
-    public static boolean isInDatabase( CertificateModule certModule ) 
-	    throws InvalidAdminException
-    {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
-	return false;
-    }
+  
 }

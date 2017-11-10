@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 import database.bean.Phone;
 import database.bean.Student;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
+import exception.InvalidBeanException;
 
 public class PhoneManager
 {
@@ -44,7 +46,8 @@ public class PhoneManager
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( Phone.isValid( oldPhone ) && oldPhone.getStudentId().equals( newPhone.getStudentId())){
+	if( oldPhone.isValid(ValidationType.EXISTING_BEAN  ) && 
+		oldPhone.getStudentId().equals( newPhone.getStudentId())){
 	     
 	    try(CallableStatement statement  = DatabaseManager.getCallableStatement( 
 		    "{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentId(),
@@ -66,12 +69,15 @@ public class PhoneManager
      * @throws SQLException when a special database error occurs
      * @throws InvalidAdminException  when the {@code Admin} that wants to make
      * the change is invalid
+     * @throws InvalidBeanException 
      */
-    public static boolean removePhone( Phone phone ) throws SQLException, InvalidAdminException
+    public static boolean removePhone( Phone phone ) throws SQLException, InvalidAdminException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( !Phone.isValid( phone ) ) return false;
+	if( !phone.isValid( ValidationType.EXISTING_BEAN ) ){
+	   throw new InvalidBeanException("The Phone format is invalid" );
+	}
 	try(  CallableStatement  statement  = DatabaseManager.getCallableStatement( 
     		"{CALL removePhoneNumber(?, ? ) } ", phone.getStudentId(), phone.getNumber());)
 	{

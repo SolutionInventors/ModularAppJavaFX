@@ -2,7 +2,7 @@ package database.bean;
 
 import java.sql.Date;
 
-public class Certificate
+public class Certificate implements Bean
 {
     private Date dateCreated;
     private String name;
@@ -45,9 +45,9 @@ public class Certificate
         this.name = Bean.removeExtraSpaces( name );
     }
 
-    public static boolean isValid(Certificate cert)
+    public  boolean isValid(ValidationType type)
     {
-	return Bean.hasOnlyLetters( cert.getName());
+	return Bean.hasOnlyLetters( getName());
     }
 
     

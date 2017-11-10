@@ -6,6 +6,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.ModularClass;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
@@ -16,7 +17,7 @@ public class ClassManager
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( !ModularClass.isValid( newClass ) ) 
+	if( !newClass.isValid(ValidationType.NEW_BEAN)) 
 	    throw new InvalidBeanException("A CertificateModule data is invalid");
 	
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
@@ -38,7 +39,7 @@ public class ClassManager
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	
-	if( !ModularClass.isValid( existingClass ) ) 
+	if( !existingClass.isValid( ValidationType.EXISTING_BEAN) ) 
 	    throw new InvalidBeanException("A CertificateModule data is invalid");
 	
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
@@ -55,8 +56,8 @@ public class ClassManager
 
     
     public static boolean update( ModularClass oldClass, ModularClass newClass ) throws InvalidBeanException, SQLException{
-	if( !( ModularClass.isValid( oldClass) &&
-		ModularClass.isValid(newClass) ))
+	if( !( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
+		newClass.isValid(ValidationType.NEW_BEAN) ))
 	{
 	   throw new InvalidBeanException("One of the two ModularClass object is"
 	   	+ " invalid "); 

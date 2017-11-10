@@ -34,7 +34,7 @@ public class Admin implements Bean
      */
     public void setUsername(String username)
     {
-        this.username = username;
+        this.username = Bean.removeExtraSpaces( username);
     }
     
     /**
@@ -63,9 +63,9 @@ public class Admin implements Bean
      * @param admin the {@code Admin } object
      * @return {@code true } when the {@code Admin } is valid
      */
-    public static boolean isValid ( Admin admin ){
-	if( admin !=  null  && admin.getUsername() != null && 
-		admin.getPassword() != null && !admin.getUsername().contains( " " ) )
+    public  boolean isValid (ValidationType type){
+	if( getUsername() != null && 
+		getPassword() != null && !getUsername().contains( " " ) )
 	{
 	    return true;
 	}

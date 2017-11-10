@@ -2,7 +2,7 @@ package database.bean;
 
 import java.sql.Date;
 
-public class ModularClass
+public class ModularClass implements Bean
 {
     private String name;
     private Date dateCreated;
@@ -41,9 +41,9 @@ public class ModularClass
         this.dateCreated = dateCreated;
     }
 
-    public static boolean isValid(ModularClass newClass)
+    public  boolean isValid(ValidationType type)
     {
-	return newClass.getName().matches("[A-Za-z]{1,}[\\s|A-Za-z|0-9]*");
+	return getName().matches("[A-Za-z]{1,}[\\s|A-Za-z|0-9]*");
     }
 
     

@@ -55,10 +55,10 @@ public class CertificateModule implements Bean
      * @param certModule
      * @return
      */
-    public static boolean isValid( CertificateModule certModule)
+    public boolean isValid( ValidationType type)
     {
-	String modName = certModule.getModuleName();
-	String certName = certModule.getCertificateName();
+	String modName = getModuleName();
+	String certName = getCertificateName();
 	
 	if(  ( modName != null  && certName != null && 
 		Bean.hasOnlyLetters(certName))  && 

@@ -2,7 +2,7 @@ package database.bean;
 
 import java.sql.Date;
 
-public class Payment
+public class Payment implements Bean 
 {
     private int id;
     private String moduleRegisterId;
@@ -30,7 +30,7 @@ public class Payment
 
     public void setModuleRegisterId(String moduleRegisterId)
     {
-        this.moduleRegisterId = moduleRegisterId;
+        this.moduleRegisterId = Bean.removeExtraSpaces( moduleRegisterId );
     }
 
     public double getAmount()
@@ -50,7 +50,7 @@ public class Payment
 
     public void setBankName(String bankName)
     {
-        this.bankName = bankName;
+        this.bankName = Bean.removeExtraSpaces( bankName);
     }
 
     public String getTellerNumber()
@@ -60,7 +60,7 @@ public class Payment
 
     public void setTellerNumber(String tellerNumber)
     {
-        this.tellerNumber = tellerNumber;
+        this.tellerNumber = Bean.removeExtraSpaces(tellerNumber );
     }
 
     public Date getPaymentDate()
@@ -71,6 +71,12 @@ public class Payment
     public void setPaymentDate(Date paymentDate)
     {
         this.paymentDate = paymentDate;
+    }
+
+    @Override
+    public boolean isValid(ValidationType type)
+    {
+	return false;
     }
 
 }
