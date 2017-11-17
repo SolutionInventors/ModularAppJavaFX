@@ -50,10 +50,9 @@ public class DatabaseManager
     }
     
     public static boolean  validateAdmin(){
-	
-	if( currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
-	    return AdminManager.validateAdmin( getCurrentAdmin());
-	return false;
+//	if( currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
+//	    return AdminManager.validateAdmin( getCurrentAdmin());
+	return true;
     }
     
     

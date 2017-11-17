@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2017 at 08:21 AM
+-- Generation Time: Nov 17, 2017 at 04:10 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -66,6 +66,12 @@ SELECT * FROM admin
 	WHERE admin.username =  user  AND admin.password = pass;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAdminByUsername` (IN `uName` VARCHAR(200))  NO SQL
+BEGIN
+SELECT * FROM admin
+	WHERE admin.username = uName;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getCertificateByDate` (IN `sinceDate` DATE, IN `startIndex` INT)  BEGIN 
  SELECT * FROM certificate 
  WHERE dateCreated > sinceDate
@@ -102,6 +108,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getModuleByIndex` (IN `startIndex` 
 SELECT * FROM module
 LIMIT startIndex , 30;
 end$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertAdmin` (IN `uName` VARCHAR(200), IN `pass` VARCHAR(500))  NO SQL
+BEGIN
+INSERT into admin( username, password)
+VALUES( uName, pass);
+END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertNewStudent` (IN `eAddress` VARCHAR(70), IN `theClassName` VARCHAR(30), IN `cardNumber` VARCHAR(50))  BEGIN
 INSERT INTO `student`(`id_card_number`, `certificateIssued`, `active`, `emailAddress`, `className`, `dateAdmitted`) 
@@ -237,8 +249,9 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`username`, `password`) VALUES
-('Chidiebere', 'Fred'),
-('pwd', 'Chidi@chi.com');
+('Chidi', 'fb47addd47867ce9db8d9a31275977b3d4162f4a9cd6557b40499c1e10414bc4iGt'),
+('Chidiebere', '00dc3f179a5f2dae51dd59577a06190bac64d302ab6ecc71fd77015064a442bdUJe'),
+('Hello', 'd9473a6b2ca91281dbc8cefff9e210c37437069f4dc830d0c89bed008b50b2dcTPf');
 
 -- --------------------------------------------------------
 
@@ -248,6 +261,7 @@ INSERT INTO `admin` (`username`, `password`) VALUES
 
 CREATE TABLE `biodata` (
   `studentId` varchar(50) COLLATE latin1_bin DEFAULT NULL,
+  `Title` varchar(10) COLLATE latin1_bin NOT NULL,
   `Surname` varchar(50) COLLATE latin1_bin NOT NULL,
   `MiddleName` varchar(50) COLLATE latin1_bin NOT NULL,
   `LastName` int(11) NOT NULL,
@@ -393,7 +407,7 @@ INSERT INTO `class` (`name`, `dateCreated`) VALUES
 ('Stream 1', '2017-11-08'),
 ('Stream 2', '2017-11-07'),
 ('Stream 3', '2017-11-08'),
-('Stream 5', '2017-11-08');
+('Stream 9', '2017-11-08');
 
 --
 -- Triggers `class`
@@ -426,6 +440,32 @@ CREATE TABLE `educational_background` (
   `CourseRead` varchar(200) COLLATE latin1_bin NOT NULL,
   `QualificationName` varchar(200) COLLATE latin1_bin NOT NULL
 ) ENGINE=CSV DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `finance`
+--
+
+CREATE TABLE `finance` (
+  `StudentID` varchar(50) COLLATE latin1_bin NOT NULL,
+  `FirstName` varchar(30) COLLATE latin1_bin NOT NULL,
+  `LastName` varchar(30) COLLATE latin1_bin NOT NULL,
+  `Address` varchar(200) COLLATE latin1_bin NOT NULL,
+  `Telephone` varchar(30) COLLATE latin1_bin NOT NULL,
+  `Email` varchar(100) COLLATE latin1_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `howyouheard`
+--
+
+CREATE TABLE `howyouheard` (
+  `StudentID` varchar(50) COLLATE latin1_bin NOT NULL,
+  `MannerOfHearing` varchar(200) COLLATE latin1_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 -- --------------------------------------------------------
 
@@ -689,6 +729,20 @@ INSERT INTO `studentlog` (`dateOfOperation`, `operationType`, `student_id`) VALU
 ('2017-11-07', 'DELETE', 'EYY-C3'),
 ('2017-11-08', 'DELETE', 'EYY-C3');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `student_finance`
+--
+
+CREATE TABLE `student_finance` (
+  `StudentID` varchar(50) COLLATE latin1_bin NOT NULL,
+  `Name` varchar(60) COLLATE latin1_bin NOT NULL,
+  `Address` varchar(200) COLLATE latin1_bin NOT NULL,
+  `Telephone` varchar(30) COLLATE latin1_bin NOT NULL,
+  `Email` varchar(200) COLLATE latin1_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
 --
 -- Indexes for dumped tables
 --
@@ -724,6 +778,12 @@ ALTER TABLE `certificatemodule`
 --
 ALTER TABLE `class`
   ADD PRIMARY KEY (`name`);
+
+--
+-- Indexes for table `finance`
+--
+ALTER TABLE `finance`
+  ADD UNIQUE KEY `StudentID` (`StudentID`);
 
 --
 -- Indexes for table `module`
@@ -766,6 +826,12 @@ ALTER TABLE `student`
   ADD KEY `student_ibfk_1` (`className`);
 
 --
+-- Indexes for table `student_finance`
+--
+ALTER TABLE `student_finance`
+  ADD KEY `studnetFinanceLink` (`StudentID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -799,6 +865,12 @@ ALTER TABLE `certificatemodule`
   ADD CONSTRAINT `moduleLink` FOREIGN KEY (`moduleName`) REFERENCES `module` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Constraints for table `finance`
+--
+ALTER TABLE `finance`
+  ADD CONSTRAINT `financeLink` FOREIGN KEY (`StudentID`) REFERENCES `student` (`id_card_number`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `module_register`
 --
 ALTER TABLE `module_register`
@@ -823,6 +895,12 @@ ALTER TABLE `professional_experience`
 ALTER TABLE `student`
   ADD CONSTRAINT `student_certificate_link` FOREIGN KEY (`certificateIssued`) REFERENCES `certificate` (`name`),
   ADD CONSTRAINT `student_ibfk_1` FOREIGN KEY (`className`) REFERENCES `class` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `student_finance`
+--
+ALTER TABLE `student_finance`
+  ADD CONSTRAINT `studnetFinanceLink` FOREIGN KEY (`StudentID`) REFERENCES `student` (`id_card_number`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

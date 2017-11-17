@@ -1,7 +1,16 @@
 package database.bean;
 
-public class Finance
+/**
+ * This object represents the {@code Finance} table in the database.
+ * This is inputed by a {@code Student} when he wants to register for
+ * the program. It stores information about the {@code Student}'s sponsor
+ * 
+ * @author Oguejiofor Chidiebere
+ *
+ */
+public class Finance implements Bean
 {
+    private String studentId;
     private String name ;
     private String address;
     private String telephone;
@@ -53,6 +62,31 @@ public class Finance
     public void setEmail(String email)
     {
         this.email = Bean.removeExtraSpaces( email );
+    }
+
+    public String getStudentId()
+    {
+	return studentId;
+    }
+
+    public void setStudentId(String studentId)
+    {
+	this.studentId = studentId;
+    }
+
+    @Override
+    public boolean isValid(ValidationType type)
+    {
+	switch (type)
+	{
+	    case EXISTING_BEAN:
+		return getStudentId() != null;
+	    case NEW_BEAN:
+		return getStudentId() != null && getAddress()!= null &&
+		getEmail() != null && Bean.isPhoneValid( getTelephone()) && 
+		Bean.hasOnlyLetters(getName()) ;
+	}
+	return false;
     }
 
 }

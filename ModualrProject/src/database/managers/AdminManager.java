@@ -1,9 +1,13 @@
 package database.managers;
 
+import java.security.SecureRandom;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 import database.bean.Admin;
 import database.bean.ValidationType;
@@ -19,6 +23,32 @@ import exception.InvalidPrimaryKeyException;
  */
 public class AdminManager 
 {
+    
+    public static boolean insert( Admin newAdmin) throws 
+    	InvalidBeanException, InvalidAdminException, SQLException
+    {
+	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	if( !newAdmin.isValid(ValidationType.NEW_BEAN) )
+	{
+	    throw new InvalidBeanException
+	    ( "The admin object cannot contain spaces and it cannot be null");
+	}
+	
+	HashClass hashInstance = HashClass.getInstance();
+	hashInstance.hashAdmin(newAdmin);
+	
+	try(CallableStatement  statement = 
+		DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ? ) } ", 
+		newAdmin.getUsername(),  newAdmin.getPassword() ) ;)
+	{
+	    int affected = statement.executeUpdate();
+	    if( affected > 0 ) return true;
+	}
+
+	return false;
+    }
+    
+    
     /**
      *
      * Updates an existing {@code Admin } to a new {@code Admin} 
@@ -49,16 +79,15 @@ public class AdminManager
 	    throw new InvalidBeanException
 	    ( "The admin object cannot contain spaces and it cannot be null");
 	}
-
+	
+	
 	try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?, ?  ) } ", 
-		    oldAdmin.getUsername(),  oldAdmin.getPassword() , 
-		    newAdmin.getUsername() , newAdmin.getPassword());)
+		oldAdmin.getUsername(),  oldAdmin.getPassword() , 
+		newAdmin.getUsername() , newAdmin.getPassword());)
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 ) return true;
 	}
-	
-
 
 	return false;
     }
@@ -78,7 +107,7 @@ public class AdminManager
     public static Admin[] getAllAdmin(int startIndex ) throws SQLException, InvalidAdminException 
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
+
 	ArrayList<Admin> list = new ArrayList<>();
 	try(CallableStatement statement = DatabaseManager.getCallableStatement
 		( "{Call getAllAdminFrom(?) }", startIndex );)
@@ -87,10 +116,10 @@ public class AdminManager
 	    Admin admin;
 	    while( result.next() )
 	    {
-	        admin = new Admin(result.getString("username"), result.getString( "password" ));
-	        list.add( admin );
+		admin = new Admin(result.getString("username"), result.getString( "password" ));
+		list.add( admin );
 	    }
-	    
+
 	}
 	return list.toArray( new Admin[ list.size() ] );
     }
@@ -106,16 +135,16 @@ public class AdminManager
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	try(  CallableStatement statement = DatabaseManager.getCallableStatement
-		   ("{Call getTotalAdmin() }");)
+		("{Call getTotalAdmin() }");)
 	{
 	    ResultSet result = statement.executeQuery();
 	    if( result.next() )
-	        return result.getInt( 1 );
+		return result.getInt( 1 );
 	    return 0 ;
 	}
     }
 
-
+   
     /**
      * Returns {@code true } if the {@code Admin } is in the database
      * @param admin the {@code Admin } to check for in the database
@@ -126,20 +155,93 @@ public class AdminManager
     {
 	ResultSet result = null;
 	try(  CallableStatement  statement = DatabaseManager.getCallableStatement
-	    	( "{Call getAdmin( ? , ? ) }", admin.getUsername(), admin.getPassword() );)
+		( "{Call getAdminByUsername( ?  ) }", admin.getUsername() );)
 	{
 	    result = statement.executeQuery();
-	    result.last();
-	    if ( result.getRow() == 1 )
-	        return true ;
+	    
+	    if ( result.next() ){
+		String unHashedPass = admin.getPassword();
+		String hashedPass = result.getString( "password" );
+		return HashClass.getInstance().comparePassword(hashedPass, unHashedPass);
+	    }
 	}
 	catch (SQLException e)
 	{
-	   e.printStackTrace();
+	    e.printStackTrace();
 	}
 	return false;
     }
 
+    /**
+     * This singleton class encapsulates the logic behind the hashing that goes 
+     * on within the {@code Admin } class
+     * @author Oguejifor Chidiebere
+     *
+     */
+    private static final class HashClass
+    {
+	private  static  HashClass instance = null;
+	private  final  SecureRandom GEN = new SecureRandom();
 
+	private HashClass(){}
+
+	/**
+	 * This returns the only object of this singleton class and creates one if none
+	 * exists
+	 * @return a {@code HashClass} object
+	 */
+	public static HashClass getInstance(){
+	    if ( instance ==  null )
+		instance = new HashClass();
+	    return instance;
+	}
+
+
+
+	public void hashAdmin( Admin admin){
+	    final String salt = generateSalt();
+
+	    String finalPassword = GEN.nextInt(10) + admin.getPassword() + salt;
+	    finalPassword = DigestUtils.sha256Hex( finalPassword) + salt;
+	    admin.setPassword(finalPassword);
+	}
+
+	private String generateSalt(){
+	    char[] chars  = new char[3];
+	    for( int i = 0 ; i < chars.length  ; i++){
+		int randNum  =  65 + GEN.nextInt(58) ;
+		if( randNum > 90 && randNum < 99 )
+		    randNum += 6;
+		chars[i] = (char) randNum ;
+	    }
+	    return new String( chars);
+	}
+
+	/**
+	 * Checks if a hashed password  is equal to an unhased password. <br>
+	 * This is handy when validating an {@code Admin } as the unhashed password supplied
+	 * to this method is first hashed before being compared<br>
+	 * Returns {@code true} if the two {@code unHashedPassword}  is equal to the password
+	 * from the database before being hashed. 
+	 * @param hashedPassword the hashedPassword
+	 * @param unHashedPass
+	 * @return {@code TRUE } if the two passwords are equal.
+	 */
+	public boolean comparePassword( final String hashedPassword, String unHashedPass){
+	    final String salt = hashedPassword.substring( hashedPassword.length()-3);
+	    final String hash = hashedPassword.substring( 0 ,  hashedPassword.length()-3);
+	   
+	    String hashedValue;
+	    for( int i = 0 ; i< 10 ; i++ ){
+		hashedValue = DigestUtils.sha256Hex( i + hash + salt);
+		if( hashedPassword.equals(hashedValue )){
+
+		    return true;
+		}
+	    }
+
+	    return false;
+	}
+    }
 
 }

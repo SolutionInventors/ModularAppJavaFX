@@ -56,7 +56,7 @@ public class StudentManager
 		newStudent.setDateAdmitted( statement.getDate("currentDate" ));
 		return true;
 	    }
-
+	    
 
 	}
 	catch (FileNotFoundException e)
