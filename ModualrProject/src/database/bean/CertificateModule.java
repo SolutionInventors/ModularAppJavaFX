@@ -7,7 +7,13 @@ package database.bean;
  * a {@code Module} from the list of {@code Certificate } requirements and
  * adding a {@code Module} to the list respectively. <br>
  * Note that  inserts and deletes are the only transactions that can be performed on 
- * a {@code CertificateModule}
+ * a {@code CertificateModule}<br>
+ * 
+ * <b>Constructors:</b><br>
+ * This class contains two constructors: one with no parameters and another that
+ * takes the module name and certificate. Note that the certificate name and
+ * module name must be specified before a {@code CertificateModule} can be
+ * added to the database.
  * @author Oguejiofor Chidiebere
  *
  */
@@ -16,11 +22,19 @@ public class CertificateModule implements Bean
     private String certificateName;
     private  String moduleName;
     
+    /**
+     * Initialises this {@code CertificateModule} with the certificate name and
+     * module name. This {@code CertificateModule} can be inserted into the
+     * database once this constructor is used
+     * @param certName
+     * @param modName
+     */
     public CertificateModule(String certName , String modName){
 	setCertificateName( certName);
 	setModuleName( modName);
     }
 
+    
     public String getCertificateName()
     {
         return certificateName;

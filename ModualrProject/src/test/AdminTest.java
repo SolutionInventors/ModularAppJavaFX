@@ -11,10 +11,9 @@ import exception.InvalidBeanException;
 
 public class AdminTest
 {
-
     public static void main(String[] args) throws InvalidBeanException, InvalidAdminException, SQLException
     {
-	Admin currentAdmin = new Admin("Chidi", "Fred" );
+	Admin currentAdmin = new Admin("Enoch", "Ayobami" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 	
 	Scanner input = new Scanner( System.in);
@@ -23,7 +22,6 @@ public class AdminTest
 	System.out.print("Input password: ");
 	String pass = input.nextLine();
 	Admin newAdmin = new Admin( name,pass);
-	
 	
 	if( AdminManager.insert(newAdmin) ){
 	    System.out.println("Insertion Successful");

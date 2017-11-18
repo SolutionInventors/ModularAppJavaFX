@@ -7,13 +7,14 @@ public class Certificate implements Bean
     private Date dateCreated;
     private String name;
     
+    /**
+     * This initialise this {@code Certificate} with none of its parameters initialised
+     * to {@code null }
+     * @author Oguejiofor Chidiebere
+     */
     public Certificate(){}
     
-    public  Certificate( Date dateCreated, String name ) {
-	setDateCreated( dateCreated );
-	setName(name);
-	
-    }
+
 
     /**
      * Creates a Certificate object by specifing only the name attribute. This object

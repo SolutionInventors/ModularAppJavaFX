@@ -18,7 +18,20 @@ public class Finance implements Bean
     
     public Finance(){}
     
-    public Finance( String name , String address, String phone, String mail ){
+    /**
+     * Initializes this {@code Finance} with arguments. If this constructor
+     * os used this object can immediately be inserted into the database
+     * @param studId the foreign key linked to id card number in 
+     * the {@code Student} table
+     * @param name
+     * @param address
+     * @param phone
+     * @param mail
+     */
+    public Finance( String studId , String name , String address,
+	    String phone, String mail )
+    {
+	setStudentId(studId);
 	setName( name );
 	setAddress(address);
 	setTelephone(phone);

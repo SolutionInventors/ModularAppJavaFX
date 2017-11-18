@@ -11,7 +11,7 @@ import database.bean.Module;
 import database.managers.BeanType;
 import database.managers.CertificateManager;
 import database.managers.CertificateModuleManager;
-import database.managers.ClassManager;
+import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
 import exception.InvalidAdminException;
 
@@ -46,7 +46,7 @@ public class TestUtils
 	switch (type)
 	{
 	    case MODULAR_CLASS:
-		ModularClass[] modClasses  =  ClassManager.getClasses(startIndex);
+		ModularClass[] modClasses  =  ModularClassManager.getClasses(startIndex);
 		for ( int i = 0 ; i < modClasses.length ; i++ ){
 		    System.out.println( (i+1) + ". " + modClasses[i].getName() + "(" + 
 			    modClasses[i].getDateCreated() + ")");

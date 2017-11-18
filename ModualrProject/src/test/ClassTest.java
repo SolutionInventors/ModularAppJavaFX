@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import database.bean.Admin;
 import database.bean.ModularClass;
 import database.managers.BeanType;
-import database.managers.ClassManager;
+import database.managers.ModularClassManager;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import exception.InvalidAdminException;
@@ -34,7 +34,7 @@ public class ClassTest
 	    ModularClass modClass = new ModularClass(name );
 	    try
 	    {
-		if( ClassManager.createNewClass(modClass) ) {
+		if( ModularClassManager.createNewClass(modClass) ) {
 		    System.out.println("Successfully created a new class and "
 		    	+ "also gave updated the dateCreated attribute.");
 		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
@@ -59,7 +59,7 @@ public class ClassTest
 	    
 	    try
 	    {
-		if( ClassManager.removeClass(modClass ) ){
+		if( ModularClassManager.removeClass(modClass ) ){
 		    System.out.println( "Class was removed succcessfullly!!!");
 		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
 		}
@@ -84,7 +84,7 @@ public class ClassTest
 	    ModularClass newClass = new ModularClass( newName);
 	    try
 	    {
-		if( ClassManager.update(modClass, newClass) ){
+		if( ModularClassManager.update(modClass, newClass) ){
 		    System.out.println( "Class was updated succcessfullly!!!");
 		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
 		    

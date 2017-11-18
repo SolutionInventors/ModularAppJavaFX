@@ -10,7 +10,7 @@ import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class ClassManager
+public class ModularClassManager
 {
     public static boolean createNewClass( ModularClass newClass) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException
@@ -93,10 +93,9 @@ public class ClassManager
 	    while( result.next() )
 	    {
 		ModularClass tempClass =  new ModularClass
-			( result.getString("name"), result.getDate("dateCreated"));
-		
+			( result.getString("name"));
+		tempClass.setDateCreated(  result.getDate("dateCreated"));
 		list.add(tempClass );
-		
 	    }
 	}
 	return list.toArray( new ModularClass[ list.size() ] );

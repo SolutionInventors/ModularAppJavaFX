@@ -49,9 +49,9 @@ public class Student  implements Bean
 	this.emailAddress = emailAddress;
     }
 
-    public static boolean isValid( Student student ){
+    public static boolean isValid(ValidationType type,  Student student ){
 	if( student != null && student.getEmailAddress()  != null && 
-		Biodata.isValid( student.getBioData() ) )
+		 student.getBioData().isValid(type) )
 	{
 	    return true;
 	}

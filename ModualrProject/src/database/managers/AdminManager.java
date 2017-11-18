@@ -24,6 +24,18 @@ import exception.InvalidPrimaryKeyException;
 public class AdminManager 
 {
     
+    /**
+     * This method inserts a new {@code Admin} into the database by first 
+     * hashing the {@code Admin} password.<br>
+     * The {@code Admin} format is first validated via a call to {@code Admin} method
+     * isValid
+     * @param newAdmin the new {@code Admin } to be inserted into the datbase
+     * @return {@code true} if the operation is successful
+     * @throws InvalidBeanException if the {@code Admin} object is invalid
+     * @throws InvalidAdminException if the current {@code Admin} that is making the 
+     * change is invalid
+     * @throws SQLException when an SQLException is invalid
+     */
     public static boolean insert( Admin newAdmin) throws 
     	InvalidBeanException, InvalidAdminException, SQLException
     {
@@ -173,8 +185,8 @@ public class AdminManager
     }
 
     /**
-     * This singleton class encapsulates the logic behind the hashing that goes 
-     * on within the {@code Admin } class
+     * This singleton class encapsulates the logic behind the hashing of the {@code Admin } 
+     * password before it is added to the database.
      * @author Oguejifor Chidiebere
      *
      */
@@ -188,6 +200,7 @@ public class AdminManager
 	/**
 	 * This returns the only object of this singleton class and creates one if none
 	 * exists
+	 * @author Oguejiofor Chidiebere
 	 * @return a {@code HashClass} object
 	 */
 	public static HashClass getInstance(){
@@ -197,7 +210,11 @@ public class AdminManager
 	}
 
 
-
+	/**
+	 * This method hashes the {@code Admin} password. This is done before the 
+	 * {@code Admin} is added into the database
+	 * @param admin the {@code Admin} object to hash
+	 */ 
 	public void hashAdmin( Admin admin){
 	    final String salt = generateSalt();
 
@@ -206,6 +223,11 @@ public class AdminManager
 	    admin.setPassword(finalPassword);
 	}
 
+	/**
+	 * This method returns a random {@code String} literal.
+	 * This is used by method hashAdmin to create a hash for the {@code Admin} password
+	 * @return a randomly generated {@code String 
+	 */
 	private String generateSalt(){
 	    char[] chars  = new char[3];
 	    for( int i = 0 ; i < chars.length  ; i++){
@@ -227,19 +249,16 @@ public class AdminManager
 	 * @param unHashedPass
 	 * @return {@code TRUE } if the two passwords are equal.
 	 */
-	public boolean comparePassword( final String hashedPassword, String unHashedPass){
+	public boolean comparePassword( final String hashedPassword, final String unHashedPass){
 	    final String salt = hashedPassword.substring( hashedPassword.length()-3);
-	    final String hash = hashedPassword.substring( 0 ,  hashedPassword.length()-3);
-	   
 	    String hashedValue;
-	    for( int i = 0 ; i< 10 ; i++ ){
-		hashedValue = DigestUtils.sha256Hex( i + hash + salt);
-		if( hashedPassword.equals(hashedValue )){
+	   for( int i = 0 ; i< 10 ; i++ ){
+		hashedValue = DigestUtils.sha256Hex( i + unHashedPass + salt)  + salt;
+		if( hashedPassword.equals(hashedValue)){
 
 		    return true;
 		}
 	    }
-
 	    return false;
 	}
     }

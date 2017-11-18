@@ -104,6 +104,15 @@ public class CertificateManager
 	return false;
     }
 
+    /**
+     * Gets the first 30 {@code Certificate}s in the datbase starting from a 
+     * specified {@code startIndex}<br>
+     * This method can be used to create a pages of Certificates
+     * @param startIndex
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
     public static Certificate[] getCertificates(int startIndex) 
 	    throws SQLException, InvalidAdminException
     {
@@ -117,9 +126,8 @@ public class CertificateManager
 
 	    while( result.next() )
 	    {
-		Certificate tempCert =  new Certificate
-			(  result.getDate("dateCreated"), result.getString("name"));
-
+		Certificate tempCert =  new Certificate(  result.getString("name"));
+		tempCert.setDateCreated(  result.getDate("dateCreated"));
 		list.add(tempCert );
 
 	    }
