@@ -5,6 +5,7 @@ import java.sql.Date;
 /**
  * An object of {@code Module} represents a single row of the {@code Module} table in the database
  * @author Oguejiofor Chidiebere
+ * 
  *
  */
 public class Module  implements Bean

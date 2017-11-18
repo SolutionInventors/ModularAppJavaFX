@@ -1,6 +1,13 @@
 package database.bean;
 
-/**This class represents a single row in the Phone table*/
+/**This class represents a single row in the Phone table
+ * The {@code Phone} table stores the {@code Student} phone numbers. It contains
+ * a foreign key from the {@code Student} table. This table stores one or more
+ * phone numbers of a single {@code Student}
+ * 
+ * @author Oguejiofor Chidiebere 
+ * @since v1.0
+ */
 public class Phone  implements Bean
 {
     private String studentId;

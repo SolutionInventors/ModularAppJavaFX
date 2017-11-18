@@ -10,6 +10,11 @@ import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
+/**
+ * 
+ * @author Chidiebere
+ *
+ */
 public class ModularClassManager
 {
     public static boolean createNewClass( ModularClass newClass) 

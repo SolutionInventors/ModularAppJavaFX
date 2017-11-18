@@ -3,7 +3,12 @@ package database.bean;
 import java.sql.Date;
 
 /**
- * This object represents single  Class in the database. The Class groups 
+ * This object represents single  {@code ModularClass} table in the database. 
+ * The {@code ModularClass} table contains basic information about a class
+ * namely the class's name and when it was created. <br>
+ * The date of creation is automatically set in the database. <br>
+ * A {@code ModularClass } is later used to group {@code Student}s in the 
+ * database 
  * @author Chidiebere
  * @since v1.0
  */

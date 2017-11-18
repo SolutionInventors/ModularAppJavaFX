@@ -4,17 +4,28 @@ import java.sql.Date;
 
 /**
  * Objects of this {@code ModuleRegister} represent a single row of the 
- * {@code ModuleRegister } table in the database
+ * {@code ModuleRegister } table in the database. The {@code ModuleRegister} table
+ * is used to keep track of the modules that a {@code Student} has registered for.
+ * It contains informations like the module that was  registered for, the student's Id ,
+ * the result of the module  if the module is complete, 
+ * the booking status, the date the module was registered and so on.<br>
+ * This id of a {@code ModuleRegister} is used as a foreign key in the {@link Payment}  
+ * table to keep store the payment data of the {@code ModuleRegister}<br>
+ * This class contains three constructors
+ * 
  * @author Oguejiofor Chidiebere
- *
+ *@see Module 
+ *@see Payment 
  */
 
 public class ModuleRegister  implements Bean
 {
-    
+    /**This is an auto-incrementing primary key of this object*/
     private int id;
+    
     /**Foreign key from the Module table*/
     private String moduleName;
+    
     /**Foreign key from the Student table*/
     private String studentId;
     
@@ -27,17 +38,31 @@ public class ModuleRegister  implements Bean
     
     public ModuleRegister(){}
     
-    public ModuleRegister(  int id , String moduleId, String studentId){
-	setId( id );
+    /**
+     * Initializes this object with the moduleId and studentId. Objects created with this
+     * constructor can be added to the database. 
+     * @param moduleId the foreign key from the {@code Module } table
+     * @param studentId the foreing key from the {@code Student} table
+     */
+    public ModuleRegister(  String moduleId, String studentId){
 	setModuleName(moduleId);
 	setStudentId(studentId);
 	
     }
     
-    public ModuleRegister( int id , String moduleName , String studentId, boolean paid,
+    /**
+     * 
+     * @param moduleName
+     * @param studentId
+     * @param paid
+     * @param booked
+     * @param attended
+     * @param result
+     */
+    public ModuleRegister( String moduleName , String studentId, boolean paid,
 	    boolean booked, boolean attended, String result )
     {
-	this( id, moduleName, studentId);
+	this(  moduleName, studentId);
 	setPaymentStatus( paid );
 	setBookingStatus(booked);
 	setAttended(attended);
@@ -166,6 +191,11 @@ public class ModuleRegister  implements Bean
 	else
 	   this.result = null;
     }
+    
+    /**
+     * Gets the id of this object. This value is used in the {@code Payment} table
+     * @return an {@code int} representing the id of this object. 
+     */ 
     public int getId()
     {
 	return id;

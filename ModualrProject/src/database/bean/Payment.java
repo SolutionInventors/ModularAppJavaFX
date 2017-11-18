@@ -2,6 +2,16 @@ package database.bean;
 
 import java.sql.Date;
 
+/**
+ * This class represents a single entity in the {@code Payment} table in the
+ * database. The {@code Payment } is used to store informations of how a student
+ * makes {@code Payment} for a {@code Module } he registered for. This object
+ * contains a link to the {@link ModuleRegister} table stored in this object's
+ * module register id. 
+ * @author Oguejiofor Chidiebere
+ * @see ModuleRegister
+ *@since v1.0
+ */
 public class Payment implements Bean 
 {
     private int id;

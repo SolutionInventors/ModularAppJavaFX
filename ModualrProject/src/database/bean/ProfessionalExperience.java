@@ -2,6 +2,11 @@ package database.bean;
 
 import java.sql.Date;
 
+/**
+ * 
+ * @author Oguejiofor Chidiebere
+ *
+ */
 public class ProfessionalExperience implements Bean
 {
     private String studentId;
