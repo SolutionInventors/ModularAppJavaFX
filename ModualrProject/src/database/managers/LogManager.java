@@ -1,8 +1,19 @@
 package database.managers;
 
-import database.bean.log.Log;
-
-public class LogManager implements Log
+public class LogManager  
 {
-
+//    public static String[] getLog( LogType type)
+//    {
+//	String query = null ;
+//	
+//	switch (type)
+//	{
+//	    case BIODATA:
+//		
+//		break;
+//	
+//	    default:
+//		break;
+//	}
+//    }
 }

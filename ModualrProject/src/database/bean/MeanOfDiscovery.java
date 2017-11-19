@@ -12,6 +12,9 @@ package database.bean;
  */
 public class MeanOfDiscovery implements Bean
 {
+    
+    private static final long serialVersionUID = 5966524786874151452L;
+    
     private String studentId;
     private String means;
     

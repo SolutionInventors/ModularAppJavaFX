@@ -75,7 +75,7 @@ public class ModuleTest
 	    System.out.println("-------------UPDATING AN EXISTING CLASS TEST--------------");
 
 	    name = TestUtils.getStringInput("Enter the existing module name: ");
-	    
+
 	    existingModule = new Module( name ); // ony name is required for existing module
 	    newModule = getNewModule();// name, numberOfUnits and amount are all required for units
 	    try
@@ -125,11 +125,11 @@ public class ModuleTest
 	String name = TestUtils.getStringInput("Enter the new module name: ");
 
 	int numberOfUnits = Integer.parseInt(
-	    TestUtils.getStringInput("Enter the number of units for this module: "));
+		TestUtils.getStringInput("Enter the number of units for this module: "));
 
 
 	double amount  = Double.parseDouble(
-	    TestUtils.getStringInput("Enter the amount per unit for this module: "));
+		TestUtils.getStringInput("Enter the amount per unit for this module: "));
 
 	/*This constructor should be used when adding a new  Module*/
 	Module newModule = new Module(name, numberOfUnits, amount);

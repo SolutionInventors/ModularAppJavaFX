@@ -7,7 +7,8 @@ import java.io.Serializable;
  * @author Oguejiofor Chidiebere
  *
  */
-public interface Bean extends Serializable{
+public interface Bean extends Serializable
+{
     
     /**
      * Checks that a {@code String} has only letters and space.
