@@ -99,7 +99,7 @@ public class Sponsor implements Bean
     
     public void setTelephone(String telephone)
     {
-        this.telephone = Bean.removeExtraSpaces( telephone);
+        this.telephone = Bean.removeExtraSpaces( telephone.replace("-", ""));
     }
 
     /**

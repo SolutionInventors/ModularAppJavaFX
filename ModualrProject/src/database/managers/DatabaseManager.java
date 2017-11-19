@@ -23,7 +23,7 @@ public class DatabaseManager
      * @return a {@code CallableStatement} object that can be executed
      * @throws SQLException when an error occurs at the database level.
      */
-    protected static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException{
+    public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
 
 	CallableStatement statement =  conn.prepareCall(

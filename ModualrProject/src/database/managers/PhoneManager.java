@@ -13,6 +13,13 @@ import exception.InvalidBeanException;
 
 public class PhoneManager
 {
+    /**
+     * Inserts a new {@code Phone} into the databasse
+     * @param newNumber
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
     public static boolean insert( Phone newNumber) 
 	    throws SQLException, InvalidAdminException
     {

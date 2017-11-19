@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2017 at 04:10 PM
+-- Generation Time: Nov 18, 2017 at 08:27 AM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -47,7 +47,7 @@ end$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `createNewClass` (IN `name` VARCHAR(30), OUT `creationDate` DATE)  BEGIN
 set creationDate = now();
 
-INSERT INTO `class`(`name`, `dateCreated`)
+INSERT INTO `modular_class`(`name`, `dateCreated`)
 VALUES (name ,creationDate);
 end$$
 
@@ -89,7 +89,7 @@ LIMIT startIndex, 30 ;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getClass` (IN `name` VARCHAR(30))  BEGIN
-SELECT * FROM  class 
+SELECT * FROM  Modular_class 
 	WHERE class.name =  TRIM(name) ;
 end$$
 
@@ -100,7 +100,7 @@ SELECT * FROM class
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getClassesByIndex` (IN `startIndex` INT)  BEGIN
-SELECT * FROM class 
+SELECT * FROM Modular_class 
 LIMIT startIndex , 30 ;
 END$$
 
@@ -135,7 +135,7 @@ WHERE certificate.name = certName;
 end$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `removeClass` (IN `name` VARCHAR(30))  BEGIN
-DELETE FROM `class`
+DELETE FROM `Modular_class`
 	WHERE class.name =  TRIM(name) ;
 end$$
 
@@ -169,7 +169,7 @@ SET `name`= TRIM(newName) WHERE oldCertName = `name` ;
 end$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `updateClass` (IN `oldClassName` VARCHAR(100), IN `newClassName` VARCHAR(100), OUT `creationDate` DATE)  BEGIN
-update class SET class.name = newClassName
+update Modular_class as class SET class.name = newClassName
 WHERE class.name = oldClassName;
 SELECT class.dateCreated from class
 	WHERE class.name = newClassName into @date;
@@ -249,9 +249,9 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`username`, `password`) VALUES
-('Chidi', 'fb47addd47867ce9db8d9a31275977b3d4162f4a9cd6557b40499c1e10414bc4iGt'),
 ('Chidiebere', '00dc3f179a5f2dae51dd59577a06190bac64d302ab6ecc71fd77015064a442bdUJe'),
-('Hello', 'd9473a6b2ca91281dbc8cefff9e210c37437069f4dc830d0c89bed008b50b2dcTPf');
+('Enoch', '69eccf6a4d6e8fd120662d013e2291dafe18c1d91bcb52b10eaaea435a11fa85Ydp'),
+('Kolawole', 'abfcf75bf54a27dcc879290128c4dbc2b639405ef17e0ce16ac27c52bdc0f8bchyJ');
 
 -- --------------------------------------------------------
 
@@ -391,44 +391,6 @@ INSERT INTO `certificatemodule` (`certificateName`, `moduleName`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `class`
---
-
-CREATE TABLE `class` (
-  `name` varchar(30) COLLATE latin1_bin NOT NULL,
-  `dateCreated` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
-
---
--- Dumping data for table `class`
---
-
-INSERT INTO `class` (`name`, `dateCreated`) VALUES
-('Stream 1', '2017-11-08'),
-('Stream 2', '2017-11-07'),
-('Stream 3', '2017-11-08'),
-('Stream 9', '2017-11-08');
-
---
--- Triggers `class`
---
-DELIMITER $$
-CREATE TRIGGER `classUpdateTrigger` AFTER UPDATE ON `class` FOR EACH ROW BEGIN
-	UPDATE `student` SET `className`=  new.name WHERE `className` = old.name;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `deleteClassTrigger` BEFORE DELETE ON `class` FOR EACH ROW BEGIN
-UPDATE student SET student.className = NULL 
-	WHERE student.className = old.name;
-END
-$$
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `educational_background`
 --
 
@@ -444,28 +406,51 @@ CREATE TABLE `educational_background` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `finance`
+-- Table structure for table `means_of_discovery`
 --
 
-CREATE TABLE `finance` (
+CREATE TABLE `means_of_discovery` (
   `StudentID` varchar(50) COLLATE latin1_bin NOT NULL,
-  `FirstName` varchar(30) COLLATE latin1_bin NOT NULL,
-  `LastName` varchar(30) COLLATE latin1_bin NOT NULL,
-  `Address` varchar(200) COLLATE latin1_bin NOT NULL,
-  `Telephone` varchar(30) COLLATE latin1_bin NOT NULL,
-  `Email` varchar(100) COLLATE latin1_bin NOT NULL
+  `Means` varchar(300) COLLATE latin1_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `howyouheard`
+-- Table structure for table `modular_class`
 --
 
-CREATE TABLE `howyouheard` (
-  `StudentID` varchar(50) COLLATE latin1_bin NOT NULL,
-  `MannerOfHearing` varchar(200) COLLATE latin1_bin NOT NULL
+CREATE TABLE `modular_class` (
+  `name` varchar(30) COLLATE latin1_bin NOT NULL,
+  `dateCreated` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+--
+-- Dumping data for table `modular_class`
+--
+
+INSERT INTO `modular_class` (`name`, `dateCreated`) VALUES
+('Stream 1', '2017-11-08'),
+('Stream 2', '2017-11-07'),
+('Stream 3', '2017-11-08'),
+('Stream 9', '2017-11-08');
+
+--
+-- Triggers `modular_class`
+--
+DELIMITER $$
+CREATE TRIGGER `classUpdateTrigger` AFTER UPDATE ON `modular_class` FOR EACH ROW BEGIN
+	UPDATE `student` SET `className`=  new.name WHERE `className` = old.name;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `deleteClassTrigger` BEFORE DELETE ON `modular_class` FOR EACH ROW BEGIN
+UPDATE student SET student.className = NULL 
+	WHERE student.className = old.name;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -659,6 +644,21 @@ CREATE TABLE `professional_experience` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `sponsor`
+--
+
+CREATE TABLE `sponsor` (
+  `StudentID` varchar(50) COLLATE latin1_bin NOT NULL,
+  `FirstName` varchar(30) COLLATE latin1_bin NOT NULL,
+  `LastName` varchar(30) COLLATE latin1_bin NOT NULL,
+  `Address` varchar(200) COLLATE latin1_bin NOT NULL,
+  `Telephone` varchar(30) COLLATE latin1_bin NOT NULL,
+  `Email` varchar(100) COLLATE latin1_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `student`
 --
 
@@ -774,16 +774,16 @@ ALTER TABLE `certificatemodule`
   ADD KEY `moduleLink` (`moduleName`);
 
 --
--- Indexes for table `class`
+-- Indexes for table `means_of_discovery`
 --
-ALTER TABLE `class`
-  ADD PRIMARY KEY (`name`);
+ALTER TABLE `means_of_discovery`
+  ADD KEY `studentMeansLink` (`StudentID`);
 
 --
--- Indexes for table `finance`
+-- Indexes for table `modular_class`
 --
-ALTER TABLE `finance`
-  ADD UNIQUE KEY `StudentID` (`StudentID`);
+ALTER TABLE `modular_class`
+  ADD PRIMARY KEY (`name`);
 
 --
 -- Indexes for table `module`
@@ -816,6 +816,12 @@ ALTER TABLE `phone`
 --
 ALTER TABLE `professional_experience`
   ADD KEY `StudentLink` (`StudentId`);
+
+--
+-- Indexes for table `sponsor`
+--
+ALTER TABLE `sponsor`
+  ADD UNIQUE KEY `StudentID` (`StudentID`);
 
 --
 -- Indexes for table `student`
@@ -865,10 +871,10 @@ ALTER TABLE `certificatemodule`
   ADD CONSTRAINT `moduleLink` FOREIGN KEY (`moduleName`) REFERENCES `module` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Constraints for table `finance`
+-- Constraints for table `means_of_discovery`
 --
-ALTER TABLE `finance`
-  ADD CONSTRAINT `financeLink` FOREIGN KEY (`StudentID`) REFERENCES `student` (`id_card_number`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `means_of_discovery`
+  ADD CONSTRAINT `studentMeansLink` FOREIGN KEY (`StudentID`) REFERENCES `student` (`id_card_number`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `module_register`
@@ -890,11 +896,17 @@ ALTER TABLE `professional_experience`
   ADD CONSTRAINT `StudentLink` FOREIGN KEY (`StudentId`) REFERENCES `student` (`id_card_number`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `sponsor`
+--
+ALTER TABLE `sponsor`
+  ADD CONSTRAINT `financeLink` FOREIGN KEY (`StudentID`) REFERENCES `student` (`id_card_number`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `student`
 --
 ALTER TABLE `student`
   ADD CONSTRAINT `student_certificate_link` FOREIGN KEY (`certificateIssued`) REFERENCES `certificate` (`name`),
-  ADD CONSTRAINT `student_ibfk_1` FOREIGN KEY (`className`) REFERENCES `class` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `student_ibfk_1` FOREIGN KEY (`className`) REFERENCES `modular_class` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `student_finance`
