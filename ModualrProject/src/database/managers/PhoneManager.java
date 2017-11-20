@@ -11,7 +11,7 @@ import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class PhoneManager
+public final class PhoneManager
 {
     /**
      * Inserts a new {@code Phone} into the databasse
@@ -19,20 +19,23 @@ public class PhoneManager
      * @return
      * @throws SQLException
      * @throws InvalidAdminException
+     * @throws InvalidBeanException 
      */
     public static boolean insert( Phone newNumber) 
-	    throws SQLException, InvalidAdminException
+	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
+	if( !newNumber.isValid(ValidationType.NEW_BEAN) )
+	    throw new InvalidBeanException("The format of the phone number is invalid");
+
 	try( CallableStatement  statement  = DatabaseManager.getCallableStatement( 
-    		"{CALL addPhoneNumber(?, ? ) } ", 
-    		newNumber.getStudentId(), newNumber.getNumber());)
+		"{CALL addPhoneNumber(?, ? ) } ", 
+		newNumber.getStudentId(), newNumber.getNumber());)
 	{
-	    
+
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 )
-	        return true;
+		return true;
 	}
 	return false;
     }
@@ -47,27 +50,30 @@ public class PhoneManager
      * @throws SQLException when an a database exception occurs
      * @throws InvalidAdminException when the {@code Admin} that wants to make the change is
      * invalid 
+     * @throws InvalidBeanException 
      */
     public static boolean update( Phone oldPhone, Phone newPhone ) 
-	    throws SQLException, InvalidAdminException
+	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
-	if( oldPhone.isValid(ValidationType.EXISTING_BEAN  ) && 
-		oldPhone.getStudentId().equals( newPhone.getStudentId())){
-	     
-	    try(CallableStatement statement  = DatabaseManager.getCallableStatement( 
-		    "{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentId(),
-		    oldPhone.getNumber(), newPhone.getNumber() ); )
-	    {
-		
-		int affected = statement.executeUpdate();
-		if( affected > 0 ) return true;
-	    }
+
+	if( !oldPhone.isValid(ValidationType.EXISTING_BEAN) || 
+		!newPhone.isValid(ValidationType.NEW_BEAN)) 
+	{
+	    throw new InvalidBeanException("The format of either of the bean(s) is invalid");
 	}
+	try(CallableStatement statement  = DatabaseManager.getCallableStatement( 
+		"{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentId(),
+		oldPhone.getNumber(), newPhone.getNumber() ); )
+	{
+
+	    int affected = statement.executeUpdate();
+	    if( affected > 0 ) return true;
+	}
+
 	return false;
     }
-    
+
     /**Deletes a particular phone number from the database
      * Returns true if a value was deleted or false if the {@code Phone} object 
      * does not exist
@@ -81,17 +87,17 @@ public class PhoneManager
     public static boolean removePhone( Phone phone ) throws SQLException, InvalidAdminException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
+
 	if( !phone.isValid( ValidationType.EXISTING_BEAN ) ){
-	   throw new InvalidBeanException("The Phone format is invalid" );
+	    throw new InvalidBeanException("The Phone format is invalid" );
 	}
 	try(  CallableStatement  statement  = DatabaseManager.getCallableStatement( 
-    		"{CALL removePhoneNumber(?, ? ) } ", phone.getStudentId(), phone.getNumber());)
+		"{CALL removePhoneNumber(?, ? ) } ", phone.getStudentId(), phone.getNumber());)
 	{
 	    int affected = statement.executeUpdate();
-	    
+
 	    if( affected > 0 )
-	        return true;
+		return true;
 	}
 	return false;
     }
@@ -106,38 +112,54 @@ public class PhoneManager
      * @throws InvalidAdminException when the {@code Admin} that wants to access the
      * database the change is invalid
      */
-    public static Phone[] getPhoneNumber( Student student )
+    public static Phone[] getPhoneNumber( String studentId, int startIndex)
 	    throws SQLException, InvalidAdminException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
-	if( student.getIdCardNumber()  ==  null ){
+
+	if( studentId ==  null ){
 	    return null;
 	}
-	CallableStatement  statement = null;
+	
 	ResultSet result  = null;
 	ArrayList<Phone> list;
-	try
+	try(CallableStatement statement = DatabaseManager.getCallableStatement( 
+		    "{CALL getStudentPhoneNumber(?, ? ) } ", studentId, startIndex);
+		)
+	
 	{
-	    statement = DatabaseManager.getCallableStatement( 
-	    		"{CALL getPhoneAllPhone(? ) } ", 
-	    		student.getIdCardNumber());
-
-	    statement.setString( 1, student.getIdCardNumber() );
 	    result  = statement.executeQuery();
 	    list = new ArrayList<Phone>();
 
 	    while(  result.next() )
-	        list.add( new Phone( result.getString("student_id") , 
-	    	    result.getString("phoneNumber" )));
+		list.add( new Phone( result.getString("student_id") , 
+			result.getString("phone_number" )));
 	}
-	finally
-	{
-	    if( result != null ) result.close();
-	    if( statement != null ) statement.close();
-	}
+	
 	return list.toArray( new Phone[ list.size() ] );
     }
 
+    
+    public static Phone[] getAllByIndex( int startIndex) 
+	    throws SQLException, InvalidAdminException
+    {
+	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+
+	ResultSet result  = null;
+	ArrayList<Phone> list;
+	try(CallableStatement   statement = DatabaseManager.getCallableStatement( 
+		    "{CALL getAllPhoneNumbers(? ) } ", startIndex) ;)
+	{
+	    result  = statement.executeQuery();
+	    list = new ArrayList<Phone>();
+
+	    while(  result.next() )
+		list.add( new Phone( result.getString("student_id") , 
+			result.getString("phone_number" )));
+	}
+	
+	return list.toArray( new Phone[ list.size() ] );
+	
+    }
 
 }

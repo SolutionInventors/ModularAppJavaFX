@@ -10,7 +10,7 @@ import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class CertificateModuleManager
+public final class CertificateModuleManager
 {
 
     public static boolean addModuleToCertificate( CertificateModule certModule) 

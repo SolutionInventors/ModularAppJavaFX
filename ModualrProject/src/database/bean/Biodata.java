@@ -15,6 +15,8 @@ import exception.InvalidImageFormatException;
  */
 public class Biodata implements Bean
 {
+    private static final long serialVersionUID = -6215729185466161547L;
+    
     private String firstName;
     private String lastName;
     private String studentId;

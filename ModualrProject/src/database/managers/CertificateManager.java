@@ -12,7 +12,7 @@ import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class CertificateManager
+public final class CertificateManager
 {
     /**
      * Inserts a new {@code Certificate } into the database and returns true if the 

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import database.bean.ModuleRegister;
 import exception.InvalidAdminException;
 
-public class ModuleRegisterManager
+public final class ModuleRegisterManager
 {
     public static boolean insert( ModuleRegister register) 
 	    throws  SQLException, InvalidAdminException

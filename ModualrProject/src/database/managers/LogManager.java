@@ -1,6 +1,6 @@
 package database.managers;
 
-public class LogManager  
+public final class LogManager  
 {
 //    public static String[] getLog( LogType type)
 //    {

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import database.bean.Payment;
 
-public class PaymentManager
+public final class PaymentManager
 {
     public boolean insert( Payment payment) throws SQLException{
 

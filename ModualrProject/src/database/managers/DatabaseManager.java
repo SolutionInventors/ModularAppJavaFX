@@ -9,7 +9,7 @@ import java.sql.Statement;
 import database.bean.Admin;
 import database.bean.ValidationType;
 
-public class DatabaseManager
+public final class DatabaseManager
 {
     private static Admin currentAdmin = null ;
     

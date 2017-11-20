@@ -56,7 +56,7 @@ public interface Bean extends Serializable
 	string = string.trim();
 	while( string.matches( "\\S*\\s{2,}\\S*" ) )
 	    string = string.replaceAll("  " , " " ).replaceAll("  ", " ");
-	return string;
+	return string.replaceAll(";", "");
     }
    
     /**
@@ -83,7 +83,7 @@ public interface Bean extends Serializable
      * If this is set to {@code  ValidationType.EXISTING_BEAN} then this method checks if the {@code Bean}
      * <em><b>CAN</b></em>   exist in the database.<br>
      * 
-     * @return
+     * @return {@code true} when the object has valid data
      */
     public boolean isValid( ValidationType type);
 }

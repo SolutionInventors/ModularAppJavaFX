@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * @author Oguejiofor Chidiebere
  *
  */
-public class ConnectionManager
+public final class ConnectionManager
 {
 
 

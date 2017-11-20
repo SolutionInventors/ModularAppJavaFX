@@ -11,7 +11,7 @@ import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class ModuleManager
+public final class ModuleManager
 {
     public static boolean  addNewModule( Module newModule ) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException

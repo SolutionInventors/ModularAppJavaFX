@@ -15,7 +15,7 @@ import exception.InvalidBeanException;
  * @author Chidiebere
  *
  */
-public class ModularClassManager
+public final class ModularClassManager
 {
     public static boolean createNewClass( ModularClass newClass) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException

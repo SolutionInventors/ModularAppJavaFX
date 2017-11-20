@@ -21,7 +21,7 @@ import exception.InvalidPrimaryKeyException;
  * @author Oguejiofor Chidiebere
  *
  */
-public class AdminManager 
+public final class AdminManager 
 {
     
     /**

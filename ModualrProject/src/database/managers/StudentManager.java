@@ -1,84 +1,85 @@
 package database.managers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import database.bean.Phone;
 import database.bean.Student;
+import database.bean.StudentData;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
-public class StudentManager
+public final class StudentManager
 {
-    
-    /** 
-     * 
+
+    /**
+     * Inserts a new @code Student into the database. Note that initially the {@code Student}
+     * is active. However, you can update that value via call to method update.
      * @param student
      * @return
      * @throws SQLException 
      * @throws InvalidBeanException 
      */
-    public static boolean insert( Student newStudent ) 
-	    throws SQLException, InvalidBeanException
+    public static boolean update( Student existingStudent, Student newStudent ) throws SQLException, InvalidBeanException{
+
+	if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN)  && 
+		newStudent.isValid(ValidationType.NEW_BEAN)) ) 
+	    throw new InvalidBeanException("The student object contains some invalid values");
+
+	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		"{CALL updateStudent(?, ?,?,? ,?) } ", existingStudent.getIdCardNumber(), 
+		newStudent.getCertificateIssued(), newStudent.isActive(), 
+		newStudent.getEmailAddress());)
+	{
+	    statement.registerOutParameter(5, Types.DATE);
+	    int affected = statement.executeUpdate();
+	    newStudent.setDateAdmitted( statement.getDate(5) );
+	    if( affected == 1 ) return true;
+	}
+	return false;
+    }
+
+
+    public static boolean updateStudentData( Student existingStudent, StudentData updatedData) 
+	    throws InvalidBeanException, InvalidAdminException, SQLException
+    {
+	return StudentDataManager.update(existingStudent, updatedData) ;
+    }
+
+     public static boolean registerStudent( Student newStudent, StudentData studentData) 
+	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
 	if( ! DatabaseManager.validateAdmin() ) 
 	    throw new InvalidAdminException( "The Admin that wants to make the change is ivalid");
-	
-	if( !Student.isValid(newStudent))
+
+	if( !Student.isValid(ValidationType.NEW_BEAN, newStudent))
 	{
 	    throw new InvalidBeanException("The Student object cannot be inserted "
 		    + "Please ensure that the email, firstName and other attributes are valid.");
 	}
 
-	FileInputStream inputStream = null ;
-	CallableStatement  statement= null;
-	try
+
+	try( Connection conn =  ConnectionManager.getInstance().getConnection();
+		CallableStatement statement = 
+			DatabaseManager.getCallableStatement("insertStudent(?,?,?) ",
+				newStudent.getIdCardNumber() , newStudent.getEmailAddress() , 
+				newStudent.getModClassName() ) ; )
 	{
-	    inputStream = new FileInputStream(newStudent.getBioData().getImage());
-	    statement = DatabaseManager.getCallableStatement( 
-			    "{CALL insertStudent(?, ?, ?, ?, ?, ? ) } ", newStudent.getIdCardNumber(),
-			    newStudent.getFirstName(), newStudent.getLastName() ,
-			    newStudent.getEmailAddress(), inputStream );
-
-	    statement.setBinaryStream( "studentImage", inputStream);
-	    statement.registerOutParameter("currentDate", Types.DATE );
+	    conn.setAutoCommit( false);
 	    int affected = statement.executeUpdate();
-
-	    if( affected > 0 ){
-		newStudent.setDateAdmitted( statement.getDate("currentDate" ));
+	    if( affected > 0  && StudentDataManager.insert( studentData) )
+	    {
+		conn.commit();
+		conn.setAutoCommit( true);
 		return true;
 	    }
-	    
-
 	}
-	catch (FileNotFoundException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	finally{
 
-	    try
-	    {
-		if( inputStream != null ) inputStream.close();
-	    }
-	    catch (IOException e)
-	    {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
-
-	    if( statement!= null ) statement.close();
-	}
 	return false;
     }
 
@@ -95,124 +96,30 @@ public class StudentManager
      */
     public static Student[] getAllActiveStudents( int startIndex) throws SQLException{
 	ArrayList<Student> list;
-	CallableStatement  statement = null;
 
 	ResultSet result = null ;
-	try
+	try( CallableStatement statement = DatabaseManager.getCallableStatement( 
+		"{CALL getAllActiveStudents(?) } ", startIndex);)
 	{
-	    statement = DatabaseManager.getCallableStatement( 
-		    "{CALL getAllActiveStudents(?) } ");
-
-	    statement.setInt( 1, startIndex );
 	    result = statement.executeQuery();
 
 	    list = new ArrayList<Student>();
 
 	    while ( result.next() )
 	    {
-		String name[] = result.getString("Name" ).split(" " );
-		Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
-			result.getString("Email"), result.getBoolean( "Active"));
+		Student student =new Student(result.getString("ID Card Number"),  
+			result.getString( "class_name" ), result.getString("Email"), result.getBoolean( "Active"));
 		student.setDateAdmitted( result.getDate( "dateAdmitted" )) ;
-		File studentImage = new File(student.getName().replace(" ", "-")  + ".jpg");
-
-		getImageFromStream(result, studentImage);
-		student.setImage( studentImage );
-
-
 		list.add( student );
 	    }
 	}
-	finally
-	{
-	    if (statement!= null ) statement.close();
-	    if( result != null ) result.close();
-	} 
+	finally{
+	    if( result != null && !result.isClosed()) result.close();
+	}
+
 	return list.toArray( new Student[ list.size()] );
     }
 
-    private static void updateStudentPhoneNumbers(Student student) 
-    {
-	ResultSet result = null;
-	try(  CallableStatement statement = DatabaseManager.getCallableStatement( 
-		"{CALL getStudentPhoneNumbers(?) } "); ) 
-	{
-	    statement.setString(0, student.getIdCardNumber() );
-	    result = statement.executeQuery();
-	    ArrayList<Phone> list = new ArrayList<>();
-	    if( result.next() ){
-		String[] numbers = result.getString(0).split( "," );
-		for( int i = 0 ; i < numbers.length ; i++ )
-		{
-		    Phone phone = new Phone(student.getIdCardNumber()
-			    , numbers[i].replaceAll(" ", "" ) );
-		    list.add( phone );
-		}
-		student.setPhoneNumbers( list.toArray( new Phone[ list.size() ] ) );
-	    }
-
-
-	}
-	catch (SQLException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	finally{
-	    if( result != null )
-		try
-	    {
-		    result.close();
-	    }
-	    catch (SQLException e)
-	    {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
-
-	}
-
-    }
-
-    /**
-     * @param result
-     * @param studentImage
-     * @throws SQLException
-     * @throws IOException 
-     */
-    private static void getImageFromStream(ResultSet result, File studentImage) throws SQLException
-    {
-	InputStream input = null ;
-	FileOutputStream output = null;
-	try{
-	    input = result.getBinaryStream("Image" );
-	    output = new FileOutputStream( studentImage );
-
-	    byte[] buffer = new byte[1024];
-	    while( input.read( buffer) >0 ){
-		output.write( buffer );
-	    }
-	}
-
-	catch (IOException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	finally
-	{
-	    try
-	    {
-		if( input != null ) input.close();
-		if( output != null ) output.close();
-	    }
-	    catch (IOException e)
-	    {
-		e.printStackTrace();
-	    }
-	}
-
-    }
 
     /**
      * Gets the first 30 {@code Student}s in the database that are no longer in the
@@ -225,72 +132,28 @@ public class StudentManager
      * 
      */
     public static Student[] getAllInactiveStudents( int startIndex) throws SQLException{
-	CallableStatement  statement = null ;
 	ResultSet result = null;
 	ArrayList<Student> list = new ArrayList<Student>();;
-	try
+	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		"{CALL getAllInactiveStudents(?) } ");)
 	{
-	    statement = DatabaseManager.getCallableStatement( 
-		    "{CALL getAllInactiveStudents(?) } ");
+
 	    statement.setInt( 1, startIndex );
 	    result = statement.executeQuery();
 
 	    while ( result.next() )
 	    {
-
-		String name[] = result.getString("Name" ).split(" " );
-		Student student =new Student(result.getString("ID Card Number"),  name[0], name[1] , 
-			result.getString("Email"), result.getBoolean( "Active"));
-		student.setDateAdmitted( result.getDate( "dateRegistered" )) ;
-		File studentImage = new File(student.getName().trim().replace(" ", "-")  + ".jpg");
-
-		getImageFromStream(result, studentImage);
-		student.setImage( studentImage );
-		updateStudentPhoneNumbers( student );
-		student.setImage( studentImage );
+		Student student =new Student(result.getString("ID Card Number"),  
+			result.getString( "class_name" ), result.getString("Email"), result.getBoolean( "Active"));
+		student.setDateAdmitted( result.getDate( "dateAdmitted" )) ;
 		list.add( student );
-
 	    }
 	}
 	finally 
 	{
 	    if( result!=null) result.close();
-	    if( statement!= null ) statement.close();
 	}
 	return list.toArray( new Student[ list.size()] );
-    }
-
-    /**
-     * Inserts a new @code Student into the database. Note that initially the {@code Student}
-     * is active. However, you can update that value via call to method update.
-     * @param student
-     * @return
-     * @throws SQLException 
-     * @throws InvalidBeanException 
-     */
-    public static boolean update( Student existingStudent, Student updatedStudent ) throws SQLException, InvalidBeanException{
-
-	if( !Student.isValid( existingStudent ) ) 
-	    throw new InvalidBeanException("The student object contains some invalid values");
-
-	else if( !existingStudent.getIdCardNumber().equals( updatedStudent.getIdCardNumber() ) )
-	    throw new InvalidBeanException("The new student must have the same id as the existing Student");
-
-	try( FileInputStream input =  new FileInputStream( updatedStudent.getImage( ));
-		CallableStatement  statement = DatabaseManager.getCallableStatement( 
-			"{CALL updateStudent(?, ?,?,?, ?) } ", updatedStudent.getIdCardNumber(),
-			updatedStudent.getFirstName(), updatedStudent.getLastName(), updatedStudent.isActive(),
-			updatedStudent.getEmailAddress(), input );)
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected == 1 ) return true;
-	}
-	catch ( IOException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	return false;
     }
 
     /**
@@ -340,4 +203,72 @@ public class StudentManager
 
 	return false;
     }
+
+
+
+    private static final class StudentDataManager
+    {
+	public static  boolean insert( StudentData studData)
+		throws InvalidAdminException, InvalidBeanException, SQLException
+	{
+	    if( !DatabaseManager.validateAdmin())
+		throw new InvalidAdminException();
+
+	    if( !studData.isValid(ValidationType.NEW_BEAN) )
+		throw new InvalidBeanException("The data inputed was not valid");
+
+	    Connection conn = ConnectionManager.getInstance().getConnection();
+	    conn.setAutoCommit(false);
+	    boolean edu = EducationalBackgroundManager.insert( studData.getEducation());
+	    boolean exp = ProfessionalExperienceManager.insert( studData.getExperience());
+	    boolean bio = BiodataManager.insert( studData.getBiodata());
+	    boolean discovery = DiscoveryManager.insert( studData.getMeansOfDiscovery());
+
+	    if( edu && exp && bio && discovery 	){
+		conn.commit();
+		conn.setAutoCommit(true);
+		return true;
+
+	    }
+	    else
+	    {
+		conn.rollback();
+		conn.setAutoCommit(false);
+		return false;
+	    }
+	}
+
+	public static  boolean update(Student existingStudent,  StudentData newData) 
+		throws InvalidAdminException, InvalidBeanException, SQLException{
+	    if( !DatabaseManager.validateAdmin())
+		throw new InvalidAdminException();
+	    if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN) && 
+		    newData.isValid(ValidationType.NEW_BEAN)) ) 
+	    {
+		throw new InvalidBeanException("Some data is invalid");
+	    }
+	    Connection conn = ConnectionManager.getInstance().getConnection();
+	    conn.setAutoCommit(false);
+	    boolean edu = EducationalBackgroundManager.update( existingStudent, newData.getEducation());
+	    boolean exp = ProfessionalExperienceManager.update( existingStudent, newData.getExperience());
+	    boolean bio = BiodataManager.update(  existingStudent, newData.getBiodata());
+	    boolean discovery = DiscoveryManager.update( existingStudent, newData.getMeansOfDiscovery());
+
+	    if( edu && exp && bio && discovery 	){
+		conn.commit();
+
+		return true;
+
+	    }
+	    else
+	    {
+		conn.rollback();
+
+		return false;
+	    }
+	}
+
+    }
+
+
 }

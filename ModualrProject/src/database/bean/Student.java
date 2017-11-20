@@ -9,24 +9,29 @@ import java.sql.Date;
  */
 public class Student  implements Bean 
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
+    /**Foreign key to Modular Class table*/
+    private  String modClass;
     private String idCardNumber;
-    private Biodata biodata;
     private boolean active;
     private String emailAddress;
     private String certificateIssued;
     private Date dateAdmitted;
-    private Phone[] phoneNumbers;
     private Biodata bio;
     
-    public Student(String id, Biodata data, String mail, boolean active)
+    public Student(String id, String className,  String mail, boolean active)
     {
+	setModClass(className);
 	setIdCardNumber(id);
-	setBioData(data);
 	setEmailAddress(mail);
 	setActive(active);
     }
     
-    public Student(){}
+    public Student(){ }
     
     public String getIdCardNumber()
     {
@@ -55,26 +60,13 @@ public class Student  implements Bean
     }
 
     public static boolean isValid(ValidationType type,  Student student ){
-	if( student != null && student.getEmailAddress()  != null && 
-		 student.getBioData().isValid(type) )
+	if( student != null && student.getEmailAddress()  != null)
 	{
 	    return true;
 	}
 	return false;
     }
    
-
-
-    public Phone[] getPhoneNumbers()
-    {
-	return phoneNumbers;
-    }
-
-    public void setPhoneNumbers(Phone[] phoneNumbers)
-    {
-	this.phoneNumbers = phoneNumbers;
-    }
-
     public void setDateAdmitted(Date date)
     {
 	dateAdmitted = date;
@@ -83,16 +75,6 @@ public class Student  implements Bean
     public Date getDateAdmitted()
     {
 	return dateAdmitted ;
-    }
-
-    public Biodata getBioData()
-    {
-	return biodata;
-    }
-
-    public void setBioData(Biodata biodata)
-    {
-	this.biodata = biodata;
     }
 
     public String getCertificateIssued()
@@ -120,5 +102,15 @@ public class Student  implements Bean
     {
 	// TODO Auto-generated method stub
 	return false;
+    }
+
+    public String getModClassName()
+    {
+	return modClass;
+    }
+
+    public void setModClass(String modClass)
+    {
+	this.modClass = Bean.removeExtraSpaces(modClass);
     }
 }

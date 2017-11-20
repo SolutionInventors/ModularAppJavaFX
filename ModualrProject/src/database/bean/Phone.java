@@ -36,7 +36,7 @@ public class Phone  implements Bean
 
     public void setNumber(String number)
     {
-	this.number = Bean.removeExtraSpaces(number);
+	this.number =number.replaceAll(" " , "");
     } 
     
     /**

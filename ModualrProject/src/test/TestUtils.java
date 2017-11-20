@@ -8,11 +8,13 @@ import database.bean.Certificate;
 import database.bean.CertificateModule;
 import database.bean.ModularClass;
 import database.bean.Module;
+import database.bean.Phone;
 import database.managers.BeanType;
 import database.managers.CertificateManager;
 import database.managers.CertificateModuleManager;
 import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
+import database.managers.PhoneManager;
 import exception.InvalidAdminException;
 
 public class TestUtils
@@ -85,6 +87,14 @@ public class TestUtils
 
 
 		break;
+		
+	    case PHONE:
+		Phone[] phones  =  PhoneManager.getAllByIndex(startIndex);
+		for ( int i = 0 ; i < phones.length ; i++ ){
+
+		    System.out.println( (i+1) + ". " + phones[i].getStudentId() + "(" + 
+			    phones[i].getNumber() + ")");
+		}
 	    case BIODATA:
 		break;
 
@@ -93,8 +103,7 @@ public class TestUtils
 		break;
 	    case PAYMENT:
 		break;
-	    case PHONE:
-		break;
+	    
 	    case STUDENT:
 		break;
 	    default:
