@@ -21,7 +21,6 @@ public class Student  implements Bean
     private String emailAddress;
     private String certificateIssued;
     private Date dateAdmitted;
-    private Biodata bio;
     
     public Student(String id, String className,  String mail, boolean active)
     {
@@ -87,15 +86,6 @@ public class Student  implements Bean
 	this.certificateIssued = certificateIssued;
     }
 
-    public Biodata getBio()
-    {
-	return bio;
-    }
-
-    public void setBio(Biodata bio)
-    {
-	this.bio = bio;
-    }
 
     @Override
     public boolean isValid(ValidationType type)

@@ -16,7 +16,8 @@ package database.bean;
 public class Sponsor implements Bean
 {
     private String studentId;
-    private String name ;
+    private String firstName ;
+    private String lastName;
     private String address;
     private String telephone;
     private String email;
@@ -33,34 +34,18 @@ public class Sponsor implements Bean
      * @param phone
      * @param mail
      */
-    public Sponsor( String studId , String name , String address,
+    public Sponsor( String studId , String fName , String lName, String address,
 	    String phone, String mail )
     {
 	setStudentId(studId);
-	setName( name );
+	setFirstName( fName);
+	setLastName( lName);
 	setAddress(address);
 	setTelephone(phone);
 	setEmail(mail);
     }
     
-    /**
-     * Gets the name of the {@code Student } sponsor
-     * @return a {@code String }
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-    /**
-     * Removes any extra space in its argument and uses the resulting 
-     * {@code String} to Set the name of the {@code Student} sponsor name
-     * @param name the name of the {@code Student} sponsor name
-     */
-    public void setName(String name)
-    {
-        this.name = Bean.removeExtraSpaces( name);
-    }
+    
 
     public String getAddress()
     {
@@ -155,9 +140,36 @@ public class Sponsor implements Bean
 	    case NEW_BEAN:
 		return getStudentId() != null && getAddress()!= null &&
 		getEmail() != null && Bean.isPhoneValid( getTelephone()) && 
-		Bean.hasOnlyLetters(getName()) ;
+		validateName() ;
 	}
 	return false;
+    }
+
+    private boolean validateName()
+    {
+	
+	return Bean.hasOnlyLetters(getFirstName()) && 
+		Bean.hasOnlyLetters(getLastName());
+    }
+
+    public String getFirstName()
+    {
+	return firstName;
+    }
+
+    public void setFirstName(String firstName)
+    {
+	this.firstName = Bean.removeExtraSpaces( firstName);
+    }
+
+    public String getLastName()
+    {
+	return lastName;
+    }
+
+    public void setLastName(String lastName)
+    {
+	this.lastName = Bean.removeExtraSpaces(lastName);
     }
 
 }

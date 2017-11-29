@@ -14,7 +14,7 @@ import exception.InvalidBeanException;
 
 public final class EducationManager
 {
-    protected static boolean insert(EducationalBackground education) 
+    public static boolean insert(EducationalBackground education) 
 	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();

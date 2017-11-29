@@ -1,6 +1,9 @@
 package database.bean;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * This class represents a single row of the {@code EducationalBackground} table 
@@ -22,13 +25,17 @@ public class EducationalBackground implements Bean
     private String institution;
     private String courseRead;
     private String qualification;
-    
+
+    /**This is used to validate the the inputed dates are greater than 1917*/
+    private static final Date TEST_DATE = getTestDate();
+
     /**
      * Initialises this object with all the required attributes set to {@code null}
      * @author Oguejiofor Chidiebere
      */
     public EducationalBackground(){}
-    
+
+
     /**
      * Initialises this object by specifying the value of some data. 
      * Once this object is created it can be inserted into the database
@@ -53,8 +60,11 @@ public class EducationalBackground implements Bean
 	setInstitution(institution);
 	setCourseRead(course);
 	setQualification(qualification);
+
+
+
     }
-    
+
     /**
      * Gets a {@link java.sql.Date} object that contains the Date the {@code Student}
      * entered the institute stored in this object's  institution attribute
@@ -62,9 +72,9 @@ public class EducationalBackground implements Bean
      */
     public Date getBeginDate()
     {
-        return beginDate;
+	return beginDate;
     }
-    
+
     /**
      * Sets the begin date stored in this object
      * @param beginDate a {@link java.sql.Date} containing the Date the {@code Student}
@@ -72,31 +82,31 @@ public class EducationalBackground implements Bean
      */
     public void setBeginDate(Date beginDate)
     {
-        this.beginDate = beginDate;
+	this.beginDate = beginDate;
     }
-    
+
     /**
      * Gets a {@link java.sql.Date} object that contains the date the {@code Student}
      * left the institute stored in this object's  institution attribute
      * @return a {@link java.sql.Date}
      */
-    
+
     public Date getEndDate()
     {
-        return endDate;
+	return endDate;
     }
-    
+
     /**
      * Sets the end date stored in this object
      * @param endDate a {@link java.sql.Date} containing the Date the {@code Student}
      * entered the institute
      */
-    
+
     public void setEndDate(Date endDate)
     {
-        this.endDate = endDate;
+	this.endDate = endDate;
     }
-    
+
     /**
      * Gets the institution the {@code Student} had studied in as a {@code String}
      * 
@@ -104,28 +114,31 @@ public class EducationalBackground implements Bean
      */
     public String getInstitution()
     {
-        return institution;
+	return institution;
     }
-    
+
     /**
      * Removes the {@code String } passed to it as its argument and uses it 
-     * to set the institution attended by the {@code Student}
+     * to set the institution attended by the {@code Student}.
+     * If the argument is an empty {@code String } the {@code institution } 
+     * attribute is set to {@code null }
      * @param institution a {@code String} containing the institution name.
      */
-    public void setInstitution(String institution)
+    public void setInstitution(String institute)
     {
-        this.institution = Bean.removeExtraSpaces( institution);
+	this.institution = institute != null && institute.length() > 0 ?
+		Bean.removeExtraSpaces( institute): null ;
     }
-    
+
     /**
      * Gets the course the {@code Student } read in the specified institute.
      * @return a {@code String}
      */
     public String getCourseRead()
     {
-        return courseRead;
+	return courseRead;
     }
-    
+
     /**
      * Removes any extra spaces in its argument and uses it to set the 
      * course read by the {@code Student }
@@ -133,9 +146,10 @@ public class EducationalBackground implements Bean
      */
     public void setCourseRead(String courseRead)
     {
-        this.courseRead = Bean.removeExtraSpaces(courseRead );
+	this.courseRead = courseRead.length() > 0 ?
+		Bean.removeExtraSpaces(courseRead ): null ;;
     }
-    
+
     /**
      * Gets the qualification/certificate that the {@code Student} received from
      * the institute contained in this object
@@ -143,9 +157,9 @@ public class EducationalBackground implements Bean
      */
     public String getQualification()
     {
-        return qualification;
+	return qualification;
     }
-    
+
     /**
      * Removes the extra spaces in its argument and uses the resulting {@code String }
      * to set the qualificcation received from the {@code Student } in the institute
@@ -154,9 +168,10 @@ public class EducationalBackground implements Bean
      */
     public void setQualification(String qualification)
     {
-        this.qualification = Bean.removeExtraSpaces( qualification);
+	this.qualification =  qualification.length() > 0 ?
+		Bean.removeExtraSpaces( qualification) : null ;
     }
-    
+
     /**
      * Gets the student id card number that is being referenced by this object
      * @return a {@code String }
@@ -174,9 +189,10 @@ public class EducationalBackground implements Bean
      */
     public void setStudentId(String studentId)
     {
-	this.studentId = Bean.removeExtraSpaces( studentId);
+	this.studentId = studentId.length() > 0 ?
+		Bean.removeExtraSpaces( studentId) : null ;
     } 
-    
+
     /**
      * Checks if this object is valid based on the value of this {@link ValidationType}
      * @see Bean.isValid
@@ -185,10 +201,32 @@ public class EducationalBackground implements Bean
     @Override
     public boolean isValid(ValidationType type)
     {
-	
-	return false;
+	if( TEST_DATE != null ){
+	    return getStudentId() != null && getBeginDate() !=null  && 
+		    getEndDate() != null && getCourseRead()!= null && 
+		    getInstitution() != null && getBeginDate().before(getEndDate()) && 
+		    TEST_DATE.before(getBeginDate()) &&  TEST_DATE.before(getEndDate()) ;
+	}
+	 return getStudentId() != null && getBeginDate() !=null  && 
+		 getEndDate() != null && getCourseRead()!= null &&  
+		 getInstitution() != null && getBeginDate().before(getEndDate()) ;
+
     }
-
-   
-
+    
+    
+    private static Date getTestDate()
+    {
+	DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
+	try
+	{
+	    return  new Date( df.parse( "01-01-1917").getTime());
+	}
+	catch (ParseException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	return null ;
+    }
+    
 }

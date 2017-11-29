@@ -17,15 +17,20 @@ public class Biodata implements Bean
 {
     private static final long serialVersionUID = -6215729185466161547L;
     
-    private String firstName;
+    private String title;
+    private String middleName;
+    private String surname;
     private String lastName;
     private String studentId;
-    private String homeAddress;
+    private String permanentAddress;
+    private String currentAddress;
     private String stateOfOrigin;
     private String country;
     private String gender;
     private Date dateOfBirth;
     private String placeOfBirth;
+    private String religion;
+    
     private File image;
 
     public Biodata(){}
@@ -56,10 +61,10 @@ public class Biodata implements Bean
      * @param placeOfBirth the place the {@code Student} was born
      * @param image a {@link java.io.File } containing the image of the {@code Student}
      */
-    public Biodata( String fName, String lName, String sutdentId , String address,String state, 
+    public Biodata( String midName, String lName, String sutdentId , String address,String state, 
 	    String country, String gender, Date birth, String placeOfBirth,File image)
     {
-	setFirstName(fName);
+	setMiddleName(midName);
 	setLastName(lName);
 	setStudentId(sutdentId);
 	setHomeAddress(address);
@@ -72,23 +77,23 @@ public class Biodata implements Bean
     }
 
     /**
-     * Gets the firstName stored in this object. 
+     * Gets the middleName stored in this object. 
      * @author Oguejiofor Chidiebere 
      * @return a {@code String} object containing the first name of the {@code Student}
      */
-    public String getFirstName()
+    public String getMiddleName()
     {
-	return firstName;
+	return middleName;
     }
 
     /**
      * Sets the name of this object by removing any extra spaces that
      * may exist anywhere in the {@code String}
-     * @param fName the firstName of the {@code Student}
+     * @param fName the middleName of the {@code Student}
      */
-    public void setFirstName(String fName)
+    public void setMiddleName(String midName)
     {
-	this.firstName = Bean.removeExtraSpaces( fName);
+	this.middleName = Bean.removeExtraSpaces( midName);
     }
 
     /**
@@ -138,9 +143,9 @@ public class Biodata implements Bean
      * Gets the home address stored in this {@code Biodata}.
      * @return a {@code String} containing the student address.
      */
-    public String getHomeAddress()
+    public String getPermanentAddress()
     {
-	return homeAddress;
+	return permanentAddress;
     }
 
     /**
@@ -148,9 +153,9 @@ public class Biodata implements Bean
      * in its argument before it is set
      * @param homeAddress
      */
-    public void setHomeAddress(String homeAddress)
+    public void setHomeAddress(String address )
     {
-	this.homeAddress = Bean.removeExtraSpaces(homeAddress );
+	this.permanentAddress = Bean.removeExtraSpaces(address );
     }
 
     /**
@@ -286,9 +291,9 @@ public class Biodata implements Bean
 
     private  boolean validateName()
     {
-	if( getFirstName().length() <=  50 && 
+	if( getSurname().length() <=  50 && 
 		getLastName().length() <= 50 && 
-		getFirstName().matches( "[A-Za-z]*") && 
+		getSurname().matches( "[A-Za-z]*") && 
 		getLastName().matches( "[A-Za-z]*" )){
 	    return true;
 	}
@@ -300,7 +305,7 @@ public class Biodata implements Bean
      * {@code ValidationType.NEW_BEAN} then this method checks if  
      * ensures that none of the arguments
      * are {@code null},  that the gender is either male or female and
-     *  that the {@code firstName}  and {@code lastName} length are less than 51
+     *  that the {@code middleName}  and {@code lastName} length are less than 51
      *  and that they contain only letters.<br><br>
      *  
      *  If the {@link ValidationType } is set to {@code ValidationType.EXISTING_BEAN}
@@ -323,5 +328,45 @@ public class Biodata implements Bean
 		validateGender();
 	}
 	return false;
+    }
+
+    public String getTitle()
+    {
+	return title;
+    }
+
+    public void setTitle(String title)
+    {
+	this.title = title;
+    }
+
+    public String getSurname()
+    {
+	return surname;
+    }
+
+    public void setSurname(String surname)
+    {
+	this.surname = surname;
+    }
+
+    public String getCurrentAddress()
+    {
+	return currentAddress;
+    }
+
+    public void setFullAddress(String fullAddress)
+    {
+	this.currentAddress = Bean.removeExtraSpaces(fullAddress );
+    }
+
+    public String getReligion()
+    {
+	return religion;
+    }
+
+    public void setReligion(String religion)
+    {
+	this.religion = religion;
     }
 }

@@ -13,33 +13,73 @@ import java.sql.Types;
 
 import database.bean.Biodata;
 import database.bean.Student;
+import database.bean.ValidationType;
 import exception.InvalidAdminException;
+import exception.InvalidBeanException;
 
 public class BiodataManager
 {   
-    public boolean update( Biodata data) throws InvalidAdminException
+
+    public static boolean insert(Biodata data) 
+	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
-	
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	if( !data.isValid(ValidationType.NEW_BEAN )) throw new InvalidBeanException();
+
+
+	try( FileInputStream inStream = new FileInputStream( data.getImage());
+		CallableStatement statement =  DatabaseManager.getCallableStatement
+			("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
+				data.getStudentId(),data.getTitle(), data.getSurname(),  
+				data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+				data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+				data.getCountry(), data.getGender(), data.getDateOfBirth(), data.getPlaceOfBirth(),
+				inStream ); ) 
+
+	{
+	    int affected = statement.executeUpdate();
+	    if( affected >0 ) return true ;
+	}
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	}
 	return false;
     }
 
-    public static boolean insert(Biodata biodata)
+    public static boolean update(Student existingStudent, Biodata data) 
+	    throws InvalidAdminException, InvalidBeanException, SQLException
     {
+	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	if( !(data.isValid(ValidationType.NEW_BEAN ) && 
+		data.getStudentId().equals(existingStudent.getIdCardNumber()))){
+	    throw new InvalidBeanException();
+	}
+
+	try( FileInputStream inStream = new FileInputStream( data.getImage());
+		CallableStatement statement =  DatabaseManager.getCallableStatement
+			("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
+				data.getStudentId(),data.getTitle(), data.getSurname(),  
+				data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+				data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+				data.getCountry(), data.getGender(), data.getDateOfBirth(), data.getPlaceOfBirth(),
+				inStream ); ) 
+
+	{
+	    int affected = statement.executeUpdate();
+	    if( affected >0 ) return true ;	
+	}
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	}
 	return false;
     }
-
-    public static boolean update(Student existingStudent, Biodata biodata2)
-    {
-	
-	return false;
-    }
-
 
     private static void getImageFromStream(ResultSet result, File studentImage) throws SQLException
     {
 	InputStream input = null ;
-	FileOutputStream output = null;
+	FileOutputStream output = null;	
 	try{
 	    input = result.getBinaryStream("Image" );
 	    output = new FileOutputStream( studentImage );
@@ -71,15 +111,16 @@ public class BiodataManager
     }
 
 
-    private static void  junk(){
+    private static boolean  junk(Student newStudent) throws SQLException{
 	FileInputStream inputStream = null ;
 	CallableStatement  statement= null;
+	
 	try
 	{
-	    inputStream = new FileInputStream(newStudent.getBioData().getImage());
+	    inputStream = new FileInputStream(new File(""));
 	    statement = DatabaseManager.getCallableStatement( 
 		    "{CALL insertStudent(?, ?, ?, ?, ?, ? ) } ", newStudent.getIdCardNumber(),
-		    newStudent.getFirstName(), newStudent.getLastName() ,
+		    newStudent.getDateAdmitted(), newStudent.getEmailAddress() ,
 		    newStudent.getEmailAddress(), inputStream );
 
 	    statement.setBinaryStream( "studentImage", inputStream);
@@ -98,6 +139,11 @@ public class BiodataManager
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
+	catch (SQLException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	finally{
 
 	    try
@@ -112,6 +158,7 @@ public class BiodataManager
 
 	    if( statement!= null ) statement.close();
 	}
+	return false;
     }
 
 }

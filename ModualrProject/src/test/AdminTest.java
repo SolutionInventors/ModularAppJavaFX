@@ -1,12 +1,10 @@
 package test;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 import database.bean.Admin;
 import database.managers.AdminManager;
-import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
@@ -17,8 +15,9 @@ public class AdminTest
     {
 	Admin currentAdmin = new Admin("Chidiebere", "Fred" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
-	
 	Scanner input = new Scanner( System.in);
+	
+	System.out.println("-----------------INSERTING A NEW ADMIN---------------");
 	System.out.print("Input username: ");
 	String  name = input.nextLine();
 	System.out.print("Input password: ");
