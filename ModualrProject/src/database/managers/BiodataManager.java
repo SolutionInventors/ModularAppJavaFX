@@ -19,6 +19,7 @@ public class BiodataManager
 {   
     public boolean update( Biodata data) throws InvalidAdminException
     {
+	
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	return false;
     }
@@ -30,7 +31,7 @@ public class BiodataManager
 
     public static boolean update(Student existingStudent, Biodata biodata2)
     {
-	// TODO Auto-generated method stub
+	
 	return false;
     }
 

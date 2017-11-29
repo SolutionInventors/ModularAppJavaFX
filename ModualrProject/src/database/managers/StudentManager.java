@@ -219,7 +219,7 @@ public final class StudentManager
 
 	    Connection conn = ConnectionManager.getInstance().getConnection();
 	    conn.setAutoCommit(false);
-	    boolean edu = EducationalBackgroundManager.insert( studData.getEducation());
+	    boolean edu = EducationManager.insert( studData.getEducation());
 	    boolean exp = ProfessionalExperienceManager.insert( studData.getExperience());
 	    boolean bio = BiodataManager.insert( studData.getBiodata());
 	    boolean discovery = DiscoveryManager.insert( studData.getMeansOfDiscovery());
@@ -249,7 +249,7 @@ public final class StudentManager
 	    }
 	    Connection conn = ConnectionManager.getInstance().getConnection();
 	    conn.setAutoCommit(false);
-	    boolean edu = EducationalBackgroundManager.update( existingStudent, newData.getEducation());
+	    boolean edu = EducationManager.update( existingStudent, newData.getEducation());
 	    boolean exp = ProfessionalExperienceManager.update( existingStudent, newData.getExperience());
 	    boolean bio = BiodataManager.update(  existingStudent, newData.getBiodata());
 	    boolean discovery = DiscoveryManager.update( existingStudent, newData.getMeansOfDiscovery());

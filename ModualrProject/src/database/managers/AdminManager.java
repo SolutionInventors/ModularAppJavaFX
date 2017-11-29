@@ -5,7 +5,6 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -131,8 +130,9 @@ public final class AdminManager
 		admin = new Admin(result.getString("username"), result.getString( "password" ));
 		list.add( admin );
 	    }
-
+	    result.close();
 	}
+	
 	return list.toArray( new Admin[ list.size() ] );
     }
 
@@ -145,14 +145,18 @@ public final class AdminManager
      */
     public static int getTotalAdmin() throws SQLException, InvalidAdminException
     {
+	ResultSet result =  null;
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	try(  CallableStatement statement = DatabaseManager.getCallableStatement
 		("{Call getTotalAdmin() }");)
 	{
-	    ResultSet result = statement.executeQuery();
+	    result = statement.executeQuery();
 	    if( result.next() )
 		return result.getInt( 1 );
 	    return 0 ;
+	}
+	finally{
+	    if( result!= null ) result.close();
 	}
     }
 
@@ -180,6 +184,18 @@ public final class AdminManager
 	catch (SQLException e)
 	{
 	    e.printStackTrace();
+	}
+	finally{
+	    if( result!= null )
+		try
+		{
+		    result.close();
+		}
+		catch (SQLException e)
+		{
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
 	}
 	return false;
     }

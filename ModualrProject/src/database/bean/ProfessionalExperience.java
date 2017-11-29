@@ -9,24 +9,25 @@ import java.sql.Date;
  */
 public class ProfessionalExperience implements Bean
 {
+    private static final long serialVersionUID = -974706030724705056L;
     private String studentId;
     private Date startDate;
     private Date endDate;
     private String jobTitle;
     private String employer;
-    private String responsibility;
+    private String qualification;
 
     public ProfessionalExperience(){}
     
     public ProfessionalExperience( String studId, Date startDate, Date endDate, 
-	    String jobTitle, String employer, String responsibility  )
+	    String jobTitle, String employer, String qualification  )
     {
 	setStudId( studId);
 	setStartDate(startDate);
 	setEndDate(endDate);
 	setJobTitle(jobTitle);
 	setEmployer(employer);
-	setResponsibility(responsibility);
+	setQualification(qualification);
     }
     
     public  void setStudId(String studId)
@@ -82,25 +83,9 @@ public class ProfessionalExperience implements Bean
         return employer;
     }
 
-
-
     public void setEmployer(String employer)
     {
         this.employer = Bean.removeExtraSpaces( employer);
-    }
-
-
-
-    public String getResponsibility()
-    {
-        return responsibility;
-    }
-
-
-
-    public void setResponsibility(String responsibility)
-    {
-        this.responsibility = Bean.removeExtraSpaces( responsibility);
     }
 
     @Override
@@ -111,7 +96,7 @@ public class ProfessionalExperience implements Bean
 	    case NEW_BEAN:
 		return getStudentId() != null  && 
 		getStudentId().length() >0 &&  checkDate() && 
-		getResponsibility() != null && getJobTitle() != null;
+		getQualification() != null && getJobTitle() != null;
 		
 	    case EXISTING_BEAN:
 		return getStudentId() != null && getStudentId().length() >0;
@@ -126,6 +111,16 @@ public class ProfessionalExperience implements Bean
     {
 	return getStartDate() != null && getEndDate() != null && 
 		getStartDate().compareTo(getEndDate()) >0 ;
+    }
+
+    public String getQualification()
+    {
+	return qualification;
+    }
+
+    public void setQualification(String qualification)
+    {
+	this.qualification = Bean.removeExtraSpaces(qualification );
     }
 
     

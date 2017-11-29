@@ -4,6 +4,8 @@ import java.sql.Date;
 
 public class Certificate implements Bean
 {
+    
+    private static final long serialVersionUID = 5927417714068250875L;
     private Date dateCreated;
     private String name;
     
