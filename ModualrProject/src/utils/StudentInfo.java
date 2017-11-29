@@ -1,4 +1,4 @@
-package database.managers;
+package utils;
 
 /**
  * This enum is used to select a type of student data. It should used when updating

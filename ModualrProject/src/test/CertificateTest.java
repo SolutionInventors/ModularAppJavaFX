@@ -4,12 +4,12 @@ import java.sql.SQLException;
 
 import database.bean.Admin;
 import database.bean.Certificate;
-import database.managers.BeanType;
 import database.managers.CertificateManager;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.BeanType;
 
 public class CertificateTest
 {

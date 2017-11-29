@@ -1,4 +1,4 @@
-package database.managers;
+package utils;
 
 public enum QueryType
 {

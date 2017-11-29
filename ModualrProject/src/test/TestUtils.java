@@ -9,13 +9,13 @@ import database.bean.CertificateModule;
 import database.bean.ModularClass;
 import database.bean.Module;
 import database.bean.Phone;
-import database.managers.BeanType;
 import database.managers.CertificateManager;
 import database.managers.CertificateModuleManager;
 import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
 import database.managers.PhoneManager;
 import exception.InvalidAdminException;
+import utils.BeanType;
 
 public class TestUtils
 {

@@ -4,12 +4,12 @@ import java.sql.SQLException;
 
 import database.bean.Admin;
 import database.bean.Phone;
-import database.managers.BeanType;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.PhoneManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.BeanType;
 
 public class PhoneTest
 {
