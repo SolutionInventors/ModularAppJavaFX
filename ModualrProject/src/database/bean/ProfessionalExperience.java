@@ -1,6 +1,9 @@
 package database.bean;
 
 import java.sql.Date;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -15,19 +18,19 @@ public class ProfessionalExperience implements Bean
     private Date endDate;
     private String jobTitle;
     private String employer;
-    private String qualification;
-
+    private String[] duties;
+    
     public ProfessionalExperience(){}
     
     public ProfessionalExperience( String studId, Date startDate, Date endDate, 
-	    String jobTitle, String employer, String qualification  )
+	    String jobTitle, String employer, String... duties )
     {
 	setStudId( studId);
 	setStartDate(startDate);
 	setEndDate(endDate);
 	setJobTitle(jobTitle);
 	setEmployer(employer);
-	setQualification(qualification);
+	setDuties(duties);
     }
     
     public  void setStudId(String studId)
@@ -85,7 +88,7 @@ public class ProfessionalExperience implements Bean
 
     public void setEmployer(String employer)
     {
-        this.employer = Bean.removeExtraSpaces( employer);
+        this.employer = Bean.removeExtraSpaces( employer.toUpperCase());
     }
 
     @Override
@@ -94,9 +97,8 @@ public class ProfessionalExperience implements Bean
 	switch (type)
 	{
 	    case NEW_BEAN:
-		return getStudentId() != null  && 
-		getStudentId().length() >0 &&  checkDate() && 
-		getQualification() != null && getJobTitle() != null;
+		return getStudentId() != null  && getStudentId().length() >0 &&  
+			checkDate() && getJobTitle() != null;
 		
 	    case EXISTING_BEAN:
 		return getStudentId() != null && getStudentId().length() >0;
@@ -110,18 +112,19 @@ public class ProfessionalExperience implements Bean
     private boolean checkDate()
     {
 	return getStartDate() != null && getEndDate() != null && 
-		getStartDate().compareTo(getEndDate()) >0 ;
+		getStartDate().before(getEndDate()) ;
     }
 
-    public String getQualification()
+    public String[] getDuties()
     {
-	return qualification;
+	return duties;
     }
 
-    public void setQualification(String qualification)
+    public void setDuties(String[] duties)
     {
-	this.qualification = Bean.removeExtraSpaces(qualification );
+	Set<String> set = Arrays.stream(duties )
+			.map( duty -> duty = Bean.removeExtraSpaces(duty) )
+			.collect(Collectors.toSet()) ;
+	this.duties =  set.toArray( new String[set.size()]);
     }
-
-    
 }
