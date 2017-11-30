@@ -1,5 +1,7 @@
 package database.bean;
 
+import utils.ValidationType;
+
 /**
  * This class represents a single row in the {@code Admin} table in the database
  * @author Oguejiofor Chidiebere

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
+import utils.ValidationType;
 
 /**
  * 

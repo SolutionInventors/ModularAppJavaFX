@@ -6,7 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
+import utils.ValidationType;
 
 /**
  * This class represents a single row of the {@code EducationalBackground} table 

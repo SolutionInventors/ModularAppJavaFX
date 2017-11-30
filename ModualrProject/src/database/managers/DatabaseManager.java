@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import database.bean.Admin;
-import database.bean.ValidationType;
+import utils.ValidationType;
 
 public final class DatabaseManager
 {

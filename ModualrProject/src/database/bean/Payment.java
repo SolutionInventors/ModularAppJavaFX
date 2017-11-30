@@ -2,6 +2,8 @@ package database.bean;
 
 import java.sql.Date;
 
+import utils.ValidationType;
+
 /**
  * This class represents a single entity in the {@code Payment} table in the
  * database. The {@code Payment } is used to store informations of how a student

@@ -4,9 +4,9 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 
 import database.bean.Sponsor;
-import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public class SponsorManager
 {

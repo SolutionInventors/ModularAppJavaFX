@@ -5,11 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.bean.ValidationType;
 import database.bean.student.Phone;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public final class PhoneManager
 {

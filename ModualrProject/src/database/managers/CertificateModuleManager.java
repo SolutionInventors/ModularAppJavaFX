@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.bean.CertificateModule;
-import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public final class CertificateModuleManager
 {

@@ -2,6 +2,8 @@ package database.bean;
 
 import java.sql.Date;
 
+import utils.ValidationType;
+
 /**
  * An object of {@code Module} represents a single row of the {@code Module} table in the database
  * @author Oguejiofor Chidiebere

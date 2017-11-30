@@ -1,5 +1,7 @@
 package database.bean;
 
+import utils.ValidationType;
+
 /**
  * This object represents a single entity of a {@code CertificateModule} in 
  * the database and can be used to add a {@code Module } as a requirement

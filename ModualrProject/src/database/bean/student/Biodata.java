@@ -4,8 +4,8 @@ import java.io.File;
 import java.sql.Date;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
 import exception.InvalidImageFormatException;
+import utils.ValidationType;
 
 /** 
  * This object represents a single entity of the {@code Biodata} table in the

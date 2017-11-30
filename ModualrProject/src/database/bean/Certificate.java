@@ -2,6 +2,8 @@ package database.bean;
 
 import java.sql.Date;
 
+import utils.ValidationType;
+
 public class Certificate implements Bean
 {
     

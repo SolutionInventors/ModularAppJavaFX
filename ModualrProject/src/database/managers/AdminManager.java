@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import database.bean.Admin;
-import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 import exception.InvalidPrimaryKeyException;
+import utils.ValidationType;
 
 /**
  * An {@code AdminManager } contains static methods to insert update and 

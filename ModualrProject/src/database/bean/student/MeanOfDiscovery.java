@@ -1,7 +1,7 @@
 package database.bean.student;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
+import utils.ValidationType;
 
 /**
  * This class represents a single entity of the {@code MeanOfDiscovery } table in

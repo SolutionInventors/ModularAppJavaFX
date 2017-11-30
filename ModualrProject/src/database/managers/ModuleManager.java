@@ -7,9 +7,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.Module;
-import database.bean.ValidationType;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public final class ModuleManager
 {

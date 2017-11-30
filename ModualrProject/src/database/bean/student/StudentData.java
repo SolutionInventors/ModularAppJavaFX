@@ -3,8 +3,8 @@ package database.bean.student;
 import java.util.Arrays;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 /**
  * This object is used to seperate a {@code Student}'s data including his biodata, educational

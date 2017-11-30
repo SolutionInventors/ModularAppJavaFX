@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import database.bean.ValidationType;
 import database.bean.student.Student;
 import database.bean.student.StudentData;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public final class StudentManager
 {

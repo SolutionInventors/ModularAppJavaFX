@@ -3,7 +3,7 @@ package database.bean.student;
 import java.sql.Date;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
+import utils.ValidationType;
 
 /**
  * 

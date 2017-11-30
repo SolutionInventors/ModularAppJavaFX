@@ -1,7 +1,7 @@
 package database.bean.student;
 
 import database.bean.Bean;
-import database.bean.ValidationType;
+import utils.ValidationType;
 
 /**This class represents a single row in the Phone table
  * The {@code Phone} table stores the {@code Student} phone numbers. It contains

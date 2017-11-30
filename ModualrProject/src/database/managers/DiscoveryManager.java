@@ -3,11 +3,11 @@ package database.managers;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
-import database.bean.ValidationType;
 import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public final class DiscoveryManager
 {

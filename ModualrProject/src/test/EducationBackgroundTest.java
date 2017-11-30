@@ -7,12 +7,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import database.bean.Admin;
-import database.bean.ValidationType;
 import database.bean.student.EducationalBackground;
 import database.managers.DatabaseManager;
 import database.managers.EducationManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public class EducationBackgroundTest
 {

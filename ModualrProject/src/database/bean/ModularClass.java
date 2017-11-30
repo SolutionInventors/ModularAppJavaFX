@@ -2,6 +2,8 @@ package database.bean;
 
 import java.sql.Date;
 
+import utils.ValidationType;
+
 /**
  * This object represents single  {@code ModularClass} table in the database. 
  * The {@code ModularClass} table contains basic information about a class

@@ -1,6 +1,7 @@
 package database.bean;
 
 import database.bean.student.Student;
+import utils.ValidationType;
 
 /**
  * This object represents the {@code Sponsor} table in the database.
