@@ -3,7 +3,7 @@ package test;
 import java.sql.SQLException;
 
 import database.bean.Admin;
-import database.bean.MeanOfDiscovery;
+import database.bean.student.MeanOfDiscovery;
 import database.managers.DatabaseManager;
 import database.managers.DiscoveryManager;
 import exception.InvalidAdminException;

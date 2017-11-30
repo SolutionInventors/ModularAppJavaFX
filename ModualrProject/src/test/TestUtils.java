@@ -8,7 +8,7 @@ import database.bean.Certificate;
 import database.bean.CertificateModule;
 import database.bean.ModularClass;
 import database.bean.Module;
-import database.bean.Phone;
+import database.bean.student.Phone;
 import database.managers.CertificateManager;
 import database.managers.CertificateModuleManager;
 import database.managers.ModularClassManager;

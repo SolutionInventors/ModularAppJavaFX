@@ -11,9 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import database.bean.Biodata;
-import database.bean.Student;
 import database.bean.ValidationType;
+import database.bean.student.Biodata;
+import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 

@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.bean.Phone;
-import database.bean.Student;
 import database.bean.ValidationType;
+import database.bean.student.Phone;
+import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 

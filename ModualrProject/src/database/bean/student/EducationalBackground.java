@@ -1,9 +1,12 @@
-package database.bean;
+package database.bean.student;
 
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import database.bean.Bean;
+import database.bean.ValidationType;
 
 /**
  * This class represents a single row of the {@code EducationalBackground} table 

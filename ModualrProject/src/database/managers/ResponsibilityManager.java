@@ -4,7 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import database.bean.JobResponsibility;
+import database.bean.student.JobResponsibility;
 
 public class ResponsibilityManager
 {

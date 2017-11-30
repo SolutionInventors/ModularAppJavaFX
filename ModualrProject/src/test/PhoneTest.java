@@ -3,7 +3,7 @@ package test;
 import java.sql.SQLException;
 
 import database.bean.Admin;
-import database.bean.Phone;
+import database.bean.student.Phone;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.PhoneManager;

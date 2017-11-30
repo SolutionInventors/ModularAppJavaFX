@@ -1,8 +1,10 @@
-package database.bean;
+package database.bean.student;
 
 import java.io.File;
 import java.sql.Date;
 
+import database.bean.Bean;
+import database.bean.ValidationType;
 import exception.InvalidImageFormatException;
 
 /** 

@@ -1,4 +1,4 @@
-package database.bean;
+package database.bean.student;
 public  class JobResponsibility
     {
 	private String duty;

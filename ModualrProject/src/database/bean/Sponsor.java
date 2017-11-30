@@ -1,5 +1,7 @@
 package database.bean;
 
+import database.bean.student.Student;
+
 /**
  * This object represents the {@code Sponsor} table in the database.
  * This is inputed by a {@code Student} when he wants to register for

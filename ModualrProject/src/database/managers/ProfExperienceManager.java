@@ -5,10 +5,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import database.bean.JobResponsibility;
-import database.bean.ProfessionalExperience;
-import database.bean.Student;
 import database.bean.ValidationType;
+import database.bean.student.JobResponsibility;
+import database.bean.student.ProfessionalExperience;
+import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 

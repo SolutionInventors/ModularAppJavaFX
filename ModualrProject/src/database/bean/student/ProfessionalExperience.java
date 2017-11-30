@@ -1,9 +1,12 @@
-package database.bean;
+package database.bean.student;
 
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import database.bean.Bean;
+import database.bean.ValidationType;
 
 /**
  * 

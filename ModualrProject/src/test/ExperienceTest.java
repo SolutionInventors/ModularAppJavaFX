@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import database.bean.Admin;
-import database.bean.JobResponsibility;
-import database.bean.ProfessionalExperience;
+import database.bean.student.JobResponsibility;
+import database.bean.student.ProfessionalExperience;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.ProfExperienceManager;
