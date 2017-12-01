@@ -34,7 +34,7 @@ public class ExperienceTest
 	Date endDate = new Date( df.parse(endString).getTime() );
 
 	String jobTitle = TestUtils.getStringInput("Input the job title: ");
-	String employer = TestUtils.getStringInput("Input the company or place you worked");
+	String employer = TestUtils.getStringInput("Input the company or place you worked: ");
 
 	ProfessionalExperience experience = new 
 		ProfessionalExperience(studId, startDate, endDate,
@@ -44,11 +44,11 @@ public class ExperienceTest
 	ArrayList<String> list = new ArrayList<>();
 
 	String duty = TestUtils.getStringInput
-		("Please input a responsibity or -1 to quit");
+		("Please input a responsibity or -1 to quit: ");
 	while( !duty.trim().equals("-1") ){
 	   list.add( duty);
 	    duty = TestUtils.getStringInput
-		    ("Please input the next responsibity or -1 to quit");
+		    ("Please input the next responsibity or -1 to quit: ");
 	}
 
 	experience.setDuties( list.toArray( new String[list.size()] ) );
@@ -72,11 +72,6 @@ public class ExperienceTest
 	{
 	    e.printStackTrace();
 	}
-
-	String[] names= null;
-	Array array = ConnectionManager.getInstance().getConnection().createArrayOf("VARCHAR", names);
-	
-
     }
 
 }

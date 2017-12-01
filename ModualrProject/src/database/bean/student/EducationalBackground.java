@@ -14,7 +14,11 @@ import utils.ValidationType;
  * database. The studentId attribute of this table is a foreign key.<br>
  * This class contains two constructors one with no arguments and another that 
  * declares all the required data for an {@code EducationalBackground} to be
- * added to the database
+ * added to the database.<br>
+ * A {@code Student } may have multiple records in the {@code EducationalBackground}
+ * table with the studentId pointing to the {@code Student } table. This is required
+ * when registering a new {@code Student} into the program.
+ * 
  * @see Student
  * @author Oguejiofor Chidiebere
  *

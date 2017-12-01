@@ -101,7 +101,7 @@ public class ProfessionalExperience implements Bean
 	{
 	    case NEW_BEAN:
 		return getStudentId() != null  && getStudentId().length() >0 &&  
-			checkDate() && getJobTitle() != null;
+			checkDate() && getJobTitle() != null && getDuties().length >0;
 		
 	    case EXISTING_BEAN:
 		return getStudentId() != null && getStudentId().length() >0;

@@ -1,5 +1,7 @@
 package database.managers;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -7,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import database.bean.student.Student;
 import database.bean.student.StudentData;
@@ -51,7 +54,7 @@ public final class StudentManager
 	return StudentDataManager.update(existingStudent, updatedData) ;
     }
 
-     public static boolean registerStudent( Student newStudent, StudentData studentData) 
+    public static boolean registerStudent( Student newStudent, StudentData studentData) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
 	if( ! DatabaseManager.validateAdmin() ) 
@@ -64,97 +67,34 @@ public final class StudentManager
 	}
 
 
-	try( Connection conn =  ConnectionManager.getInstance().getConnection();
+	try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
+		Connection conn =  ConnectionManager.getInstance().getConnection();
 		CallableStatement statement = 
-			DatabaseManager.getCallableStatement("insertStudent(?,?,?) ",
+			DatabaseManager.getCallableStatement("insertStudent(?,?,?, ?, ?) ",
 				newStudent.getIdCardNumber() , newStudent.getEmailAddress() , 
-				newStudent.getModClassName() ) ; )
+				newStudent.getModClassName(), inStream ) ; )
 	{
 	    conn.setAutoCommit( false);
+	    statement.registerOutParameter(5,  Types.DATE);
 	    int affected = statement.executeUpdate();
 	    if( affected > 0  && StudentDataManager.insert( studentData) )
 	    {
 		conn.commit();
 		conn.setAutoCommit( true);
+		newStudent.setDateAdmitted( statement.getDate( 5 ) );
 		return true;
 	    }
+	    else
+		conn.rollback();
+	}
+	catch (IOException e)
+	{
+	    e.printStackTrace();
 	}
 
 	return false;
     }
 
-    /**
-     * Gets the first 30 {@code Student}s in the database that are active in the
-     * modular program starting from a specified startIndex. 
-     * It should be used to create  pages containing students in the application
-     * @param startIndex the first index that the query would return. NOte that 
-     * the first {@code Student} has index 0
-     * @return an array of {@code Student } objects
-     * @throws SQLException when a database {@code Exception} occurs
-     * @throws IOException 
-     * @throws ClassNotFoundException 
-     */
-    public static Student[] getAllActiveStudents( int startIndex) throws SQLException{
-	ArrayList<Student> list;
-
-	ResultSet result = null ;
-	try( CallableStatement statement = DatabaseManager.getCallableStatement( 
-		"{CALL getAllActiveStudents(?) } ", startIndex);)
-	{
-	    result = statement.executeQuery();
-
-	    list = new ArrayList<Student>();
-
-	    while ( result.next() )
-	    {
-		Student student =new Student(result.getString("ID Card Number"),  
-			result.getString( "class_name" ), result.getString("Email"), result.getBoolean( "Active"));
-		student.setDateAdmitted( result.getDate( "dateAdmitted" )) ;
-		list.add( student );
-	    }
-	}
-	finally{
-	    if( result != null && !result.isClosed()) result.close();
-	}
-
-	return list.toArray( new Student[ list.size()] );
-    }
-
-
-    /**
-     * Gets the first 30 {@code Student}s in the database that are no longer in the
-     * modular program starting from a specified startIndex. 
-     * It should be used to create  pages containing students in the application
-     * @param startIndex the first index that the query would return. NOte that 
-     * the first {@code Student} has index 0
-     * @return an array of {@code Student } objects
-     * @throws SQLException when a database {@code Exception} occurs
-     * 
-     */
-    public static Student[] getAllInactiveStudents( int startIndex) throws SQLException{
-	ResultSet result = null;
-	ArrayList<Student> list = new ArrayList<Student>();;
-	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		"{CALL getAllInactiveStudents(?) } ");)
-	{
-
-	    statement.setInt( 1, startIndex );
-	    result = statement.executeQuery();
-
-	    while ( result.next() )
-	    {
-		Student student =new Student(result.getString("ID Card Number"),  
-			result.getString( "class_name" ), result.getString("Email"), result.getBoolean( "Active"));
-		student.setDateAdmitted( result.getDate( "dateAdmitted" )) ;
-		list.add( student );
-	    }
-	}
-	finally 
-	{
-	    if( result!=null) result.close();
-	}
-	return list.toArray( new Student[ list.size()] );
-    }
 
     /**
      * Gets the total number of active or inactive {@code student}s in database 
@@ -208,6 +148,7 @@ public final class StudentManager
 
     private static final class StudentDataManager
     {
+	@SuppressWarnings("resource")
 	public static  boolean insert( StudentData studData)
 		throws InvalidAdminException, InvalidBeanException, SQLException
 	{
@@ -219,10 +160,47 @@ public final class StudentManager
 
 	    Connection conn = ConnectionManager.getInstance().getConnection();
 	    conn.setAutoCommit(false);
-	    boolean edu = EducationManager.insert( studData.getEducation());
-	    boolean exp = ProfExperienceManager.insert( studData.getExperience());
+
+	    boolean edu = !Arrays.stream( studData.getEducation() )
+		    .anyMatch( education-> {
+			try
+			{
+			    return EducationManager.insert( education ) == false;
+			}
+			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			{
+			    e.printStackTrace();
+			    return true;
+			}
+
+		    } );
+	    boolean exp =!Arrays.stream( studData.getExperiences() )
+		    .anyMatch( experience-> {
+			try
+			{
+			    return ProfExperienceManager.insert( experience ) == false;
+			}
+			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			{
+			    e.printStackTrace();
+			    return true;
+			}
+		    } );
+	    boolean discovery = !Arrays.stream( studData.getMeansOfDiscovery() )
+		    .anyMatch( disc-> {
+			try
+			{
+			    return DiscoveryManager.insert( disc ) == false;
+			}
+			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			{
+			    e.printStackTrace();
+			    return true;
+			}
+		    } );
+
 	    boolean bio = BiodataManager.insert( studData.getBiodata());
-	    boolean discovery = DiscoveryManager.insert( studData.getMeansOfDiscovery());
+
 
 	    if( edu && exp && bio && discovery 	){
 		conn.commit();
@@ -233,15 +211,16 @@ public final class StudentManager
 	    else
 	    {
 		conn.rollback();
-		conn.setAutoCommit(false);
+		conn.setAutoCommit(true);
 		return false;
 	    }
 	}
 
+
+	@SuppressWarnings("resource")
 	public static  boolean update(Student existingStudent,  StudentData newData) 
 		throws InvalidAdminException, InvalidBeanException, SQLException{
-	    if( !DatabaseManager.validateAdmin())
-		throw new InvalidAdminException();
+	    if( !DatabaseManager.validateAdmin()) throw new InvalidAdminException();
 	    if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN) && 
 		    newData.isValid(ValidationType.NEW_BEAN)) ) 
 	    {
@@ -249,15 +228,46 @@ public final class StudentManager
 	    }
 	    Connection conn = ConnectionManager.getInstance().getConnection();
 	    conn.setAutoCommit(false);
-	    boolean edu = EducationManager.update( existingStudent, newData.getEducation());
-	    boolean exp = ProfExperienceManager.update( existingStudent, newData.getExperience());
+
+	    boolean edu = !Arrays.stream( newData.getEducation()).anyMatch( education->{
+		try
+		{
+		    return EducationManager.update( existingStudent,education) == false ;
+		}
+		catch (SQLException | InvalidAdminException | InvalidBeanException e)
+		{
+		    e.printStackTrace();
+		    return true;
+		}
+	    });
+	    boolean exp = !Arrays.stream( newData.getExperiences()).anyMatch( experience->{
+		try
+		{
+		    return ProfExperienceManager.update( existingStudent, experience) == false;
+		}
+		catch (InvalidBeanException | InvalidAdminException e)
+		{
+		    e.printStackTrace();
+		    return true;
+		}
+	    });
+
 	    boolean bio = BiodataManager.update(  existingStudent, newData.getBiodata());
-	    boolean discovery = DiscoveryManager.update( existingStudent, newData.getMeansOfDiscovery());
+	    boolean discovery = !Arrays.stream( newData.getMeansOfDiscovery()).anyMatch( disc->{
+		try
+		{
+		    return  DiscoveryManager.update( existingStudent, disc) == false;
+		}
+		catch (InvalidBeanException | InvalidAdminException | SQLException e)
+		{
+		    e.printStackTrace();
+		    return true;
+		}
+	    });
 
 	    if( edu && exp && bio && discovery 	){
 		conn.commit();
 		return true;
-
 	    }
 	    else
 	    {

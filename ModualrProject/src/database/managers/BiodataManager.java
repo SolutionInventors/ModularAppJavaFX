@@ -26,24 +26,19 @@ public class BiodataManager
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	if( !data.isValid(ValidationType.NEW_BEAN )) throw new InvalidBeanException();
 
-
-	try( FileInputStream inStream = new FileInputStream( data.getImage());
-		CallableStatement statement =  DatabaseManager.getCallableStatement
-			("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
-				data.getStudentId(),data.getTitle(), data.getSurname(),  
-				data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
-				data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
-				data.getCountry(), data.getGender(), data.getDateOfBirth(), data.getPlaceOfBirth(),
-				inStream ); ) 
+	try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
+			data.getStudentId(),data.getTitle(), data.getSurname(),  
+			data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+			data.getCountry(), data.getGender(), data.getDateOfBirth(), 
+			data.getPlaceOfBirth()); ) 
 
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected >0 ) return true ;
 	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+
 	return false;
     }
 
@@ -56,23 +51,19 @@ public class BiodataManager
 	    throw new InvalidBeanException();
 	}
 
-	try( FileInputStream inStream = new FileInputStream( data.getImage());
-		CallableStatement statement =  DatabaseManager.getCallableStatement
-			("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
-				data.getStudentId(),data.getTitle(), data.getSurname(),  
-				data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
-				data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
-				data.getCountry(), data.getGender(), data.getDateOfBirth(), data.getPlaceOfBirth(),
-				inStream ); ) 
+	try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
+			data.getStudentId(),data.getTitle(), data.getSurname(),  
+			data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+			data.getCountry(), data.getGender(), data.getDateOfBirth(),
+			data.getPlaceOfBirth()); ) 
 
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected >0 ) return true ;	
 	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	
 	return false;
     }
 
@@ -114,7 +105,7 @@ public class BiodataManager
     private static boolean  junk(Student newStudent) throws SQLException{
 	FileInputStream inputStream = null ;
 	CallableStatement  statement= null;
-	
+
 	try
 	{
 	    inputStream = new FileInputStream(new File(""));

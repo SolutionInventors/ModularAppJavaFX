@@ -1,4 +1,4 @@
-package database.bean;
+package utils;
 
 public enum ValidationType
 {

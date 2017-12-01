@@ -1,8 +1,10 @@
 package database.bean.student;
 
+import java.io.File;
 import java.sql.Date;
 
 import database.bean.Bean;
+import exception.InvalidImageFormatException;
 import utils.ValidationType;
 
 /**
@@ -12,11 +14,9 @@ import utils.ValidationType;
  */
 public class Student  implements Bean 
 {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 1L;
-    
+
     /**Foreign key to Modular Class table*/
     private  String modClass;
     private String idCardNumber;
@@ -24,17 +24,28 @@ public class Student  implements Bean
     private String emailAddress;
     private String certificateIssued;
     private Date dateAdmitted;
-    
-    public Student(String id, String className,  String mail, boolean active)
+
+    private File image;
+
+    /**
+     * This initialises a this {@code Student} by specifyiing the required data to 
+     * input this object into the database. 
+     * This {@code Student } can be inputed if the parameters inputed are valid. The
+     * Validity can be checked via call to {@link isValid}
+     * @param id
+     * @param className
+     * @param mail
+     */
+    public Student(String id, String className,  String mail, File image)
     {
 	setModClass(className);
 	setIdCardNumber(id);
 	setEmailAddress(mail);
-	setActive(active);
+	setImage( image);
     }
-    
+
     public Student(){ }
-    
+
     public String getIdCardNumber()
     {
 	return idCardNumber;
@@ -43,7 +54,7 @@ public class Student  implements Bean
     {
 	this.idCardNumber = idCardNumber;
     }
-    
+
     public boolean isActive()
     {
 	return active;
@@ -68,12 +79,12 @@ public class Student  implements Bean
 	}
 	return false;
     }
-   
+
     public void setDateAdmitted(Date date)
     {
 	dateAdmitted = date;
     }
-    
+
     public Date getDateAdmitted()
     {
 	return dateAdmitted ;
@@ -93,7 +104,16 @@ public class Student  implements Bean
     @Override
     public boolean isValid(ValidationType type)
     {
-	// TODO Auto-generated method stub
+	switch (type)
+	{
+	    case NEW_BEAN:
+		return getEmailAddress() != null && getEmailAddress().length() >0 &&
+		getIdCardNumber() != null && getModClassName() != null;
+
+	    case EXISTING_BEAN:
+		return getIdCardNumber() != null && getIdCardNumber().length() >0;
+
+	}
 	return false;
     }
 
@@ -106,4 +126,26 @@ public class Student  implements Bean
     {
 	this.modClass = Bean.removeExtraSpaces(modClass);
     }
+
+    public File getImage(){
+	return this.image;
+    }
+    public void setImage(File image) throws InvalidImageFormatException
+    {
+	if( image != null ){
+	    String name = image.getName();
+	    name = name.substring(name.lastIndexOf( "."), name.length() );
+
+	    boolean isValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp|.gif");
+
+	    if( isValid)
+		this.image = image;
+	    else
+		throw new InvalidImageFormatException("The student image is inalid and thus cannot be set");
+
+	}
+
+    }
+
+
 }

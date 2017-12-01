@@ -23,13 +23,14 @@ public final class DatabaseManager
      * @return a {@code CallableStatement} object that can be executed
      * @throws SQLException when an error occurs at the database level.
      */
+    @SuppressWarnings("resource")
     public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
 
 	CallableStatement statement =  conn.prepareCall(
 		sqlCall,
 		ResultSet.TYPE_FORWARD_ONLY,
-		ResultSet.CONCUR_READ_ONLY, Statement.RETURN_GENERATED_KEYS);
+		ResultSet.CONCUR_READ_ONLY);
 
 
 	for( int i =  0 ; i < arguments.length ; i++ )

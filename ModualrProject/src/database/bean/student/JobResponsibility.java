@@ -3,6 +3,7 @@ public  class JobResponsibility
     {
 	private String duty;
 	private int expId;
+	private int id;
 
 	public JobResponsibility( int expId, String duty ){
 	    setExpId(expId);
@@ -25,5 +26,13 @@ public  class JobResponsibility
 	{
 	    this.expId = expId;
 	}
-
+	public int getId()
+	{
+	    return id;
+	}
+	public void setId(int id)
+	{
+	    this.id = id;
+	}
+	
     }

@@ -1,10 +1,8 @@
 package database.bean.student;
 
-import java.io.File;
 import java.sql.Date;
 
 import database.bean.Bean;
-import exception.InvalidImageFormatException;
 import utils.ValidationType;
 
 /** 
@@ -33,7 +31,6 @@ public class Biodata implements Bean
     private String placeOfBirth;
     private String religion;
     
-    private File image;
 
     public Biodata(){}
 
@@ -63,19 +60,24 @@ public class Biodata implements Bean
      * @param placeOfBirth the place the {@code Student} was born
      * @param image a {@link java.io.File } containing the image of the {@code Student}
      */
-    public Biodata( String midName, String lName, String sutdentId , String address,String state, 
-	    String country, String gender, Date birth, String placeOfBirth,File image)
+    public Biodata( String studID ,String surname,  String midName, String lName, 
+	    String state, String country, String currAddr, String permanentAddr, 
+	    String gender, Date birth, String placeOfBirth, String religion)
     {
+	setStudentId( studID);
+	setSurname(surname);
 	setMiddleName(midName);
 	setLastName(lName);
-	setStudentId(sutdentId);
-	setHomeAddress(address);
+	setStudentId(studID);
+	setPermanentAddress(permanentAddr);
+	setCurrentAddress(currAddr);
 	setStateOfOrigin(state);
 	setCountry(country);
 	setGender(gender);
 	setDateOfBirth(birth);
 	setPlaceOfBirth(placeOfBirth);
-	setImage(image);
+	setReligion(religion);
+	
     }
 
     /**
@@ -155,7 +157,7 @@ public class Biodata implements Bean
      * in its argument before it is set
      * @param homeAddress
      */
-    public void setHomeAddress(String address )
+    public void setPermanentAddress(String address )
     {
 	this.permanentAddress = Bean.removeExtraSpaces(address );
     }
@@ -252,29 +254,7 @@ public class Biodata implements Bean
 	this.placeOfBirth = Bean.removeExtraSpaces( placeOfBirth);
     }
 
-    /**
-     * Gets the image of the {@code Student} stored as a {@code File} object
-     * @return a {@link java.io.File} object
-     */
-    public File getImage()
-    {
-	return image;
-    }
-
-
-    public void setImage(File image) throws InvalidImageFormatException
-    {
-	String name = image.getName();
-	name = name.substring(name.lastIndexOf( "."), name.length() );
-
-	boolean isValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp|.gif");
-
-	if( isValid)
-	    this.image = image;
-	else
-	    throw new InvalidImageFormatException("The student image is inalid and thus cannot be set");
-
-    }
+    
 
     /**
      * Checks if the specified gender is valid
@@ -357,9 +337,9 @@ public class Biodata implements Bean
 	return currentAddress;
     }
 
-    public void setFullAddress(String fullAddress)
+    public void setCurrentAddress(String currAddr)
     {
-	this.currentAddress = Bean.removeExtraSpaces(fullAddress );
+	this.currentAddress = Bean.removeExtraSpaces(currAddr );
     }
 
     public String getReligion()
