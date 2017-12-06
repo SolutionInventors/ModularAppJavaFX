@@ -16,7 +16,7 @@ import utils.ValidationType;
 public class Biodata implements Bean
 {
     private static final long serialVersionUID = -6215729185466161547L;
-    
+
     private String title;
     private String middleName;
     private String surname;
@@ -30,9 +30,12 @@ public class Biodata implements Bean
     private Date dateOfBirth;
     private String placeOfBirth;
     private String religion;
-    
 
-    public Biodata(){}
+
+    public Biodata(){
+	this("", "", "", "", "", "", "", "", "", null, "", "", "");
+
+    }
 
     /**
      * This constructor initializes this object with the studentId. This object
@@ -40,7 +43,7 @@ public class Biodata implements Bean
      * @param studentId the studentId  in the {@code Student} table
      */
     public Biodata( String studentId){
-	setStudentId(studentId);
+	this(studentId, "", "", "", "", "", "", "", "", null, "", "", "");
 
     }
 
@@ -62,7 +65,7 @@ public class Biodata implements Bean
      */
     public Biodata( String studID ,String surname,  String midName, String lName, 
 	    String state, String country, String currAddr, String permanentAddr, 
-	    String gender, Date birth, String placeOfBirth, String religion)
+	    String gender, Date birth, String placeOfBirth, String religion, String title)
     {
 	setStudentId( studID);
 	setSurname(surname);
@@ -77,7 +80,7 @@ public class Biodata implements Bean
 	setDateOfBirth(birth);
 	setPlaceOfBirth(placeOfBirth);
 	setReligion(religion);
-	
+	setTitle(title);
     }
 
     /**
@@ -97,7 +100,8 @@ public class Biodata implements Bean
      */
     public void setMiddleName(String midName)
     {
-	this.middleName = Bean.removeExtraSpaces( midName);
+	String temp = Bean.removeExtraSpaces( midName);
+	this.middleName = temp !=null ? temp : "";
     }
 
     /**
@@ -117,7 +121,8 @@ public class Biodata implements Bean
      */
     public void setLastName(String lName)
     {
-	this.lastName = Bean.removeExtraSpaces( lName);
+	String temp = Bean.removeExtraSpaces( lName);
+	this.lastName =temp!=null ? temp : "";
     }
 
 
@@ -140,7 +145,8 @@ public class Biodata implements Bean
      */
     public void setStudentId(String studentId)
     {
-	this.studentId = Bean.removeExtraSpaces(studentId);
+	String temp= Bean.removeExtraSpaces(studentId);
+	this.studentId = temp!=null ? temp : "";
     }
 
     /**
@@ -159,7 +165,8 @@ public class Biodata implements Bean
      */
     public void setPermanentAddress(String address )
     {
-	this.permanentAddress = Bean.removeExtraSpaces(address );
+	String temp = Bean.removeExtraSpaces(address );
+	this.permanentAddress = temp!=null ? temp: "";
     }
 
     /**
@@ -179,7 +186,8 @@ public class Biodata implements Bean
      */
     public void setStateOfOrigin(String stateOfOrigin)
     {
-	this.stateOfOrigin = Bean.removeExtraSpaces( stateOfOrigin);
+	String temp = Bean.removeExtraSpaces(stateOfOrigin );
+	this.stateOfOrigin = temp != null ? temp : "";
     }
 
 
@@ -198,7 +206,8 @@ public class Biodata implements Bean
      */
     public void setCountry(String country)
     {
-	this.country = Bean.removeExtraSpaces(country );
+	String temp = Bean.removeExtraSpaces(country );
+	this.country = temp!=null ? temp : "";
     }
 
     /**
@@ -223,10 +232,14 @@ public class Biodata implements Bean
     public void setGender(String gender)
     {
 	gender = Bean.removeExtraSpaces( gender);
-	gender = gender.toUpperCase().equals("M") ? "Male": gender;
-	gender = gender.toUpperCase().equals("F") ? "Female": gender;
+	if( gender != null ){
+	    gender = gender.toUpperCase().equals("M") ? "Male": gender;
+	    gender = gender.toUpperCase().equals("F") ? "Female": gender;
+	    this.gender = gender;
+	}
+	else
+	    this.gender = "";
 
-	this.gender = gender;
     }
 
     /**
@@ -251,10 +264,11 @@ public class Biodata implements Bean
 
     public void setPlaceOfBirth(String placeOfBirth)
     {
-	this.placeOfBirth = Bean.removeExtraSpaces( placeOfBirth);
+	String temp = Bean.removeExtraSpaces( placeOfBirth);
+	this.placeOfBirth = temp!=null ? temp : "";
     }
 
-    
+
 
     /**
      * Checks if the specified gender is valid
@@ -275,8 +289,9 @@ public class Biodata implements Bean
     {
 	if( getSurname().length() <=  50 && 
 		getLastName().length() <= 50 && 
-		getSurname().matches( "[A-Za-z]*") && 
-		getLastName().matches( "[A-Za-z]*" )){
+		getSurname().matches( "[A-Za-z]{1,}") && 
+		getLastName().matches( "[A-Za-z]{1,}" ) )
+	{
 	    return true;
 	}
 	return false;
@@ -303,11 +318,14 @@ public class Biodata implements Bean
 
 	switch( type){
 	    case EXISTING_BEAN:
-		return getStudentId()!= null;
+		return getStudentId()!= null && getStudentId().length() > 0;
 	    case NEW_BEAN:
 		return getDateOfBirth() != null && validateName() && 
-		getCountry() != null  && getStudentId()!= null &&
-		validateGender();
+		getCountry().length() > 0  && getStudentId().length() > 0 &&
+		getLastName().length() >0 && getMiddleName().length() >0 && 
+		getSurname().length() >0 && getPermanentAddress().length() >0 &&
+		getCurrentAddress().length() >0 && getTitle().length() >0 &&
+		validateGender() ;
 	}
 	return false;
     }
@@ -319,7 +337,8 @@ public class Biodata implements Bean
 
     public void setTitle(String title)
     {
-	this.title = title;
+	String temp = Bean.removeExtraSpaces( title);
+	this.title = temp!=null ? temp : "";
     }
 
     public String getSurname()
@@ -329,7 +348,8 @@ public class Biodata implements Bean
 
     public void setSurname(String surname)
     {
-	this.surname = surname;
+	String temp = Bean.removeExtraSpaces( surname);
+	this.surname = temp != null ? temp : "";
     }
 
     public String getCurrentAddress()
@@ -339,7 +359,8 @@ public class Biodata implements Bean
 
     public void setCurrentAddress(String currAddr)
     {
-	this.currentAddress = Bean.removeExtraSpaces(currAddr );
+	String temp = Bean.removeExtraSpaces(currAddr );
+	this.currentAddress = temp!=null ? temp : "";
     }
 
     public String getReligion()
@@ -349,6 +370,7 @@ public class Biodata implements Bean
 
     public void setReligion(String religion)
     {
-	this.religion = religion;
+	String temp = Bean.removeExtraSpaces(religion );
+	this.religion = temp != null ? temp : "";
     }
 }

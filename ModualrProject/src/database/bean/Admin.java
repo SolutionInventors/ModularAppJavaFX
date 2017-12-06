@@ -9,6 +9,8 @@ import utils.ValidationType;
  */
 public class Admin implements Bean
 {
+   
+    private static final long serialVersionUID = 1656252569926714108L;
     private String username;
     private String password;
     

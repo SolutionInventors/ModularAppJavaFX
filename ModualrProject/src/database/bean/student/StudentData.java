@@ -3,7 +3,6 @@ package database.bean.student;
 import java.util.Arrays;
 
 import database.bean.Bean;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 /**

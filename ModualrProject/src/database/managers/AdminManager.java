@@ -278,5 +278,4 @@ public final class AdminManager
 	    return false;
 	}
     }
-
 }

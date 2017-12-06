@@ -16,6 +16,8 @@ import utils.ValidationType;
  */
 public class ModularClass implements Bean
 {
+    
+    private static final long serialVersionUID = -8749403889379183132L;
     private String name;
     private Date dateCreated;
     

@@ -69,10 +69,9 @@ public final class StudentManager
 
 	try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
 		Connection conn =  ConnectionManager.getInstance().getConnection();
-		CallableStatement statement = 
-			DatabaseManager.getCallableStatement("insertStudent(?,?,?, ?, ?) ",
-				newStudent.getIdCardNumber() , newStudent.getEmailAddress() , 
-				newStudent.getModClassName(), inStream ) ; )
+		CallableStatement statement = DatabaseManager.getCallableStatement("registerStudent(?,?,?, ?, ?) ",
+			newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
+			newStudent.getModClassName()) ; )
 	{
 	    conn.setAutoCommit( false);
 	    statement.registerOutParameter(5,  Types.DATE);
@@ -91,7 +90,6 @@ public final class StudentManager
 	{
 	    e.printStackTrace();
 	}
-
 	return false;
     }
 

@@ -25,6 +25,8 @@ import utils.ValidationType;
  */
 public class EducationalBackground implements Bean
 {
+
+    private static final long serialVersionUID = -3682869931501233968L;
     /**Foreign key from the {@code Student} table*/
     private String studentId;
     private Date beginDate;
@@ -133,8 +135,8 @@ public class EducationalBackground implements Bean
      */
     public void setInstitution(String institute)
     {
-	this.institution = institute != null && institute.length() > 0 ?
-		Bean.removeExtraSpaces( institute): null ;
+	String temp = Bean.removeExtraSpaces( institute);
+	this.institution = temp!=null ? temp : "";
     }
 
     /**
@@ -153,8 +155,9 @@ public class EducationalBackground implements Bean
      */
     public void setCourseRead(String courseRead)
     {
-	this.courseRead = courseRead.length() > 0 ?
-		Bean.removeExtraSpaces(courseRead ): null ;;
+	String temp = Bean.removeExtraSpaces(courseRead );
+	this.courseRead = temp !=null ? temp : "";
+		
     }
 
     /**
@@ -175,8 +178,8 @@ public class EducationalBackground implements Bean
      */
     public void setQualification(String qualification)
     {
-	this.qualification =  qualification.length() > 0 ?
-		Bean.removeExtraSpaces( qualification) : null ;
+	String temp =  Bean.removeExtraSpaces( qualification);
+	this.qualification =  temp != null ? temp : "";
     }
 
     /**
@@ -196,8 +199,13 @@ public class EducationalBackground implements Bean
      */
     public void setStudentId(String studentId)
     {
-	this.studentId = studentId.length() > 0 ?
-		Bean.removeExtraSpaces( studentId) : null ;
+	if( studentId != null ){
+	    this.studentId = studentId.length() > 0 ?
+		    Bean.removeExtraSpaces( studentId) : "" ;
+		  
+	}
+	else
+	    this.studentId = "";
     } 
 
     /**
@@ -209,18 +217,18 @@ public class EducationalBackground implements Bean
     public boolean isValid(ValidationType type)
     {
 	if( TEST_DATE != null ){
-	    return getStudentId() != null && getBeginDate() !=null  && 
-		    getEndDate() != null && getCourseRead()!= null && 
-		    getInstitution() != null && getBeginDate().before(getEndDate()) && 
+	    return getStudentId().length() >0 && getBeginDate() !=null  && 
+		    getEndDate() != null && getCourseRead().length() >0 && 
+		    getInstitution().length() >0  && getBeginDate().before(getEndDate()) && 
 		    TEST_DATE.before(getBeginDate()) &&  TEST_DATE.before(getEndDate()) ;
 	}
-	 return getStudentId() != null && getBeginDate() !=null  && 
-		 getEndDate() != null && getCourseRead()!= null &&  
-		 getInstitution() != null && getBeginDate().before(getEndDate()) ;
+	return getStudentId().length() >0 && getBeginDate() !=null  && 
+		getEndDate() != null && getCourseRead().length() >0 &&  
+		getInstitution().length()>0 && getBeginDate().before(getEndDate()) ;
 
     }
-    
-    
+
+
     private static Date getTestDate()
     {
 	DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
@@ -235,5 +243,5 @@ public class EducationalBackground implements Bean
 	}
 	return null ;
     }
-    
+
 }

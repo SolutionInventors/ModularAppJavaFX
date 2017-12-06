@@ -4,7 +4,6 @@ import java.io.File;
 import java.sql.Date;
 
 import database.bean.Bean;
-import exception.InvalidImageFormatException;
 import utils.ValidationType;
 
 /**
@@ -104,11 +103,17 @@ public class Student  implements Bean
     @Override
     public boolean isValid(ValidationType type)
     {
+
+
 	switch (type)
 	{
 	    case NEW_BEAN:
-		return getEmailAddress() != null && getEmailAddress().length() >0 &&
-		getIdCardNumber() != null && getModClassName() != null;
+		if( image == null ) return false;
+		String name = image.getName();
+		name = name.substring(name.lastIndexOf( "."), name.length() );
+		boolean isImageValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp|.gif");
+		return isImageValid && getEmailAddress() != null && getEmailAddress().length() >0 &&
+			getIdCardNumber() != null && getModClassName() != null;
 
 	    case EXISTING_BEAN:
 		return getIdCardNumber() != null && getIdCardNumber().length() >0;
@@ -130,21 +135,9 @@ public class Student  implements Bean
     public File getImage(){
 	return this.image;
     }
-    public void setImage(File image) throws InvalidImageFormatException
+    public void setImage(File image) 
     {
-	if( image != null ){
-	    String name = image.getName();
-	    name = name.substring(name.lastIndexOf( "."), name.length() );
-
-	    boolean isValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp|.gif");
-
-	    if( isValid)
-		this.image = image;
-	    else
-		throw new InvalidImageFormatException("The student image is inalid and thus cannot be set");
-
-	}
-
+	this.image = image;
     }
 
 

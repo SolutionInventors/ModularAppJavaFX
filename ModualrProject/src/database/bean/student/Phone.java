@@ -13,6 +13,8 @@ import utils.ValidationType;
  */
 public class Phone  implements Bean
 {
+    
+    private static final long serialVersionUID = -732018392175828811L;
     private String studentId;
     private String number;
     
