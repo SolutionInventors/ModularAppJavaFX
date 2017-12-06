@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import database.bean.Bean;
+import database.bean.Sponsor;
 import utils.ValidationType;
 
 /**
@@ -30,7 +31,7 @@ public class StudentData implements Bean
     private MeanOfDiscovery[] meansOfDiscovery;
     private Phone[] phoneNumbers;
     private ProfessionalExperience[] experiences;
-
+    private Sponsor[] sponsors;
     /**
      * 
      * @param data
@@ -39,13 +40,15 @@ public class StudentData implements Bean
      * @param experiences
      */
     public StudentData(  Biodata data, EducationalBackground[] edu,
-	    Phone[] phoneNumbers, ProfessionalExperience[] experiences, MeanOfDiscovery[] meansOfDis)
+	    Phone[] phoneNumbers, ProfessionalExperience[] experiences, 
+	    MeanOfDiscovery[] meansOfDis, Sponsor[] sponsors)
     {
 	setBiodata(data);
 	setEducation(edu);
 	setPhoneNumbers(phoneNumbers);
 	setExperiences(experiences);
 	setMeansOfDiscovery(meansOfDis);
+	setSponsors(sponsors);
     }
 
 
@@ -82,8 +85,9 @@ public class StudentData implements Bean
 		boolean isvalEdu = Arrays.stream(getEducation()).allMatch(edu->edu.isValid(ValidationType.NEW_BEAN) ) ;
 		boolean isValExp = Arrays.stream(getExperiences()).allMatch(exp->exp.isValid(ValidationType.NEW_BEAN) ) ;
 		boolean phoneVal = Arrays.stream(getPhoneNumbers()).allMatch(phone->phone.isValid(ValidationType.NEW_BEAN) );
+		boolean isSponsVal = Arrays.stream(getSponsors()).allMatch(s-> s.isValid(ValidationType.NEW_BEAN));
 		
-		return  allSame && isvalEdu && isvalMean && isValExp && phoneVal;
+		return  isSponsVal && allSame && isvalEdu && isvalMean && isValExp && phoneVal;
 			 
 	    case EXISTING_BEAN:
 		return allSame && Arrays.stream(getEducation()).allMatch(edu->edu.isValid(ValidationType.EXISTING_BEAN) ) &&
@@ -187,6 +191,24 @@ public class StudentData implements Bean
 		.filter(exp-> exp != null )
 		.collect(Collectors.toList());
 	this.experiences = list.toArray( new ProfessionalExperience[ list.size()] );
+    }
+
+
+    public Sponsor[] getSponsors()
+    {
+	return sponsors;
+    }
+
+    public void setSponsors(Sponsor[] sponsors)
+    {
+	if( sponsors == null )
+	    sponsors = new Sponsor[0];
+	List<Sponsor> list = 
+		Arrays.stream(sponsors)
+			.filter(s->s!=null )
+			.collect(Collectors.toList());
+	
+	this.sponsors = list.toArray(new Sponsor[ list.size()]);
     }
 
 }

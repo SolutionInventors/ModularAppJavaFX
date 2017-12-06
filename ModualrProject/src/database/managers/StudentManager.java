@@ -214,7 +214,21 @@ public final class StudentManager
 			}
 		    } );
 
-	    if( edu && exp && bio && discovery && phone	){
+	    boolean sponsor = Arrays.stream(studData.getSponsors()) 
+		    .allMatch(spons-> {
+			try
+			{
+			    return SponsorManager.insert(spons);
+			}
+			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			{
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			}
+			return false;
+		    });
+
+	    if( edu && exp && bio && discovery && phone && sponsor){
 		return true;
 	    }
 	    else

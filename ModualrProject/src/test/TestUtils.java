@@ -1,6 +1,10 @@
 package test;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import database.bean.Admin;
@@ -8,7 +12,11 @@ import database.bean.Certificate;
 import database.bean.CertificateModule;
 import database.bean.ModularClass;
 import database.bean.Module;
+import database.bean.Sponsor;
+import database.bean.student.EducationalBackground;
+import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Phone;
+import database.bean.student.ProfessionalExperience;
 import database.managers.CertificateManager;
 import database.managers.CertificateModuleManager;
 import database.managers.ModularClassManager;
@@ -20,13 +28,75 @@ import utils.BeanType;
 public class TestUtils
 {
 
+    /**
+     * @param studentId
+     * @return
+     */
+    public static Sponsor getSponsor(final String studentId)
+    {
+	System.out.println( "-------INPUT SPONSOR INFORMATIONS--- ");
+	String fName = TestUtils.getStringInput("Input Sponsor First Name: ");
+	String lName = TestUtils.getStringInput("Input Sponsor Last Name: ");
+	String address = TestUtils.getStringInput("Imput Sponsor Address: " );
+	String telephone =  TestUtils.getStringInput("Input Sponsor's Phone number: ");
+	String mail = TestUtils.getStringInput("Input Sponsor's email address"	);
+	Sponsor sponsor = new Sponsor(studentId, fName, lName, address, telephone, mail);
+	return sponsor;
+    }
+
+    
+
+    /**
+     * @param studId
+     * @param df
+     * @return
+     */
+    public static ProfessionalExperience getExperience(String studId, DateFormat df)
+    {
+	ProfessionalExperience exp;
+	String employer = TestUtils.getStringInput("Who eas your employer? : ");
+	String jobTitle = TestUtils.getStringInput("What was your job title? : ");
+
+	Date startDate = null ;
+	Date endDate = null;
+	try
+	{
+	    startDate = new Date( df.parse("10-10-2000").getTime());
+	    endDate = new Date(df.parse( "10-10-2009").getTime());
+	}
+	catch (ParseException e1)
+	{
+	    e1.printStackTrace();
+	}
+
+
+	ArrayList<String> duties = new ArrayList<>();
+	System.out.println("Input one of your role in the job");
+	String duty = TestUtils.getStringInput("Input a role: ");
+	duties.add( duty);
+	System.out.println("Is there a next role" );
+
+	String nextDuty = TestUtils.getStringInput("Input 1 for yes else no");
+	while( nextDuty.equals("1") ){
+	    duty = TestUtils.getStringInput("Input next role: ");
+	    duties.add( duty);
+	    System.out.println("Is there a next role?" );
+	    nextDuty = TestUtils.getStringInput("Input 1 for yes else no");
+
+	}
+	exp = new ProfessionalExperience(studId, startDate,
+		endDate, jobTitle, employer, duties.toArray( new String[duties.size()]));
+	return exp;
+    }
+
+    
     public static String getStringInput( String prompt ){
 	System.out.print( prompt );
 	String userInput = null ;
 	Scanner input = new Scanner( System.in) ;
 
 	userInput = input.nextLine();
-
+	
 	return userInput;
     }
 
@@ -114,4 +184,40 @@ public class TestUtils
 	System.out.println();
     }
 
+    /**
+     * @param studentId
+     * @return
+     */
+    public static MeanOfDiscovery getMeansOfDiscovery(String studentId)
+    {
+	String means = TestUtils.getStringInput("What is the first means by which you heard of the program ");
+	MeanOfDiscovery discObj= new MeanOfDiscovery(studentId,  means);
+	return discObj;
+    }
+
+
+    public static EducationalBackground getEducationBackground(String studId, DateFormat df)
+    {
+	String institution = TestUtils.getStringInput("Input Institution: ");
+	String beginString = TestUtils.getStringInput("Input begin date in format(dd-mm-yyyy): ");
+	String endString = TestUtils.getStringInput("Input end date in format(dd-mm-yyyy): ");
+	String course = TestUtils.getStringInput("Input the course you read : ");
+	String qualification = TestUtils.getStringInput("Input qualification received: ");
+
+	Date begin = null;
+	Date end = null;
+	try
+	{
+	    begin = new Date( df.parse( beginString).getTime() );
+	    end =  new Date(  df.parse(endString).getTime());
+	}
+	catch (ParseException e)
+	{
+	   e.printStackTrace();
+	}
+	EducationalBackground eduBack = new EducationalBackground(studId, begin, 
+		end, institution, course, qualification);
+	return eduBack;
+    }
+    
 }

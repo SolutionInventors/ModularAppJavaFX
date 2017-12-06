@@ -8,11 +8,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
 
 import database.bean.Admin;
+import database.bean.Sponsor;
 import database.bean.student.Biodata;
 import database.bean.student.EducationalBackground;
 import database.bean.student.MeanOfDiscovery;
@@ -93,14 +96,14 @@ public class StudentTest
 	ArrayList<EducationalBackground> educationList = new ArrayList<>();
 
 	System.out.println("Input first School you attended" );
-	EducationalBackground eduBack = getEducationBackground(studentId, df);
+	EducationalBackground eduBack = TestUtils.getEducationBackground(studentId, df);
 	educationList.add( eduBack);
 
 	System.out.println("Do you want to input information about the next school you attended");
 	String inputNext =  TestUtils.getStringInput("Input 1 if yes else quit");
 	while( inputNext.trim().equals( "1"))
 	{
-	    eduBack = getEducationBackground(studentId, df);
+	    eduBack = TestUtils.getEducationBackground(studentId, df);
 	    educationList.add(eduBack);
 	    System.out.println("Do you want to input information about the next school you attended");
 	    inputNext =  TestUtils.getStringInput("Input 1 if yes else quit");
@@ -114,13 +117,13 @@ public class StudentTest
 
 	System.out.println("-----Creating MeansOfDiscovery objects------" );
 	ArrayList<MeanOfDiscovery> meanList = new ArrayList<>();
-	MeanOfDiscovery discObj = getMeansOfDiscovery(studentId);
+	MeanOfDiscovery discObj = TestUtils.getMeansOfDiscovery(studentId);
 	meanList.add( discObj);
 
 	System.out.println("Is there any other way you heard of the program" );
 	inputNext = TestUtils.getStringInput("Input 1 to if so else 0 " );
 	while( inputNext.equals( "1" ) ){
-	    discObj = getMeansOfDiscovery(studentId);
+	    discObj = TestUtils.getMeansOfDiscovery(studentId);
 	    meanList.add(discObj);
 	    System.out.println("Is there any other way you heard of the program" );
 	    inputNext = TestUtils.getStringInput("Input 1 to if so else 0 " );
@@ -162,7 +165,7 @@ public class StudentTest
 	ProfessionalExperience exp;
 	ArrayList<ProfessionalExperience> expList = new ArrayList<>();
 	while( inputNext.equals("1") ){
-	    exp = getExperience(studentId, df);
+	    exp = TestUtils.getExperience(studentId, df);
 	    expList.add( exp);
 	    System.out.println("Have you worked anywhere else?" );
 	    inputNext = TestUtils.getStringInput("Input 1 if so: " );
@@ -172,13 +175,28 @@ public class StudentTest
 	    System.out.println("The ProfessionalExperience object is valid" );
 	else
 	    throw new InvalidBeanException("At least on Experience in the list is invalid" );
+	
+	System.out.println("----Creating the Sponsor aray object--------");
+	System.out.println("Do you have any sponsor? ");
+	String nextInput = TestUtils.getStringInput("Type 1 if so else no: ");
+	List<Sponsor> list = new LinkedList<>();
+	while( nextInput.equals("1") ){
+	    Sponsor sponsor = TestUtils.getSponsor(studentId);
+	    list.add( sponsor);
+	    System.out.println("Do you have any other sponsor? ");
+	    nextInput = TestUtils.getStringInput("Type 1 if so else no: ");
+
+	}
+	Sponsor[] sponsArray = list.toArray(new Sponsor[list.size()] );
+	
+	
 	EducationalBackground[] eduArray = 
 		educationList.toArray(new EducationalBackground[ educationList.size()] );
 	Phone[] phoneArray = phoneSet.toArray(new Phone[phoneSet.size()] );
 	ProfessionalExperience[] expArray = expList.toArray( new ProfessionalExperience[ expList.size()] );
 	MeanOfDiscovery[] meanArr  = meanList.toArray(new MeanOfDiscovery[meanList.size()] );
 	StudentData studentData = 
-		new StudentData(bio, eduArray,phoneArray,expArray, meanArr);
+		new StudentData(bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
 	
 	
 	if( StudentManager.registerStudent(student, studentData))
@@ -189,86 +207,8 @@ public class StudentTest
     }
 
 
-    /**
-     * @param studId
-     * @param df
-     * @return
-     */
-    public static ProfessionalExperience getExperience(String studId, DateFormat df)
-    {
-	ProfessionalExperience exp;
-	String employer = TestUtils.getStringInput("Who eas your employer? : ");
-	String jobTitle = TestUtils.getStringInput("What was your job title? : ");
-	String startString = TestUtils.getStringInput("Input the start date in format(dd-mm-yyyy): " );
-	String endString = TestUtils.getStringInput("What date did you end in format( dd-mm-yyyy)")	;
-	
-	Date startDate = null ;
-	Date endDate = null;
-	try
-	{
-	    startDate = new Date( df.parse(startString).getTime());
-	    endDate = new Date(df.parse( endString).getTime());
-	}
-	catch (ParseException e1)
-	{
-	   e1.printStackTrace();
-	}
+   
 
-
-	ArrayList<String> duties = new ArrayList<>();
-	System.out.println("Input one of your role in the job");
-	String duty = TestUtils.getStringInput("Input a role: ");
-	duties.add( duty);
-	System.out.println("Is there a next role" );
-
-	String nextDuty = TestUtils.getStringInput("Input 1 for yes else no");
-	while( nextDuty.equals("1") ){
-	    duty = TestUtils.getStringInput("Input next role: ");
-	    duties.add( duty);
-	    System.out.println("Is there a next role?" );
-	    nextDuty = TestUtils.getStringInput("Input 1 for yes else no");
-
-	}
-	exp = new ProfessionalExperience(studId, startDate,
-		endDate, jobTitle, employer, duties.toArray( new String[duties.size()]));
-	return exp;
-    }
-
-
-    /**
-     * @param studentId
-     * @return
-     */
-    public static MeanOfDiscovery getMeansOfDiscovery(String studentId)
-    {
-	String means = TestUtils.getStringInput("What is the first means by which you heard of the program ");
-	MeanOfDiscovery discObj= new MeanOfDiscovery(studentId,  means);
-	return discObj;
-    }
-
-
-    public static EducationalBackground getEducationBackground(String studId, DateFormat df)
-    {
-	String institution = TestUtils.getStringInput("Input Institution: ");
-	String beginString = TestUtils.getStringInput("Input begin date in format(dd-mm-yyyy): ");
-	String endString = TestUtils.getStringInput("Input end date in format(dd-mm-yyyy): ");
-	String course = TestUtils.getStringInput("Input the course you read : ");
-	String qualification = TestUtils.getStringInput("Input qualification received: ");
-
-	Date begin = null;
-	Date end = null;
-	try
-	{
-	    begin = new Date( df.parse( beginString).getTime() );
-	    end =  new Date(  df.parse(endString).getTime());
-	}
-	catch (ParseException e)
-	{
-	   e.printStackTrace();
-	}
-	EducationalBackground eduBack = new EducationalBackground(studId, begin, 
-		end, institution, course, qualification);
-	return eduBack;
-    }
+   
 
 }
