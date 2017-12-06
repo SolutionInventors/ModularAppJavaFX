@@ -51,7 +51,7 @@ public final class DatabaseManager
     }
     
     public static boolean  validateAdmin(){
-	if( currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
+	if( currentAdmin != null && currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
 	    return AdminManager.validateAdmin( getCurrentAdmin());
 	return false;
     }

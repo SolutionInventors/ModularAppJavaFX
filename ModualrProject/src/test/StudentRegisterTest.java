@@ -26,69 +26,33 @@ import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 import utils.ValidationType;
 
-public class StudentTest
+public class StudentRegisterTest
 {
 
     public static void main(String[] args) throws InvalidBeanException, SQLException, InvalidAdminException
     {
-	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred" ) );
-	if( !DatabaseManager.validateAdmin())
-	    throw new InvalidAdminException("The current Admin is invalid");
-	System.out.println("--------REGISTERING A NEW STUDENT TEST---------");
-
-	System.out.println("You'll need to fill the registeration form" ); 
-
-	System.out.println("\n----Creating Student Object---" );
+	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred"));
+	final String studentId = "ETY-C3";
 	JFileChooser chooser = new JFileChooser();
 	chooser.setDialogTitle("Select the image of the student");
 	chooser.showOpenDialog(null);
-	
-	final String studentId = TestUtils.getStringInput("Input Student Id card number: ");
-	String mail =  TestUtils.getStringInput("Input the student emial address: ");
-	String className = TestUtils.getStringInput("Input the student class: ");
-	System.out.println("Select File" );
-
 	File image = chooser.getSelectedFile();
-
-	Student student = new Student(studentId, className, mail, image);
-
-	if( student.isValid(ValidationType.NEW_BEAN)) 
-	    System.out.println("The Student object is valid" );
-	else
-	    throw new InvalidBeanException("The Student is not valid");
-
-	System.out.println("\n----Creating Biodata object------");
-	String surname = TestUtils.getStringInput("Input Student Surname:" );
-	String midName = TestUtils.getStringInput("Input Student MiddleName: ");
-	String lName= TestUtils.getStringInput("Input Student last name: ");
-	String state = TestUtils.getStringInput("Input the student state of origin: ");
-	String country = TestUtils.getStringInput("Input Country of origin: ") ;
-	String currAddr = TestUtils.getStringInput("Input current address: ");
-	String permAddr = TestUtils.getStringInput("Input Permanent address: ");
-	String gender = TestUtils.getStringInput("Input gender: ");
-	String birthString = TestUtils.getStringInput("Input birth date in the format(dd-mm-yyyy): ");
-	String birthPlace = TestUtils.getStringInput("Input Place of birth: ");
-	String religion = TestUtils.getStringInput("What's your religion? " );
-	String title = TestUtils.getStringInput("input your title(eg Mr, Mrs, Dr etc): ");
+	Student student = new Student(studentId, "Stream 2", "email@email.com", image);
+	
 	DateFormat df =  new SimpleDateFormat( "dd-mm-yyyy" );
 	Date birth = null;
 	try
 	{
-	    birth = new Date( df.parse( birthString).getTime());
+	    birth = new Date( df.parse( "10-10-2012").getTime());
 	}
 	catch (ParseException e)
 	{
 	   e.printStackTrace();
 	}
 
-	Biodata bio = new Biodata(studentId, surname, midName, lName, state, country, 
-		currAddr, permAddr, gender, birth, birthPlace, religion, title);
-
-	if( bio.isValid(ValidationType.NEW_BEAN)) 	
-	    System.out.println("The bio data is valid" );
-	else
-	    throw new InvalidBeanException("The bio data object is invalid" );
-
+	Biodata bio = new Biodata(studentId, "Ogu", "Chi", "Joe", "Anam",
+		"Nig", "Lagos", "Lagos", "M", birth, "Lagos", "Catholic", "Mr");
+	
 	System.out.println("-------Creating Educational Background object------");
 	ArrayList<EducationalBackground> educationList = new ArrayList<>();
 
@@ -199,15 +163,13 @@ public class StudentTest
 	ProfessionalExperience exp;
 	String employer = TestUtils.getStringInput("Who eas your employer? : ");
 	String jobTitle = TestUtils.getStringInput("What was your job title? : ");
-	String startString = TestUtils.getStringInput("Input the start date in format(dd-mm-yyyy): " );
-	String endString = TestUtils.getStringInput("What date did you end in format( dd-mm-yyyy)")	;
 	
 	Date startDate = null ;
 	Date endDate = null;
 	try
 	{
-	    startDate = new Date( df.parse(startString).getTime());
-	    endDate = new Date(df.parse( endString).getTime());
+	    startDate = new Date( df.parse("10-10-2000").getTime());
+	    endDate = new Date(df.parse( "10-10-2009").getTime());
 	}
 	catch (ParseException e1)
 	{
@@ -250,8 +212,8 @@ public class StudentTest
     public static EducationalBackground getEducationBackground(String studId, DateFormat df)
     {
 	String institution = TestUtils.getStringInput("Input Institution: ");
-	String beginString = TestUtils.getStringInput("Input begin date in format(dd-mm-yyyy): ");
-	String endString = TestUtils.getStringInput("Input end date in format(dd-mm-yyyy): ");
+	String beginString = "10-10-2001";
+	String endString = "10-10-2007";
 	String course = TestUtils.getStringInput("Input the course you read : ");
 	String qualification = TestUtils.getStringInput("Input qualification received: ");
 

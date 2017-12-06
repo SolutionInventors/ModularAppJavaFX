@@ -15,6 +15,7 @@ import database.bean.student.Biodata;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import exception.InvalidBiodataException;
 import utils.ValidationType;
 
 public class BiodataManager
@@ -24,10 +25,10 @@ public class BiodataManager
 	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !data.isValid(ValidationType.NEW_BEAN )) throw new InvalidBeanException();
+	if( !data.isValid(ValidationType.NEW_BEAN )) throw new InvalidBiodataException();
 
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
+		("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
 			data.getStudentId(),data.getTitle(), data.getSurname(),  
 			data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
 			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
@@ -48,7 +49,7 @@ public class BiodataManager
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	if( !(data.isValid(ValidationType.NEW_BEAN ) && 
 		data.getStudentId().equals(existingStudent.getIdCardNumber()))){
-	    throw new InvalidBeanException();
+	    throw new InvalidBiodataException();
 	}
 
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement

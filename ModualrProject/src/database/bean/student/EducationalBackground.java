@@ -217,15 +217,16 @@ public class EducationalBackground implements Bean
     public boolean isValid(ValidationType type)
     {
 	if( TEST_DATE != null ){
-	    return getStudentId().length() >0 && getBeginDate() !=null  && 
+	    boolean value = getStudentId().length() >0 && getBeginDate() !=null  && 
 		    getEndDate() != null && getCourseRead().length() >0 && 
 		    getInstitution().length() >0  && getBeginDate().before(getEndDate()) && 
 		    TEST_DATE.before(getBeginDate()) &&  TEST_DATE.before(getEndDate()) ;
+	    return value;
 	}
-	return getStudentId().length() >0 && getBeginDate() !=null  && 
+	boolean value =  getStudentId().length() >0 && getBeginDate() !=null  && 
 		getEndDate() != null && getCourseRead().length() >0 &&  
 		getInstitution().length()>0 && getBeginDate().before(getEndDate()) ;
-
+	return value;
     }
 
 

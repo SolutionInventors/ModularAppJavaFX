@@ -36,9 +36,7 @@ public class ExperienceTest
 	String jobTitle = TestUtils.getStringInput("Input the job title: ");
 	String employer = TestUtils.getStringInput("Input the company or place you worked: ");
 
-	ProfessionalExperience experience = new 
-		ProfessionalExperience(studId, startDate, endDate,
-			jobTitle, employer);
+	
 
 	System.out.println("Please input ");
 	ArrayList<String> list = new ArrayList<>();
@@ -51,7 +49,11 @@ public class ExperienceTest
 		    ("Please input the next responsibity or -1 to quit: ");
 	}
 
-	experience.setDuties( list.toArray( new String[list.size()] ) );
+	
+	String[] duties =  list.toArray( new String[list.size()] ) ;
+	ProfessionalExperience experience = new 
+		ProfessionalExperience(studId, startDate, endDate,
+			jobTitle, employer, duties);
 	try
 	{
 	    if( ProfExperienceManager.insert(experience) ){

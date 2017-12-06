@@ -1,14 +1,12 @@
 package database.managers;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import database.bean.student.Student;
@@ -19,21 +17,11 @@ import utils.ValidationType;
 
 public final class StudentManager
 {
-
-    /**
-     * Inserts a new @code Student into the database. Note that initially the {@code Student}
-     * is active. However, you can update that value via call to method update.
-     * @param student
-     * @return
-     * @throws SQLException 
-     * @throws InvalidBeanException 
-     */
     public static boolean update( Student existingStudent, Student newStudent ) throws SQLException, InvalidBeanException{
 
 	if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN)  && 
 		newStudent.isValid(ValidationType.NEW_BEAN)) ) 
 	    throw new InvalidBeanException("The student object contains some invalid values");
-
 	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
 		"{CALL updateStudent(?, ?,?,? ,?) } ", existingStudent.getIdCardNumber(), 
 		newStudent.getCertificateIssued(), newStudent.isActive(), 
@@ -54,6 +42,22 @@ public final class StudentManager
 	return StudentDataManager.update(existingStudent, updatedData) ;
     }
 
+    /**
+     * Registers a new {@code Student} to the program by using the {@code Student} and 
+     * {@code StudentData}. The insertion of the {@code Student} object and each 
+     * {@code StudentData} attributes is done as one atomic operation, commits the changes then 
+     * resets autoCommit to {@code true}.<br>
+     *  Note that all the attributes of the {@code StudentData} object must have thesame student id 
+     *  attribute and the {@code isValid} method for each bean is called before insertion <br>
+     * This method returns {@code true } if all the info was inputed successfully
+     *
+     * @param newStudent the {@code Student} object to be added into the database
+     * @param studentData a {@link  StudentData	} object containing info about the {@code Studnet}
+     * @return {@code true} if the new {@code Student} was registered successfully
+     * @throws SQLException when a database error occurs
+     * @throws InvalidBeanException when any {@code StudentData} attribute isValid
+     * @throws InvalidAdminException when the current {@code Admin} that wants to make the change is invalid
+     */
     public static boolean registerStudent( Student newStudent, StudentData studentData) 
 	    throws SQLException, InvalidBeanException, InvalidAdminException
     {
@@ -66,10 +70,9 @@ public final class StudentManager
 		    + "Please ensure that the email, firstName and other attributes are valid.");
 	}
 
-
 	try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
 		Connection conn =  ConnectionManager.getInstance().getConnection();
-		CallableStatement statement = DatabaseManager.getCallableStatement("registerStudent(?,?,?, ?, ?) ",
+		CallableStatement statement = DatabaseManager.getCallableStatement("{call insertStudent(?,?,?, ?, ?) }",
 			newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
 			newStudent.getModClassName()) ; )
 	{
@@ -144,9 +147,9 @@ public final class StudentManager
 
 
 
+
     private static final class StudentDataManager
     {
-	@SuppressWarnings("resource")
 	public static  boolean insert( StudentData studData)
 		throws InvalidAdminException, InvalidBeanException, SQLException
 	{
@@ -154,68 +157,73 @@ public final class StudentManager
 		throw new InvalidAdminException();
 
 	    if( !studData.isValid(ValidationType.NEW_BEAN) )
-		throw new InvalidBeanException("The data inputed was not valid");
+		throw new InvalidBeanException("Student object data inputed was not valid");
 
-	    Connection conn = ConnectionManager.getInstance().getConnection();
-	    conn.setAutoCommit(false);
-
-	    boolean edu = !Arrays.stream( studData.getEducation() )
-		    .anyMatch( education-> {
+	    boolean edu = Arrays.stream( studData.getEducation() )
+		    .allMatch( education-> {
 			try
 			{
-			    return EducationManager.insert( education ) == false;
+			    return EducationManager.insert( education ) ;
 			}
 			catch (SQLException | InvalidAdminException | InvalidBeanException e)
 			{
 			    e.printStackTrace();
-			    return true;
+			    return false;
 			}
 
 		    } );
-	    boolean exp =!Arrays.stream( studData.getExperiences() )
-		    .anyMatch( experience-> {
+
+	    boolean discovery = Arrays.stream( studData.getMeansOfDiscovery() )
+		    .allMatch( disc-> {
 			try
 			{
-			    return ProfExperienceManager.insert( experience ) == false;
+			    return DiscoveryManager.insert( disc ) ;
 			}
 			catch (SQLException | InvalidAdminException | InvalidBeanException e)
 			{
 			    e.printStackTrace();
-			    return true;
-			}
-		    } );
-	    boolean discovery = !Arrays.stream( studData.getMeansOfDiscovery() )
-		    .anyMatch( disc-> {
-			try
-			{
-			    return DiscoveryManager.insert( disc ) == false;
-			}
-			catch (SQLException | InvalidAdminException | InvalidBeanException e)
-			{
-			    e.printStackTrace();
-			    return true;
+			    return false;
 			}
 		    } );
 
 	    boolean bio = BiodataManager.insert( studData.getBiodata());
 
+	    boolean phone = Arrays.stream( studData.getPhoneNumbers())
+		    .allMatch( newPhone-> {
+			try
+			{
+			    return PhoneManager.insert( newPhone) ;
+			}
+			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			{
+			    e.printStackTrace();
+			    return false;
+			}
+		    } );
 
-	    if( edu && exp && bio && discovery 	){
-		conn.commit();
-		conn.setAutoCommit(true);
+	    boolean exp = Arrays.stream( studData.getExperiences() )
+		    .allMatch( experience-> {
+			try
+			{
+			    return ProfExperienceManager.insert( experience ) ;
+			}
+			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			{
+			    e.printStackTrace();
+			    return false;
+			}
+		    } );
+
+	    if( edu && exp && bio && discovery && phone	){
 		return true;
-
 	    }
 	    else
 	    {
-		conn.rollback();
-		conn.setAutoCommit(true);
 		return false;
 	    }
 	}
 
 
-	@SuppressWarnings("resource")
 	public static  boolean update(Student existingStudent,  StudentData newData) 
 		throws InvalidAdminException, InvalidBeanException, SQLException{
 	    if( !DatabaseManager.validateAdmin()) throw new InvalidAdminException();
@@ -224,8 +232,6 @@ public final class StudentManager
 	    {
 		throw new InvalidBeanException("Some data is invalid");
 	    }
-	    Connection conn = ConnectionManager.getInstance().getConnection();
-	    conn.setAutoCommit(false);
 
 	    boolean edu = !Arrays.stream( newData.getEducation()).anyMatch( education->{
 		try
@@ -264,13 +270,10 @@ public final class StudentManager
 	    });
 
 	    if( edu && exp && bio && discovery 	){
-		conn.commit();
 		return true;
 	    }
 	    else
 	    {
-		conn.rollback();
-
 		return false;
 	    }
 	}
