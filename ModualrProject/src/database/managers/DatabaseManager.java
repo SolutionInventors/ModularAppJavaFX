@@ -2,9 +2,9 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import database.bean.Admin;
 import utils.ValidationType;
@@ -38,7 +38,30 @@ public final class DatabaseManager
 	return statement;
     }
 
+    /**
+     * Gets a {@code PreparedStatement} object with all its attributes
+     * set to the required value<br>
+     * The object returned can be called immediately.
+     * @param sqlCall the sql statement to be executed
+     * @param arguments the arguments to that would fill the wild cards
+     * @return a {@code PreparedStatement} with its wild cards filled
+     * @throws SQLException
+     */
+    @SuppressWarnings("resource")
+    public static PreparedStatement getPreparedStatement(String sqlCall, Object ... arguments ) throws SQLException{
+   	Connection conn = ConnectionManager.getInstance().getConnection();
 
+   	PreparedStatement statement =  conn.prepareStatement(
+   		sqlCall,
+   		ResultSet.TYPE_FORWARD_ONLY,
+   		ResultSet.CONCUR_READ_ONLY);
+
+   	for( int i =  0 ; i < arguments.length ; i++ )
+   	    statement.setObject( i+1 , arguments[ i ] );
+   	return statement;
+       }
+
+    
     public static Admin getCurrentAdmin()
     {
 	return currentAdmin;

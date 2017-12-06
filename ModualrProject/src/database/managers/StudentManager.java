@@ -9,10 +9,17 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
 
+import database.bean.Sponsor;
+import database.bean.student.Biodata;
+import database.bean.student.EducationalBackground;
+import database.bean.student.MeanOfDiscovery;
+import database.bean.student.Phone;
+import database.bean.student.ProfessionalExperience;
 import database.bean.student.Student;
 import database.bean.student.StudentData;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import exception.InvalidStudentException;
 import utils.ValidationType;
 
 public final class StudentManager
@@ -42,6 +49,40 @@ public final class StudentManager
 	return StudentDataManager.update(existingStudent, updatedData) ;
     }
 
+    
+    /**
+     * Retrieves a {@code Student } information from the database and returns
+     * them in a {@code StudentData } object. This method depends on other 
+     * more specific manager classes in order to retrieve each data from the
+     * database.
+     * @param student the {@code Student} object to be retrieved
+     * @return a {@code StudentData} object if the retrieval was successful or
+     * {@code null } if there was am error when retrieving a particular information.
+     * @throws InvalidAdminException if the {@code Admin } that wants to make the
+     * change is invalid
+     * @throws SQLException when a database error occurs
+     * @throws InvalidBeanException when the object {@code Student} object is invalid.
+     * 
+     */
+    public static StudentData retrieveStudentData(Student student) 
+	    throws InvalidAdminException, SQLException, InvalidBeanException
+    {
+	if( !DatabaseManager.validateAdmin()) throw  new InvalidAdminException();
+	
+	if( !student.isValid(ValidationType.EXISTING_BEAN) ) throw new InvalidStudentException();
+	
+	Biodata data = BiodataManager.getBiodata( student);
+	EducationalBackground[] edu = EducationManager.getEducationInfo(student);
+	Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber(), 0);
+	ProfessionalExperience[] experiences = ProfExperienceManager.getExpriences( student);
+	MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
+	Sponsor[] spons =  SponsorManager.getSponsors( student);
+	StudentData studData = new StudentData(data, edu, phoneNumbers,
+		experiences, meansOfDisc, spons);
+	
+	
+	return studData.isValid(ValidationType.EXISTING_BEAN) ? studData : null;
+    }
     /**
      * Registers a new {@code Student} to the program by using the {@code Student} and 
      * {@code StudentData}. The insertion of the {@code Student} object and each 

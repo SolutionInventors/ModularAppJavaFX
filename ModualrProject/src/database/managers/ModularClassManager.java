@@ -88,12 +88,12 @@ public final class ModularClassManager
     public static ModularClass[] getClasses( int startIndex) throws SQLException, InvalidAdminException {
 	
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
+	ResultSet result = null ;
 	ArrayList<ModularClass> list = new ArrayList<>();
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call getClassesByIndex(? ) }", startIndex ))
 	{
-	    ResultSet result = statement.executeQuery() ;
+	    result = statement.executeQuery() ;
 	    
 	    while( result.next() )
 	    {
@@ -102,6 +102,9 @@ public final class ModularClassManager
 		tempClass.setDateCreated(  result.getDate("dateCreated"));
 		list.add(tempClass );
 	    }
+	}
+	finally{
+	    if( result !=null ) result.close();
 	}
 	return list.toArray( new ModularClass[ list.size() ] );
     

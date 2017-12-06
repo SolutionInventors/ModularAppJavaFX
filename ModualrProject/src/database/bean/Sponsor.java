@@ -18,6 +18,7 @@ import utils.ValidationType;
  */
 public class Sponsor implements Bean
 {
+    private static final long serialVersionUID = -1786280703325804515L;
     private String studentId;
     private String firstName ;
     private String lastName;

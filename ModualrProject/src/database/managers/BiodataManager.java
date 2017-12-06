@@ -20,7 +20,6 @@ import utils.ValidationType;
 
 public class BiodataManager
 {   
-
     public static boolean insert(Biodata data) 
 	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
@@ -59,12 +58,11 @@ public class BiodataManager
 			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
 			data.getCountry(), data.getGender(), data.getDateOfBirth(),
 			data.getPlaceOfBirth()); ) 
-
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected >0 ) return true ;	
 	}
-	
+
 	return false;
     }
 
@@ -84,7 +82,6 @@ public class BiodataManager
 
 	catch (IOException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 	finally
@@ -151,6 +148,30 @@ public class BiodataManager
 	    if( statement!= null ) statement.close();
 	}
 	return false;
+    }
+
+    public static Biodata getBiodata(Student student) throws SQLException
+    {
+	ResultSet result = null;
+	try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		("{callgetBiodata(?) }", student.getIdCardNumber());)
+	{
+	    if( statement.execute()){
+		result = statement.getResultSet();
+		return new Biodata(result.getString("studentId"),result.getString("surname"),
+			result.getString("MiddleName"),result.getString("LastName"),
+			result.getString("stateOfOrigin"), result.getString("country"),
+			result.getString("CurrentAddress"), result.getString("PermanentAddress"),
+			result.getString("gender"), result.getDate("dateOfBirth"), 
+			result.getString("placeOfBirth"), result.getString("religion") , 
+			result.getString("title"));
+
+	    }
+	}finally{
+	    if( result != null ) result.close();
+	}
+	return null;
+
     }
 
 }

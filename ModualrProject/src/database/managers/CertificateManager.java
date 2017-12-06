@@ -117,23 +117,23 @@ public final class CertificateManager
 	    throws SQLException, InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-
+	ResultSet result = null;
 	ArrayList<Certificate> list = new ArrayList<>();
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call getCertificatesByIndex(? ) }", startIndex ))
 	{
-	    ResultSet result = statement.executeQuery() ;
-
+	    result = statement.executeQuery() ;
 	    while( result.next() )
 	    {
 		Certificate tempCert =  new Certificate(  result.getString("name"));
 		tempCert.setDateCreated(  result.getDate("dateCreated"));
 		list.add(tempCert );
-
 	    }
 	}
+	finally{
+	    if( result != null ) result.close();
+	}
 	return list.toArray( new Certificate[ list.size() ] );
-
     }
 
 }

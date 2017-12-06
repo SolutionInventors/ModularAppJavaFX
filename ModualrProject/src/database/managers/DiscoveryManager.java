@@ -50,4 +50,10 @@ public final class DiscoveryManager
 	}
 	return false;
     }
+
+    public static MeanOfDiscovery[] getDiscoveryMeans(Student student)
+    {
+	// TODO Auto-generated method stub
+	return null;
+    }
 }

@@ -22,6 +22,9 @@ import utils.ValidationType;
 
 public class ModuleRegister  implements Bean
 {
+   
+    private static final long serialVersionUID = 8474237887023643531L;
+
     /**This is an auto-incrementing primary key of this object*/
     private int id;
     

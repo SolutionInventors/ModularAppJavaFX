@@ -28,6 +28,7 @@ public final class ProfExperienceManager
      * @throws InvalidAdminException
      * @throws InvalidBeanException
      */
+    @SuppressWarnings("resource")
     public static boolean insert(ProfessionalExperience experience) 
 	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
@@ -81,6 +82,12 @@ public final class ProfExperienceManager
 	if( !experience.isValid(ValidationType.EXISTING_BEAN) ) 
 	    throw new InvalidExperienceException("The Experience cannot be updated");
 	return false;
+    }
+
+    public static ProfessionalExperience[] getExpriences(Student student)
+    {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 

@@ -59,6 +59,7 @@ public final class EducationManager
 	return false;
     }
 
+    
 
     public static EducationalBackground[] getEducationInfo( Student student ) 
 	    throws InvalidBeanException, SQLException, InvalidAdminException

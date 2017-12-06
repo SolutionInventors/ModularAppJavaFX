@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 
 import database.bean.Sponsor;
+import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 import utils.ValidationType;
@@ -29,6 +30,12 @@ public class SponsorManager
     
     public static boolean update( Sponsor sponsor){
 	return false;
+    }
+
+    public static Sponsor[] getSponsors(Student student)
+    {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }

@@ -12,6 +12,10 @@ import utils.ValidationType;
  */
 public class Module  implements Bean
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6397945406914315666L;
     private String name;
     private int numberOfUnits;
     private double amountPerUnit;

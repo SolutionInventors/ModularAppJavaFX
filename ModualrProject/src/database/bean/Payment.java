@@ -16,6 +16,8 @@ import utils.ValidationType;
  */
 public class Payment implements Bean 
 {
+  
+    private static final long serialVersionUID = 6495853015546110411L;
     private int id;
     private String moduleRegisterId;
     private double amount;

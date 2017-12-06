@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.bean.student.Phone;
-import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 import utils.ValidationType;
@@ -135,6 +134,9 @@ public final class PhoneManager
 		list.add( new Phone( result.getString("student_id") , 
 			result.getString("phone_number" )));
 	}
+	finally{
+	    if( result != null )result.close();
+	}
 	
 	return list.toArray( new Phone[ list.size() ] );
     }
@@ -156,6 +158,9 @@ public final class PhoneManager
 	    while(  result.next() )
 		list.add( new Phone( result.getString("student_id") , 
 			result.getString("phone_number" )));
+	}
+	finally{
+	    if( result != null ) result.close();
 	}
 	
 	return list.toArray( new Phone[ list.size() ] );

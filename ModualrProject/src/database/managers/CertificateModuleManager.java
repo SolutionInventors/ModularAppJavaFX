@@ -57,12 +57,12 @@ public final class CertificateModuleManager
 	    throws SQLException, InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-
+	 ResultSet result = null;
 	ArrayList<CertificateModule> list = new ArrayList<>();
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
 		("{call getCertModulesByIndex(?) }", startIndex ))
 	{
-	    ResultSet result = statement.executeQuery() ;
+	    result = statement.executeQuery() ;
 
 	    while( result.next() )
 	    {
@@ -72,6 +72,9 @@ public final class CertificateModuleManager
 		list.add(tempCert );
 
 	    }
+	}
+	finally{
+	    if( result != null ) result.close();
 	}
 	return list.toArray( new CertificateModule[ list.size() ] );
 
