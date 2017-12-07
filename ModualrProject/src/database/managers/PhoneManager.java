@@ -58,8 +58,9 @@ public final class PhoneManager
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 
-	if( !oldPhone.isValid(ValidationType.EXISTING_BEAN) || 
-		!newPhone.isValid(ValidationType.NEW_BEAN)) 
+	if( !(oldPhone.isValid(ValidationType.EXISTING_BEAN) &&
+		newPhone.isValid(ValidationType.NEW_BEAN) && 
+		newPhone.getStudentId().equals(oldPhone.getStudentId()))) 
 	{
 	    throw new InvalidBeanException("The format of either of the bean(s) is invalid");
 	}

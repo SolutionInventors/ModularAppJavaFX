@@ -31,22 +31,22 @@ public final class DiscoveryManager
 	return false;
     }
 
-    public static boolean update(Student existingStudent, MeanOfDiscovery newMeans) 
+    public static boolean update(MeanOfDiscovery oldDisc, MeanOfDiscovery newMeans) 
 	    throws InvalidBeanException, InvalidAdminException, SQLException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	//Ensures that the two objects are valid and that the both have the same 
 	//student id card number
 	if( ! ( newMeans.isValid(ValidationType.NEW_BEAN ) &&
-		existingStudent.isValid(ValidationType.EXISTING_BEAN)&& 
-		existingStudent.getIdCardNumber().equals( newMeans.getStudentId()) ))
+		oldDisc.isValid(ValidationType.EXISTING_BEAN)&& 
+		oldDisc.getStudentId().equals( newMeans.getStudentId()) ))
 	{
 	    throw new InvalidBeanException();
 	}
 
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call updateDiscoveryRecord(? ,?) }", 
-			newMeans.getStudentId(), newMeans.getMeans()); )
+		("{call updateDiscoveryRecord(? ,?, ? ) }", 
+			newMeans.getStudentId(), newMeans.getMeans(), oldDisc.getMeans()); )
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected >0 ) return true ;

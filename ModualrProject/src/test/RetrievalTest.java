@@ -25,7 +25,6 @@ import exception.InvalidBeanException;
 
 public class RetrievalTest
 {
-
     public static void main(String[] args) throws InvalidBeanException, InvalidAdminException
     {
 	System.out.println( DatabaseManager.getDate());

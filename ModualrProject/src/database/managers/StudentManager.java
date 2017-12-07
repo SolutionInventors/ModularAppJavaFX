@@ -1,5 +1,6 @@
 package database.managers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.CallableStatement;
@@ -42,14 +43,50 @@ public final class StudentManager
 	return false;
     }
 
-
-    public static boolean updateStudentData( Student existingStudent, StudentData updatedData) 
-	    throws InvalidBeanException, InvalidAdminException, SQLException
+    public static boolean updateImage( Student existingStudent, File image) 
+	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
-	return StudentDataManager.update(existingStudent, updatedData) ;
+	if( !existingStudent.isValid(ValidationType.EXISTING_BEAN) ) throw new InvalidBeanException();
+	String sql = "{call updateStudentImage( ?,? ,?)}";
+	try( 
+		FileInputStream inStream = new FileInputStream(image) ;
+		CallableStatement stmt = DatabaseManager.getCallableStatement(sql,
+		existingStudent.getIdCardNumber(), inStream))
+	{
+	    stmt.registerOutParameter(3, Types.DATE);
+	    int affected = stmt.executeUpdate();
+
+	    existingStudent.setDateAdmitted( stmt.getDate(3) );
+	    if( affected >= 1 ) return true;
+	}
+	
+	catch (IOException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	return false;
+    }
+    
+    
+    public static boolean updateEmailAddress( Student existingStudent, String mail ) 
+	    throws SQLException, InvalidBeanException, InvalidAdminException
+    {
+	if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN) && mail.length() >0 ) ) 
+	    throw new InvalidBeanException("The student object contains some invalid values");
+	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		"{CALL updateMail(?, ?, ?) } ", existingStudent.getIdCardNumber(),mail);)
+	{
+	    statement.registerOutParameter(3, Types.DATE);
+	    int affected = statement.executeUpdate();
+
+	    existingStudent.setDateAdmitted( statement.getDate(3) );
+	    if( affected >= 1 ) return true;
+	}
+	return false;
     }
 
-    
+
     /**
      * Retrieves a {@code Student } information from the database and returns
      * them in a {@code StudentData } object. This method depends on other 
@@ -68,9 +105,9 @@ public final class StudentManager
 	    throws InvalidAdminException, SQLException, InvalidBeanException
     {
 	if( !DatabaseManager.validateAdmin()) throw  new InvalidAdminException();
-	
+
 	if( !student.isValid(ValidationType.EXISTING_BEAN) ) throw new InvalidStudentException();
-	
+
 	Biodata data = BiodataManager.getBiodata( student);
 	EducationalBackground[] edu = EducationManager.getEducationInfo(student);
 	Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
@@ -278,59 +315,6 @@ public final class StudentManager
 	}
 
 
-	public static  boolean update(Student existingStudent,  StudentData newData) 
-		throws InvalidAdminException, InvalidBeanException, SQLException{
-	    if( !DatabaseManager.validateAdmin()) throw new InvalidAdminException();
-	    if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN) && 
-		    newData.isValid(ValidationType.NEW_BEAN)) ) 
-	    {
-		throw new InvalidBeanException("Some data is invalid");
-	    }
-
-	    boolean edu = !Arrays.stream( newData.getEducation()).anyMatch( education->{
-		try
-		{
-		    return EducationManager.update( existingStudent,education) == false ;
-		}
-		catch (SQLException | InvalidAdminException | InvalidBeanException e)
-		{
-		    e.printStackTrace();
-		    return true;
-		}
-	    });
-	    boolean exp = !Arrays.stream( newData.getExperiences()).anyMatch( experience->{
-		try
-		{
-		    return ExperienceManager.update( existingStudent, experience) == false;
-		}
-		catch (InvalidBeanException | InvalidAdminException e)
-		{
-		    e.printStackTrace();
-		    return true;
-		}
-	    });
-
-	    boolean bio = BiodataManager.update(  existingStudent, newData.getBiodata());
-	    boolean discovery = !Arrays.stream( newData.getMeansOfDiscovery()).anyMatch( disc->{
-		try
-		{
-		    return  DiscoveryManager.update( existingStudent, disc) == false;
-		}
-		catch (InvalidBeanException | InvalidAdminException | SQLException e)
-		{
-		    e.printStackTrace();
-		    return true;
-		}
-	    });
-
-	    if( edu && exp && bio && discovery 	){
-		return true;
-	    }
-	    else
-	    {
-		return false;
-	    }
-	}
 
     }
 

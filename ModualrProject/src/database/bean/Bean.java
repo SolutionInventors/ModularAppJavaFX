@@ -1,6 +1,9 @@
 package database.bean;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import utils.ValidationType;
 
@@ -11,7 +14,7 @@ import utils.ValidationType;
  */
 public interface Bean extends Serializable
 {
-    
+
     /**
      * Checks that a {@code String} has only letters and space.
      * Returns {@code true } if validation is met
@@ -25,7 +28,7 @@ public interface Bean extends Serializable
 	}
 	return false;
     }
-    
+
     /**
      * Checks if a phone number format passed as {@code String} is valid
      * @param phoneNumber the phone number to validate
@@ -33,7 +36,7 @@ public interface Bean extends Serializable
      */
     public static boolean isPhoneValid( String phoneNumber ){
 	if( phoneNumber.matches("[+|0-9][0-9]{1,}" ) ) return true;
-	
+
 	return false;
     }
     /**
@@ -58,9 +61,31 @@ public interface Bean extends Serializable
 	string = string.trim();
 	while( string.matches( "\\S*\\s{2,}\\S*" ) )
 	    string = string.replaceAll("  " , " " ).replaceAll("  ", " ");
-	return string.replaceAll(";", "");
+
+	return string;
     }
-   
+
+    /**
+     * This returns a {@code String} with all the words in the String Capitalized.
+     * For example, if the argument is "some Unknown string" the output would be
+     * "Some Unknown String"
+     * @param string the {@code String} to capitalized
+     * @return a {@code String} with the words capitalized
+     */
+    public static String capitalizeWords(String string)
+    {
+	if( string.length() <= 0  ) return string;
+	
+	List<String> list =  Arrays.stream( string.split( " " ) )
+		.map( s-> 
+		s.substring(0, 1).toUpperCase() + 
+		s.substring(1).toLowerCase())
+		.collect( Collectors.toList());
+	
+	return String.join( " ", list.toArray( new String[list.size()] )) ;
+	
+    }
+
     /**
      * This class level method checks if a {@code Bean} object is valid by calling
      * instance method isValid
@@ -73,7 +98,7 @@ public interface Bean extends Serializable
     public static boolean isValid( Bean bean , ValidationType type){
 	return bean.isValid(type);
     }
-    
+
     /**
      * Checks the format of a {@code Bean} object.<br>
      * Returns {@code true } if a {@code Bean } object is valid. 

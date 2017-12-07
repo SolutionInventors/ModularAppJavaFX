@@ -17,7 +17,11 @@ import utils.ValidationType;
  * added to the database.<br>
  * A {@code Student } may have multiple records in the {@code EducationalBackground}
  * table with the studentId pointing to the {@code Student } table. This is required
- * when registering a new {@code Student} into the program.
+ * when registering a new {@code Student} into the program.<br>
+ * Note that the Institution, BeginDate and StudentId attributs form a composite key for this table.
+ * This means that a StudentId, BeginDate and Institution must be unique for each row in the
+ * table. This ensures that a information for about one place is not inputed 
+ * twice.
  * 
  * @see Student
  * @author Oguejiofor Chidiebere
@@ -27,9 +31,11 @@ public class EducationalBackground implements Bean
 {
 
     private static final long serialVersionUID = -3682869931501233968L;
-    /**Foreign key from the {@code Student} table*/
+    /**Foreign key from the {@code Student} table. The first composite kwy*/
     private String studentId;
+   
     private Date beginDate;
+   
     private Date endDate;
     private String institution;
     private String courseRead;

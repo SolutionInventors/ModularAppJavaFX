@@ -52,7 +52,7 @@ public class BiodataManager
 	}
 
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?,?) }", 
+		("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
 			data.getStudentId(),data.getTitle(), data.getSurname(),  
 			data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
 			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
@@ -150,6 +150,13 @@ public class BiodataManager
 	return false;
     }
 
+    /**
+     * Retrieves a {@code Student}'s  {@code Biodata} object from the database
+     * @param student
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
     public static Biodata getBiodata(Student student) throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
@@ -158,20 +165,20 @@ public class BiodataManager
 	{
 	    if( statement.execute()){
 		result = statement.getResultSet();
-		result.next();
-		return new Biodata(result.getString("studentId"),result.getString("surname"),
-			result.getString("MiddleName"),result.getString("LastName"),
-			result.getString("stateOfOrigin"), result.getString("country"),
-			result.getString("CurrentAddress"), result.getString("PermanentAddress"),
-			result.getString("gender"), result.getDate("dateOfBirth"), 
-			result.getString("placeOfBirth"), result.getString("religion") , 
-			result.getString("title"));
+		if( result.next()) 
+		    return new Biodata(result.getString("studentId"),result.getString("surname"),
+			    result.getString("MiddleName"),result.getString("LastName"),
+			    result.getString("stateOfOrigin"), result.getString("country"),
+			    result.getString("CurrentAddress"), result.getString("PermanentAddress"),
+			    result.getString("gender"), result.getDate("dateOfBirth"), 
+			    result.getString("placeOfBirth"), result.getString("religion") , 
+			    result.getString("title"));
 	    }
 	}
 	finally{
 	    if( result != null ) result.close();
 	}
-	return null;
+	return new Biodata();
     }
 
 }

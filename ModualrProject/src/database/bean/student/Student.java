@@ -43,7 +43,20 @@ public class Student  implements Bean
 	setImage( image);
     }
 
+    /**
+     * Initialises this {@code Student } by specifying only the id card number
+     * Once this object is initialised with this constructor, it can then be
+     * used to test if a {@code Student} exists using the id card number.
+     * @param studId
+     */
+    public Student(String idCardNumber)
+    {
+	setIdCardNumber(idCardNumber);
+    }
+    
     public Student(){ }
+
+   
 
     public String getIdCardNumber()
     {

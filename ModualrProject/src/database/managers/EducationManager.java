@@ -1,6 +1,7 @@
 package database.managers;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -34,25 +35,26 @@ public final class EducationManager
 
     }
 
-    public static boolean update(Student existingStudent, EducationalBackground education) 
+    public static boolean update(EducationalBackground existing, EducationalBackground newBean) 
 	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	//Ensures that the two objects are valid and that the both have the same 
 	//student id card number
-	if( ! ( education.isValid(ValidationType.NEW_BEAN ) &&
-		existingStudent.isValid(ValidationType.EXISTING_BEAN) && 
-		existingStudent.getIdCardNumber().equals( education.getStudentId()) && 
-		exi))
+	if( ! ( newBean.isValid(ValidationType.NEW_BEAN ) &&
+		existing.isValid(ValidationType.EXISTING_BEAN) && 
+		newBean.getStudentId().equals( newBean.getStudentId()) ))
 	{
 	    throw new InvalidBeanException();
 	}
 
+	final String sql = "{call updateEducationRecord(?,?,?,?,?,?,?,?,?,?)}";
+	
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call updateEducationRecord(? , ?,?,?,?, ?,?) }", 
-			education.getStudentId(), education.getBeginDate(), 
-			education.getEndDate(),education.getInstitution(),
-			education.getCourseRead(), education.getQualification()); )
+		(sql, newBean.getStudentId(), newBean.getInstitution(), newBean.getBeginDate(), 
+			newBean.getEndDate(), newBean.getCourseRead() , existing.getStudentId(), 
+			existing.getInstitution(), existing.getBeginDate(), existing.getEndDate(), 
+			existing.getCourseRead())
+		 )
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected >0 ) return true ;
