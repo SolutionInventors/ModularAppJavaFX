@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +33,38 @@ public class SponsorManager
 	return false;
     }
 
-    public static boolean update( Sponsor sponsor){
+    /**
+     * Updates a Sponsor object with new values. <br>
+     * The first argument represents an existing {@code Sponsor} and must contain values 
+     * for the studentId, firstName, last Name and Email. The second argument would be used to udpate
+     * the first and must specify values for all its attributes.<br>
+     * Note that the two arguments must have the same studentId attribute
+     * 
+     * @param oldSponsor the existing {@code Sponsor}  to be updated
+     * @param newSpons the new {@code Sponsor} to be used to be update the first
+     * @return {@code true} if the update was successful
+     * @throws SQLException when a database error occurs
+     * @throws InvalidAdminException when the current {@code Admin} making the change is invalid
+     * @throws InvalidBeanException when either {@code Sponsor} object is invalid.
+     */
+    public static boolean update( Sponsor oldSponsor, Sponsor newSpons) 
+	    throws SQLException, InvalidAdminException, InvalidBeanException
+    {
+	if( !( oldSponsor.isValid(ValidationType.EXISTING_BEAN)  && 
+		newSpons.isValid(ValidationType.NEW_BEAN) && 
+		oldSponsor.getStudentId().equals(newSpons.getStudentId())) ) 
+	{
+	    throw new InvalidBeanException("The Sponsor object contains some invalid values"); 
+	}
+	    
+	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		"{CALL updateSponsor(?,?,?,?,?,?,?,?,?) } ", 
+		newSpons.getStudentId(), newSpons.getFirstName(), newSpons.getLastName(),
+		newSpons.getAddress(), newSpons.getTelephone(), newSpons.getEmail(), 
+		oldSponsor.getFirstName(), oldSponsor.getLastName(), oldSponsor.getEmail());)
+	{
+	   if( statement.executeUpdate() > 0 ) return true;
+	}
 	return false;
     }
 

@@ -50,6 +50,21 @@ public class Sponsor implements Bean
     }
     
     
+    /**
+     * Initializes this {@code Sponsor} by specifying enough data that can be used to 
+     * check if the {@code Sponsor} is in the database. <br>
+     * When this constructor is used we can use it as the first argument in
+     * {@code SponsorManager.update} method
+     * 
+     * @param studId id card number of the {@code Student } to be added
+     * @param fName the {@code Sponsor} first name
+     * @param lName the {@code Sponsor} last name
+     * @param mail the {@code Sponsor} email
+     */
+    public Sponsor(String studId, String fName, String lName, String mail)
+    {
+	this( studId, fName, lName, null, null, mail );
+    }
 
     public String getAddress()
     {
@@ -88,7 +103,7 @@ public class Sponsor implements Bean
     
     public void setTelephone(String telephone)
     {
-        this.telephone = Bean.removeExtraSpaces( telephone.replace("-", ""));
+        this.telephone = Bean.removeExtraSpaces( telephone);
     }
 
     /**
@@ -140,7 +155,8 @@ public class Sponsor implements Bean
 	switch (type)
 	{
 	    case EXISTING_BEAN:
-		return getStudentId() != null;
+		return getStudentId() != null && getStudentId().length() > 0 && 
+		getFirstName() !=null && getLastName() != null && getEmail() !=null;
 	    case NEW_BEAN:
 		return getStudentId() != null && getAddress()!= null &&
 		getEmail() != null && Bean.isPhoneValid( getTelephone()) && 

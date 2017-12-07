@@ -330,6 +330,8 @@ public class Biodata implements Bean
 	return false;
     }
 
+   
+
     public String getTitle()
     {
 	return title;

@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.JFileChooser;
 
 import database.bean.Admin;
+import database.bean.Sponsor;
 import database.bean.student.Biodata;
 import database.bean.student.EducationalBackground;
 import database.bean.student.MeanOfDiscovery;
@@ -21,9 +22,11 @@ import database.managers.DatabaseManager;
 import database.managers.DiscoveryManager;
 import database.managers.EducationManager;
 import database.managers.PhoneManager;
+import database.managers.SponsorManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
+import utils.ValidationType;
 
 public class UpdateTest
 {
@@ -68,10 +71,15 @@ public class UpdateTest
 	chooser.setDialogTitle("Choose new Student File: " );
 	chooser.showOpenDialog(null );
 	File file = chooser.getSelectedFile();
-	
+
 	Biodata newBio = new Biodata(studId, "Oguejiofor", "Chi", "Fred",
 		"New York", "USA", "LA", "New Jersey", "M", 
 		birth, "Manchester", "Jew", "Prof");
+
+	Sponsor oldSpon = new Sponsor(studId, "Lo", "Lasds", "email.com");
+	Sponsor newSpon = new Sponsor(studId, "Main", "Man", "Lag", "920392",
+		"mail@email.vam");
+	
 	try
 	{
 	    if( EducationManager.update(existing, newBean) 	)
@@ -86,7 +94,7 @@ public class UpdateTest
 		System.out.println("Means updated" );
 	    else
 		System.err.println("Failed. Probalbly not in database");
-	    
+
 	    if( StudentManager.updateEmailAddress(oldStud, "newMail@email.com" ) )
 		System.out.println("Email updated" );
 	    else
@@ -99,6 +107,11 @@ public class UpdateTest
 
 	    if( BiodataManager.update(oldStud, newBio) )
 		System.out.println("BioData updated" );
+	    else
+		System.err.println("Failed. Probalbly not in database");
+	    
+	   if( SponsorManager.update(oldSpon, newSpon) )
+		System.out.println("Sponsor updated" );
 	    else
 		System.err.println("Failed. Probalbly not in database");
 
