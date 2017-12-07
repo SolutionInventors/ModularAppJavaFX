@@ -24,7 +24,7 @@ import utils.ValidationType;
 
 public final class StudentManager
 {
-    public static boolean update( Student existingStudent, Student newStudent ) throws SQLException, InvalidBeanException{
+    public static boolean update( Student existingStudent, Student newStudent ) throws SQLException, InvalidBeanException, InvalidAdminException{
 
 	if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN)  && 
 		newStudent.isValid(ValidationType.NEW_BEAN)) ) 
@@ -73,14 +73,12 @@ public final class StudentManager
 	
 	Biodata data = BiodataManager.getBiodata( student);
 	EducationalBackground[] edu = EducationManager.getEducationInfo(student);
-	Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber(), 0);
-	ProfessionalExperience[] experiences = ProfExperienceManager.getExpriences( student);
+	Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
+	ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);
 	MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
 	Sponsor[] spons =  SponsorManager.getSponsors( student);
 	StudentData studData = new StudentData(data, edu, phoneNumbers,
 		experiences, meansOfDisc, spons);
-	
-	
 	return studData.isValid(ValidationType.EXISTING_BEAN) ? studData : null;
     }
     /**
@@ -143,8 +141,9 @@ public final class StudentManager
      * @param active if {@code true} returns active {@code Student}s else returns inactive {@code Student}s
      * @return
      * @throws SQLException
+     * @throws InvalidAdminException 
      */
-    public static int getStudentsCount( boolean active) throws SQLException
+    public static int getStudentsCount( boolean active) throws SQLException, InvalidAdminException
     {
 	String sql = active ? "{CALL getActiveStudentsCount() } " :"{CALL getInactiveStudentsCount() } ";
 	ResultSet result  = null;
@@ -246,7 +245,7 @@ public final class StudentManager
 		    .allMatch( experience-> {
 			try
 			{
-			    return ProfExperienceManager.insert( experience ) ;
+			    return ExperienceManager.insert( experience ) ;
 			}
 			catch (SQLException | InvalidAdminException | InvalidBeanException e)
 			{
@@ -302,7 +301,7 @@ public final class StudentManager
 	    boolean exp = !Arrays.stream( newData.getExperiences()).anyMatch( experience->{
 		try
 		{
-		    return ProfExperienceManager.update( existingStudent, experience) == false;
+		    return ExperienceManager.update( existingStudent, experience) == false;
 		}
 		catch (InvalidBeanException | InvalidAdminException e)
 		{

@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import database.bean.student.Phone;
 import exception.InvalidAdminException;
@@ -111,7 +113,7 @@ public final class PhoneManager
      * @throws InvalidAdminException when the {@code Admin} that wants to access the
      * database the change is invalid
      */
-    public static Phone[] getPhoneNumber( String studentId, int startIndex)
+    public static Phone[] getPhoneNumber( String studentId)
 	    throws SQLException, InvalidAdminException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
@@ -121,17 +123,17 @@ public final class PhoneManager
 	}
 	
 	ResultSet result  = null;
-	ArrayList<Phone> list;
+	List<Phone> list;
 	try(CallableStatement statement = DatabaseManager.getCallableStatement( 
-		    "{CALL getStudentPhoneNumber(?, ? ) } ", studentId, startIndex);
+		    "{CALL getStudentPhone(? ) } ", studentId);
 		)
 	
 	{
 	    result  = statement.executeQuery();
-	    list = new ArrayList<Phone>();
+	    list = new LinkedList<Phone>();
 
 	    while(  result.next() )
-		list.add( new Phone( result.getString("student_id") , 
+		list.add( new Phone( result.getString("StudentId") , 
 			result.getString("phone_number" )));
 	}
 	finally{

@@ -100,7 +100,7 @@ public class BiodataManager
     }
 
 
-    private static boolean  junk(Student newStudent) throws SQLException{
+    private static boolean  junk(Student newStudent) throws SQLException, InvalidAdminException{
 	FileInputStream inputStream = null ;
 	CallableStatement  statement= null;
 
@@ -150,14 +150,15 @@ public class BiodataManager
 	return false;
     }
 
-    public static Biodata getBiodata(Student student) throws SQLException
+    public static Biodata getBiodata(Student student) throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{callgetBiodata(?) }", student.getIdCardNumber());)
+		("{call getBiodata(?) }", student.getIdCardNumber());)
 	{
 	    if( statement.execute()){
 		result = statement.getResultSet();
+		result.next();
 		return new Biodata(result.getString("studentId"),result.getString("surname"),
 			result.getString("MiddleName"),result.getString("LastName"),
 			result.getString("stateOfOrigin"), result.getString("country"),
@@ -165,13 +166,12 @@ public class BiodataManager
 			result.getString("gender"), result.getDate("dateOfBirth"), 
 			result.getString("placeOfBirth"), result.getString("religion") , 
 			result.getString("title"));
-
 	    }
-	}finally{
+	}
+	finally{
 	    if( result != null ) result.close();
 	}
 	return null;
-
     }
 
 }

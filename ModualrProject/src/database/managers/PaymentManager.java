@@ -4,10 +4,13 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 
 import database.bean.Payment;
+import exception.InvalidAdminException;
 
 public final class PaymentManager
 {
-    public boolean insert( Payment payment) throws SQLException{
+    public boolean insert( Payment payment) 
+	    throws SQLException, InvalidAdminException
+    {
 
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		("{call makePayment(?,?,?,?) }", payment.getModuleRegisterId(), 

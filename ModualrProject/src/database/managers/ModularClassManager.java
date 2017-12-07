@@ -60,7 +60,7 @@ public final class ModularClassManager
     }
 
     
-    public static boolean update( ModularClass oldClass, ModularClass newClass ) throws InvalidBeanException, SQLException{
+    public static boolean update( ModularClass oldClass, ModularClass newClass ) throws InvalidBeanException, SQLException, InvalidAdminException{
 	if( !( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
 		newClass.isValid(ValidationType.NEW_BEAN) ))
 	{

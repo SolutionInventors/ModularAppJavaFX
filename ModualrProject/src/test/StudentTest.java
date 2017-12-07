@@ -23,6 +23,7 @@ import database.bean.student.Phone;
 import database.bean.student.ProfessionalExperience;
 import database.bean.student.Student;
 import database.bean.student.StudentData;
+import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
@@ -45,7 +46,7 @@ public class StudentTest
 	JFileChooser chooser = new JFileChooser();
 	chooser.setDialogTitle("Select the image of the student");
 	chooser.showOpenDialog(null);
-	
+
 	final String studentId = TestUtils.getStringInput("Input Student Id card number: ");
 	String mail =  TestUtils.getStringInput("Input the student emial address: ");
 	String className = TestUtils.getStringInput("Input the student class: ");
@@ -81,7 +82,7 @@ public class StudentTest
 	}
 	catch (ParseException e)
 	{
-	   e.printStackTrace();
+	    e.printStackTrace();
 	}
 
 	Biodata bio = new Biodata(studentId, surname, midName, lName, state, country, 
@@ -175,7 +176,7 @@ public class StudentTest
 	    System.out.println("The ProfessionalExperience object is valid" );
 	else
 	    throw new InvalidBeanException("At least on Experience in the list is invalid" );
-	
+
 	System.out.println("----Creating the Sponsor aray object--------");
 	System.out.println("Do you have any sponsor? ");
 	String nextInput = TestUtils.getStringInput("Type 1 if so else no: ");
@@ -188,8 +189,8 @@ public class StudentTest
 
 	}
 	Sponsor[] sponsArray = list.toArray(new Sponsor[list.size()] );
-	
-	
+
+
 	EducationalBackground[] eduArray = 
 		educationList.toArray(new EducationalBackground[ educationList.size()] );
 	Phone[] phoneArray = phoneSet.toArray(new Phone[phoneSet.size()] );
@@ -197,18 +198,13 @@ public class StudentTest
 	MeanOfDiscovery[] meanArr  = meanList.toArray(new MeanOfDiscovery[meanList.size()] );
 	StudentData studentData = 
 		new StudentData(bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
-	
-	
+
+
 	if( StudentManager.registerStudent(student, studentData))
 	    System.out.println("The new Student was registered successfully" );
 	else
 	    System.err.println("Student not registered for some reason" );
-	
+
+	ConnectionManager.close();
     }
-
-
-   
-
-   
-
 }

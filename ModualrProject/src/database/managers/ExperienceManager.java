@@ -2,8 +2,11 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.LinkedList;
+import java.util.List;
 
 import database.bean.student.JobResponsibility;
 import database.bean.student.ProfessionalExperience;
@@ -13,7 +16,7 @@ import exception.InvalidBeanException;
 import exception.InvalidExperienceException;
 import utils.ValidationType;
 
-public final class ProfExperienceManager
+public final class ExperienceManager
 {
     /**
      * This method inserts data into the {@code ProfessionalExperience} table an inserts the
@@ -32,16 +35,14 @@ public final class ProfExperienceManager
     public static boolean insert(ProfessionalExperience experience) 
 	    throws SQLException, InvalidAdminException, InvalidBeanException
     {
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	if( !experience.isValid(ValidationType.NEW_BEAN ) ) throw new InvalidExperienceException();
-	
+
 	Connection conn = ConnectionManager.getInstance().getConnection();
-	
 	try(
 		CallableStatement statement =  DatabaseManager.getCallableStatement
-			("{call addExperienceRecord(?,?,?,?, ? ,?) }", experience.getStudentId(), 
-				experience.getStartDate(), experience.getEndDate(), 
-				experience.getEmployer(), experience.getJobTitle() ) ; )
+		("{call addExperienceRecord(?,?,?,?, ? ,?) }", experience.getStudentId(), 
+			experience.getStartDate(), experience.getEndDate(), 
+			experience.getEmployer(), experience.getJobTitle() ) ; )
 	{
 	    conn.setAutoCommit(false);
 	    statement.registerOutParameter(6, Types.INTEGER);
@@ -78,19 +79,36 @@ public final class ProfExperienceManager
     public static boolean update(Student existingStudent, ProfessionalExperience experience)
 	    throws InvalidBeanException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin()) throw new InvalidAdminException();
 	if( !experience.isValid(ValidationType.EXISTING_BEAN) ) 
 	    throw new InvalidExperienceException("The Experience cannot be updated");
 	return false;
     }
 
-    public static ProfessionalExperience[] getExpriences(Student student)
+    public static ProfessionalExperience[] getExpriences(Student student) 
+	    throws SQLException, InvalidAdminException
     {
-	// TODO Auto-generated method stub
-	return null;
+	
+	ResultSet result = null;
+	List<ProfessionalExperience> list = new LinkedList<>();
+
+	try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		("{call getProfExperience(?) }", student.getIdCardNumber());)
+	{
+
+	    result = statement.executeQuery();
+	    ProfessionalExperience temp; 
+	    while( result.next()){
+		String[] duties = ResponsibilityManager.getDuties( result.getInt("id"));
+		temp = new ProfessionalExperience(result.getString("studentId"),
+			result.getDate("StartDate"), result.getDate("EndDate"),
+			result.getString("Job Title"), result.getString("Employer"), duties);
+		list.add( temp );
+	    }
+
+	}
+	finally{
+	    if( result != null ) result.close();
+	}
+	return list.toArray( new ProfessionalExperience[list.size()] );
     }
-
-
-
-
 }

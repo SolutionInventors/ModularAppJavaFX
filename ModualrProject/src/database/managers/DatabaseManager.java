@@ -2,18 +2,21 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import database.bean.Admin;
+import exception.InvalidAdminException;
 import utils.ValidationType;
 
 public final class DatabaseManager
 {
     private static Admin currentAdmin = null ;
-    
-    
+    private static Date currentDate;
+
+
     /** 
      * Creates a {@code CallableStatement } object with its the specified arguments and
      * returns the {@code CallableStatement} object
@@ -22,11 +25,14 @@ public final class DatabaseManager
      * This can be ignpred if there are no  arguments
      * @return a {@code CallableStatement} object that can be executed
      * @throws SQLException when an error occurs at the database level.
+     * @throws InvalidAdminException 
      */
     @SuppressWarnings("resource")
-    public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException{
+    public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException, InvalidAdminException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
 
+	if( !validateAdmin() ) 
+	    throw new InvalidAdminException("The Admin that wants to make the change is not in database");
 	CallableStatement statement =  conn.prepareCall(
 		sqlCall,
 		ResultSet.TYPE_FORWARD_ONLY,
@@ -49,19 +55,19 @@ public final class DatabaseManager
      */
     @SuppressWarnings("resource")
     public static PreparedStatement getPreparedStatement(String sqlCall, Object ... arguments ) throws SQLException{
-   	Connection conn = ConnectionManager.getInstance().getConnection();
+	Connection conn = ConnectionManager.getInstance().getConnection();
 
-   	PreparedStatement statement =  conn.prepareStatement(
-   		sqlCall,
-   		ResultSet.TYPE_FORWARD_ONLY,
-   		ResultSet.CONCUR_READ_ONLY);
+	PreparedStatement statement =  conn.prepareStatement(
+		sqlCall,
+		ResultSet.TYPE_FORWARD_ONLY,
+		ResultSet.CONCUR_READ_ONLY);
 
-   	for( int i =  0 ; i < arguments.length ; i++ )
-   	    statement.setObject( i+1 , arguments[ i ] );
-   	return statement;
-       }
+	for( int i =  0 ; i < arguments.length ; i++ )
+	    statement.setObject( i+1 , arguments[ i ] );
+	return statement;
+    }
 
-    
+
     public static Admin getCurrentAdmin()
     {
 	return currentAdmin;
@@ -72,13 +78,36 @@ public final class DatabaseManager
     {
 	DatabaseManager.currentAdmin = currentAdmin;
     }
-    
+
     public static boolean  validateAdmin(){
 	if( currentAdmin != null && currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
 	    return AdminManager.validateAdmin( getCurrentAdmin());
 	return false;
     }
-    
-    
-    
+
+    protected static void setCurrentDate(Date date)
+    {
+	currentDate = date;
+
+    }
+
+    /**
+     * Returns a java.sql.Date object that contains the current date in the database 
+     * @return {@code java.sql.Date} object that contains the current date or {@code null } if
+     * an error occured while processing retrieving the information.
+     * @throws InvalidAdminException if the current {@code Admin} making this request is invalid
+     */
+    public static Date getDate() 
+    {
+	if( currentDate == null ) {
+	    ConnectionManager.openConnection();
+	    Date date = currentDate;
+	    ConnectionManager.close();
+	    return date;
+	}
+	return currentDate;
+    }
+
+
+
 }

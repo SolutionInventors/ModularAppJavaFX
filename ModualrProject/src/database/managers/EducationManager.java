@@ -3,7 +3,7 @@ package database.managers;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import database.bean.student.EducationalBackground;
@@ -64,27 +64,25 @@ public final class EducationManager
     public static EducationalBackground[] getEducationInfo( Student student ) 
 	    throws InvalidBeanException, SQLException, InvalidAdminException
     {
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-
 	if( !( student.isValid(ValidationType.EXISTING_BEAN) ))
 	{
 	    throw new InvalidBeanException();
 	}
-	List<EducationalBackground> list = new ArrayList<>();
+	List<EducationalBackground> list = new LinkedList<>();
 
 	ResultSet result =  null;
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call updateEducationRecord(? ) }", student.getIdCardNumber()); )
+		("{call getEducationRecord(? ) }", student.getIdCardNumber()); )
 	{
 	    result = statement.executeQuery();
 
 	    EducationalBackground temp;
 	    while( result.next())
 	    {
-		temp = new EducationalBackground(result.getString("student_id"), 
+		temp = new EducationalBackground(result.getString("StudentId"), 
 			result.getDate("beginDate"), result.getDate("endDate"),
-			result.getString("institute") , result.getString("courseRead") ,
-			result.getString( "qualification" ) );
+			result.getString("institution") , result.getString("CourseRead") ,
+			result.getString( "QualificationName" ) );
 		list.add( temp);
 
 	    }

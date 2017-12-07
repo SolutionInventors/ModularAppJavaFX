@@ -102,7 +102,7 @@ public class PhoneTest
 
 	    String studentId = TestUtils.getStringInput( "Enter Student id card number" );
 
-	    Phone[] numbers = PhoneManager.getPhoneNumber(studentId, 0);
+	    Phone[] numbers = PhoneManager.getPhoneNumber(studentId);
 	    if(numbers != null ){
 		System.out.println( "The Student's phone numbers are: ");
 		for( int i = 0 ; i< numbers.length ; i++ ){
@@ -113,7 +113,7 @@ public class PhoneTest
 		System.out.println("No numbers was found for the specified student");
 
 
-
+	    
 	}
 	catch ( InvalidAdminException e)
 	{

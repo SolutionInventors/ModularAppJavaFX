@@ -13,7 +13,7 @@ import database.bean.student.JobResponsibility;
 import database.bean.student.ProfessionalExperience;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
-import database.managers.ProfExperienceManager;
+import database.managers.ExperienceManager;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;
 
@@ -56,7 +56,7 @@ public class ExperienceTest
 			jobTitle, employer, duties);
 	try
 	{
-	    if( ProfExperienceManager.insert(experience) ){
+	    if( ExperienceManager.insert(experience) ){
 		System.out.println("Insertion was successful" );
 	    }
 	    else

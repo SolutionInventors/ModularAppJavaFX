@@ -2,6 +2,7 @@ package database.managers;
 
 import java.security.SecureRandom;
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import utils.ValidationType;
  */
 public final class AdminManager 
 {
-    
+
     /**
      * This method inserts a new {@code Admin} into the database by first 
      * hashing the {@code Admin} password.<br>
@@ -36,7 +37,7 @@ public final class AdminManager
      * @throws SQLException when an SQLException is invalid
      */
     public static boolean insert( Admin newAdmin) throws 
-    	InvalidBeanException, InvalidAdminException, SQLException
+    InvalidBeanException, InvalidAdminException, SQLException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	if( !newAdmin.isValid(ValidationType.NEW_BEAN) )
@@ -44,13 +45,13 @@ public final class AdminManager
 	    throw new InvalidBeanException
 	    ( "The admin object cannot contain spaces and it cannot be null");
 	}
-	
+
 	HashClass hashInstance = HashClass.getInstance();
 	hashInstance.hashAdmin(newAdmin);
-	
+
 	try(CallableStatement  statement = 
 		DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ? ) } ", 
-		newAdmin.getUsername(),  newAdmin.getPassword() ) ;)
+			newAdmin.getUsername(),  newAdmin.getPassword() ) ;)
 	{
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 ) return true;
@@ -58,8 +59,8 @@ public final class AdminManager
 
 	return false;
     }
-    
-    
+
+
     /**
      *
      * Updates an existing {@code Admin } to a new {@code Admin} 
@@ -90,8 +91,8 @@ public final class AdminManager
 	    throw new InvalidBeanException
 	    ( "The admin object cannot contain spaces and it cannot be null");
 	}
-	
-	
+
+
 	try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?, ?  ) } ", 
 		oldAdmin.getUsername(),  oldAdmin.getPassword() , 
 		newAdmin.getUsername() , newAdmin.getPassword());)
@@ -132,7 +133,7 @@ public final class AdminManager
 	    }
 	    result.close();
 	}
-	
+
 	return list.toArray( new Admin[ list.size() ] );
     }
 
@@ -160,21 +161,26 @@ public final class AdminManager
 	}
     }
 
-   
+
     /**
      * Returns {@code true } if the {@code Admin } is in the database
      * @param admin the {@code Admin } to check for in the database
      * @return {@code true } when the {@code Admin } exists
      * @throws SQLException 
      */
+    @SuppressWarnings("resource")
     protected static boolean validateAdmin( Admin admin )
     {
 	ResultSet result = null;
-	try(  CallableStatement  statement = DatabaseManager.getCallableStatement
-		( "{Call getAdminByUsername( ?  ) }", admin.getUsername() );)
+	Connection conn = ConnectionManager.getInstance().getConnection();
+	try(  CallableStatement  statement = 
+		conn.prepareCall("{Call getAdminByUsername( ?  ) }", ResultSet.TYPE_FORWARD_ONLY, 
+			ResultSet.CONCUR_READ_ONLY);
+		)
 	{
+	    statement.setString(1, admin.getUsername());
 	    result = statement.executeQuery();
-	    
+
 	    if ( result.next() ){
 		String unHashedPass = admin.getPassword();
 		String hashedPass = result.getString( "password" );
@@ -268,7 +274,7 @@ public final class AdminManager
 	public boolean comparePassword( final String hashedPassword, final String unHashedPass){
 	    final String salt = hashedPassword.substring( hashedPassword.length()-3);
 	    String hashedValue;
-	   for( int i = 0 ; i< 10 ; i++ ){
+	    for( int i = 0 ; i< 10 ; i++ ){
 		hashedValue = DigestUtils.sha256Hex( i + unHashedPass + salt)  + salt;
 		if( hashedPassword.equals(hashedValue)){
 
