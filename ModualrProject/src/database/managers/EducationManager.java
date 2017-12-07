@@ -41,8 +41,9 @@ public final class EducationManager
 	//Ensures that the two objects are valid and that the both have the same 
 	//student id card number
 	if( ! ( education.isValid(ValidationType.NEW_BEAN ) &&
-		existingStudent.isValid(ValidationType.EXISTING_BEAN)&& 
-		existingStudent.getIdCardNumber().equals( education.getStudentId()) ))
+		existingStudent.isValid(ValidationType.EXISTING_BEAN) && 
+		existingStudent.getIdCardNumber().equals( education.getStudentId()) && 
+		exi))
 	{
 	    throw new InvalidBeanException();
 	}
