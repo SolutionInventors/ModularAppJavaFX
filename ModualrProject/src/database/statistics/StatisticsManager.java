@@ -64,14 +64,14 @@ public class StatisticsManager
     private static StudentStats getStudentStats(ResultSet result, Student student) throws SQLException
     {
 	String sql = 
-		"SELECT COUNT(*) as 'Registered', " + 
+		"SELECT COUNT(*) as 'Registered', \n" + 
 			"	COUNT(if( isPaymentComplete(reg.id), 1, null)) as 'Paid', " +
 			"	COUNT(if( reg.bookingStatus = 1, 1, null)) as 'Booked', " + 
 			"	COUNT(if( reg.attendedStatus =1, 1, null)) as 'Attended', " +
 			"	COUNT(if( reg.result = 'Fail', 1, null)) as 'Failed', " +
-			"	COUNT(if( reg.result = 'Passed', 1, null)) as 'Passed' + " +
+			"	COUNT(if( reg.result = 'Passed', 1, null)) as 'Passed'  " +
 			"FROM module_register as reg " + 
-			"WHERE reg.student_id = ?"+
+			"WHERE reg.student_id = ? \n"+
 			"GROUP BY reg.student_id;";
 
 	try( PreparedStatement stmt = DatabaseManager.getPreparedStatement
@@ -80,7 +80,8 @@ public class StatisticsManager
 	    result =  stmt.executeQuery();
 	    if( result.next() )
 		return new StudentStats(result.getInt( "Registered") , 
-			result.getInt("Paid" ), result.getInt("Attended"), 
+			result.getInt("Paid" ), result.getInt("Booked"), 
+			result.getInt("Attended"), 
 			result.getInt("Passed"), result.getInt("Failed"));
 	    else
 		return null;
@@ -91,8 +92,8 @@ public class StatisticsManager
 	    throws SQLException
     {
 	String sql = "SELECT reg.module_name as 'Module Name' , "
-		+ "	COUNT(*) as 'Total Registered'" + 
-		"	COUNT(if( isPaymentComplete(reg.id), 1, null)) as 'Num Paid'," +
+		+ "	COUNT(*) as 'Total Registered', " + 
+		"	COUNT(if( isPaymentComplete(reg.id), 1, null)) as 'Num Paid', " +
 		"   	COUNT(if( reg.bookingStatus = 1, 1, null)) as 'Num Booked'," +
 		"  	COUNT(if( reg.attendedStatus =1, 1, null)) as 'Num Attended'," + 
 		" 	COUNT(if( reg.result = 'Fail', 1, null)) as 'Num Failed', "+ 

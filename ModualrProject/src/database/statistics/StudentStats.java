@@ -16,6 +16,7 @@ public class StudentStats implements Statistics
     private final int MODULE_ATTENDED;
     private final int MODULE_PASSED;
     private final int MODULE_FAILED;
+    private final int MODULE_BOOKED;
     
     /**
      * Creates this object by specifying all its attributes
@@ -25,7 +26,7 @@ public class StudentStats implements Statistics
      * @param modPassed the number of {@code Module}s the {@code Student} has passed
      * @param modFailed the number of {@code Module}s the {@code Student} has failed
      */
-    public StudentStats(int modReg, int modPaid, int modAttended, 
+    public StudentStats(int modReg, int modPaid, int modBooked,  int modAttended, 
 	    int modPassed, int modFailed)
     {
 	MODULE_REGISTERED = modReg;
@@ -33,6 +34,7 @@ public class StudentStats implements Statistics
 	MODULE_ATTENDED = modAttended;
 	MODULE_PASSED = modPassed;
 	MODULE_FAILED = modFailed;
+	MODULE_BOOKED = modBooked;
     }
 
     public int getModuleRegistered()
@@ -60,6 +62,21 @@ public class StudentStats implements Statistics
         return MODULE_FAILED;
     }
 
+    
+    public String toString(){
+	return String.format("Modules Registered: %s\n"
+		+ "Modules Paid: %s\nModules Booked: %s\n "
+		+ "Modules Attended: %s\n"
+		+ "Modules Passed: %s\n"
+		+ "Modules Failded: %s\n", getModuleRegistered(), 
+		getModulePaid(),getModuleBooked(),  getModuleAttended(), 
+		getModulePassed() ,getModuleFailed() );
+    }
+
+    public int getModuleBooked()
+    {
+	return MODULE_BOOKED;
+    }
   
 
 }

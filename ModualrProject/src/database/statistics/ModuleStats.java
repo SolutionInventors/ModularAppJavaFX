@@ -56,6 +56,15 @@ public class ModuleStats implements Statistics
         return NUM_FAILED;
     }
    
+    public String toString(){
+	return String.format("Modules Registered: %s\n"
+		+ "Modules Paid: %s\nModules Booked: %s\n "
+		+ "Modules Attended: %s\n"
+		+ "Modules Passed: %s\n"
+		+ "Modules Failded: %s\n", getNumRegistered(), 
+		getNumPaid(),getNumBooked(),  getNumAttended(), 
+		getNumPassed() ,getNumFailed() );
+    }
 
 
 }
