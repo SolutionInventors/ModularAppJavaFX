@@ -14,27 +14,32 @@ public class StatisticsManager
 {
 
     /**
-     * Hello
-     * @param bean
-     * @return
-     * @throws SQLException
+     * This method retrieves statistics of the argument inputed into it or {@code null} 
+     * if the specified {@code Bean } does not exists in the database.
+     * It does returns the Statistics based on the type of its argument.<br>
+     * For example, if a {@code Module} is inputed as its argument then a
+     * {@code ModuleStats} object would be returned etc.
+     * 
+     * @param bean a subclass of {@code Bean} to be retrieved.
+     * @return a {@code Statistics } object or {@code null} if the {@code Bean } is not 
+     * found in the database.
+     * @throws SQLException when a database error occurs.
      */
-    public static Statistics retrieveStats( Bean bean ) 
+    @SuppressWarnings("unchecked")
+    public static < T extends Statistics> T retrieveStats( Bean bean ) 
 	    throws SQLException
     {
 	ResultSet result = null;
 	try
 	{
 	    if( bean instanceof Module ){
-		return getModuleStats(result , (Module) bean);
+		return (T) getModuleStats(result , (Module) bean);
 	    }
 	    else if( bean instanceof Certificate){
-
-		return getCertificateStats(result , (Certificate) bean);
-
+		return (T) getCertificateStats(result , (Certificate) bean);
 	    }
 	    else if( bean instanceof Student){
-		return getStudentStats( result, (Student) bean );
+		return (T) getStudentStats( result, (Student) bean );
 	    }
 	}
 	finally{
@@ -43,13 +48,46 @@ public class StatisticsManager
 	return null;
     }
 
-    private static Statistics getStudentStats(ResultSet result, Student bean)
-    {
-//	StudentStats  studStats = new StudentStats();
+    /**
+     * Retrieves statistics about the tables in the database.
+     * The retrieved {@link TableStats} object contains statistics about the
+     * all the {@code Module}s, {@code Student}s, {@code ModularClass} and
+     * so on.<br>
+     * 
+     * @return
+     */
+    public static TableStats retrieveStats(){
+	
 	return null;
     }
+    
+    private static StudentStats getStudentStats(ResultSet result, Student student) throws SQLException
+    {
+	String sql = 
+		"SELECT COUNT(*) as 'Registered', " + 
+			"	COUNT(if( isPaymentComplete(reg.id), 1, null)) as 'Paid', " +
+			"	COUNT(if( reg.bookingStatus = 1, 1, null)) as 'Booked', " + 
+			"	COUNT(if( reg.attendedStatus =1, 1, null)) as 'Attended', " +
+			"	COUNT(if( reg.result = 'Fail', 1, null)) as 'Failed', " +
+			"	COUNT(if( reg.result = 'Passed', 1, null)) as 'Passed' + " +
+			"FROM module_register as reg " + 
+			"WHERE reg.student_id = ?"+
+			"GROUP BY reg.student_id;";
 
-    private static Statistics getModuleStats(ResultSet result , Module existinModule) 
+	try( PreparedStatement stmt = DatabaseManager.getPreparedStatement
+		(sql, student.getIdCardNumber()); )
+	{
+	    result =  stmt.executeQuery();
+	    if( result.next() )
+		return new StudentStats(result.getInt( "Registered") , 
+			result.getInt("Paid" ), result.getInt("Attended"), 
+			result.getInt("Passed"), result.getInt("Failed"));
+	    else
+		return null;
+	}
+    }
+
+    private static ModuleStats getModuleStats(ResultSet result , Module existinModule) 
 	    throws SQLException
     {
 	String sql = "SELECT reg.module_name as 'Module Name' , "
@@ -68,13 +106,14 @@ public class StatisticsManager
 	{
 	    result =  stmt.executeQuery();
 	    if( result.next() )
-		return new ModuleStats(result.getInt("Total Registered"), result.getInt("Num Paid"),
-			result.getInt("Num Booked"), result.getInt("Num Attended"),
-			result.getInt("Num Passed"), result.getInt("Num Failed"));
+		return new ModuleStats(result.getInt("Total Registered"), 
+			result.getInt("Num Paid"),result.getInt("Num Booked"),
+			result.getInt("Num Attended"),result.getInt("Num Passed"),
+			result.getInt("Num Failed"));
 	    else
 		return null;
 	}
-	
+
     }
 
 
