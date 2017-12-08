@@ -10,12 +10,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
 
-import database.bean.Sponsor;
 import database.bean.student.Biodata;
 import database.bean.student.EducationalBackground;
 import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Phone;
 import database.bean.student.ProfessionalExperience;
+import database.bean.student.Sponsor;
 import database.bean.student.Student;
 import database.bean.student.StudentData;
 import exception.InvalidAdminException;

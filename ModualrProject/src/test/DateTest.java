@@ -12,7 +12,6 @@ public class DateTest
     public static void main(String[] args) throws ParseException
     {
 	DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
-	Date begin = new Date( df.parse("22-10-2017").getTime());
 	Date end = new Date( df.parse("10-10-2018").getTime());
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime( new Date( df.parse("22-10-2017").getTime()) );

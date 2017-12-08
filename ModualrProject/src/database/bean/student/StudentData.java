@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import database.bean.Bean;
-import database.bean.Sponsor;
 import utils.ValidationType;
 
 /**

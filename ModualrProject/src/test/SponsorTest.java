@@ -3,7 +3,7 @@ package test;
 import java.sql.SQLException;
 
 import database.bean.Admin;
-import database.bean.Sponsor;
+import database.bean.student.Sponsor;
 import database.managers.DatabaseManager;
 import database.managers.SponsorManager;
 import exception.InvalidAdminException;

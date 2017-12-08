@@ -8,7 +8,7 @@ import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
-import database.bean.Sponsor;
+import database.bean.student.Sponsor;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
 import exception.InvalidBeanException;

@@ -1,6 +1,6 @@
-package database.bean;
+package database.bean.student;
 
-import database.bean.student.Student;
+import database.bean.Bean;
 import utils.ValidationType;
 
 /**

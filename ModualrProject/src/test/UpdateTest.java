@@ -10,11 +10,11 @@ import java.text.SimpleDateFormat;
 import javax.swing.JFileChooser;
 
 import database.bean.Admin;
-import database.bean.Sponsor;
 import database.bean.student.Biodata;
 import database.bean.student.EducationalBackground;
 import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Phone;
+import database.bean.student.Sponsor;
 import database.bean.student.Student;
 import database.managers.BiodataManager;
 import database.managers.ConnectionManager;
