@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import database.bean.Admin;
 import database.managers.AdminManager;
+import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import exception.InvalidAdminException;
 
@@ -12,7 +13,7 @@ public class AdminTest
 {
     public static void main(String[] args) throws InvalidAdminException, SQLException
     {
-	Admin currentAdmin = new Admin("Chidiebere", "Fred" );
+	Admin currentAdmin = new Admin("Joshua", "Kenneth" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 	Scanner input = new Scanner( System.in);
 	
@@ -29,6 +30,8 @@ public class AdminTest
 	else
 	    System.err.println("Wasn't Inserted");
 	input.close();
+	
+	ConnectionManager.close();
     }
 
 }
