@@ -11,7 +11,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import database.bean.Admin;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import exception.InvalidPrimaryKeyException;
 import utils.ValidationType;
 
@@ -36,26 +35,22 @@ public final class AdminManager
      * change is invalid
      * @throws SQLException when an SQLException is invalid
      */
-    public static boolean insert( Admin newAdmin) throws 
-    InvalidBeanException, InvalidAdminException, SQLException
+    public static boolean insert( Admin newAdmin) throws  InvalidAdminException, SQLException
     {
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !newAdmin.isValid(ValidationType.NEW_BEAN) )
+	if( newAdmin.isValid(ValidationType.NEW_BEAN) )
 	{
-	    throw new InvalidBeanException
-	    ( "The admin object cannot contain spaces and it cannot be null");
+	    HashClass hashInstance = HashClass.getInstance();
+	    hashInstance.hashAdmin(newAdmin);
+
+	    try(CallableStatement  statement = 
+		    DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ? ) } ", 
+			    newAdmin.getUsername(),  newAdmin.getPassword() ) ;)
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+	    }
 	}
 
-	HashClass hashInstance = HashClass.getInstance();
-	hashInstance.hashAdmin(newAdmin);
-
-	try(CallableStatement  statement = 
-		DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ? ) } ", 
-			newAdmin.getUsername(),  newAdmin.getPassword() ) ;)
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
-	}
 
 	return false;
     }
@@ -83,24 +78,20 @@ public final class AdminManager
      * @throws InvalidBeanException 
      */
     public static boolean update(  Admin oldAdmin, Admin newAdmin) 
-	    throws  SQLException, InvalidAdminException, InvalidBeanException
+	    throws  SQLException, InvalidAdminException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !oldAdmin.isValid(ValidationType.EXISTING_BEAN) )
+	if( oldAdmin.isValid(ValidationType.EXISTING_BEAN) )
 	{
-	    throw new InvalidBeanException
-	    ( "The admin object cannot contain spaces and it cannot be null");
+	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?, ?  ) } ", 
+		    oldAdmin.getUsername(),  oldAdmin.getPassword() , 
+		    newAdmin.getUsername() , newAdmin.getPassword());)
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+	    }
+
 	}
-
-
-	try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?, ?  ) } ", 
-		oldAdmin.getUsername(),  oldAdmin.getPassword() , 
-		newAdmin.getUsername() , newAdmin.getPassword());)
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
-	}
-
 	return false;
     }
 
@@ -194,14 +185,14 @@ public final class AdminManager
 	finally{
 	    if( result!= null )
 		try
-		{
+	    {
 		    result.close();
-		}
-		catch (SQLException e)
-		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
+	    }
+	    catch (SQLException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
 	}
 	return false;
     }

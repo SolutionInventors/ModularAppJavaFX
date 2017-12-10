@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import database.bean.ModularClass;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 /**
@@ -18,75 +17,76 @@ import utils.ValidationType;
 public final class ModularClassManager
 {
     public static boolean createNewClass( ModularClass newClass) 
-	    throws SQLException, InvalidBeanException, InvalidAdminException
+	    throws SQLException,  InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
-	if( !newClass.isValid(ValidationType.NEW_BEAN)) 
-	    throw new InvalidBeanException("A CertificateModule data is invalid");
-	
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call createNewClass(?,?) }", newClass.getName() ))
-	{
-	    statement.registerOutParameter(2, Types.DATE);
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ){
-		newClass.setDateCreated( statement.getDate(2)); 
-		return true;
+
+	if( newClass.isValid(ValidationType.NEW_BEAN)){
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call createNewClass(?,?) }", newClass.getName() ))
+	    {
+		statement.registerOutParameter(2, Types.DATE);
+		int affected = statement.executeUpdate();
+		if( affected > 0 ){
+		    newClass.setDateCreated( statement.getDate(2)); 
+		    return true;
+		}
+
 	    }
-	    
 	}
+
 	return false;
     }
 
     public static boolean removeClass( ModularClass existingClass ) 
-	    throws InvalidBeanException, SQLException, InvalidAdminException
+	    throws  SQLException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	
-	if( !existingClass.isValid( ValidationType.EXISTING_BEAN) ) 
-	    throw new InvalidBeanException("A CertificateModule data is invalid");
-	
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call removeClass(?) }", existingClass.getName() ))
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ){
-		return true;
+
+	if( existingClass.isValid( ValidationType.EXISTING_BEAN) ){
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call removeClass(?) }", existingClass.getName() ))
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ){
+		    return true;
+		}
+
 	    }
-	    
 	}
+
+
 	return false;
     }
 
-    
-    public static boolean update( ModularClass oldClass, ModularClass newClass ) throws InvalidBeanException, SQLException, InvalidAdminException{
-	if( !( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
+
+    public static boolean update( ModularClass oldClass, ModularClass newClass ) 
+	    throws  SQLException, InvalidAdminException
+    {
+	if( ( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
 		newClass.isValid(ValidationType.NEW_BEAN) ))
 	{
-	   throw new InvalidBeanException("One of the two ModularClass object is"
-	   	+ " invalid "); 
-	}
-	
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call updateClass(?, ?, ?) }", oldClass.getName(),
-			newClass.getName()))
-	{
-	    statement.registerOutParameter(3, Types.DATE);
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ){
-		newClass.setDateCreated( statement.getDate(3) );
-		return true;
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call updateClass(?, ?, ?) }", oldClass.getName(),
+			    newClass.getName()))
+	    {
+		statement.registerOutParameter(3, Types.DATE);
+		int affected = statement.executeUpdate();
+		if( affected > 0 ){
+		    newClass.setDateCreated( statement.getDate(3) );
+		    return true;
+		}
+
 	    }
-	    
+
 	}
-	
+
+
 	return false;
     }
 
-    
+
     public static ModularClass[] getClasses( int startIndex) throws SQLException, InvalidAdminException {
-	
+
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	ResultSet result = null ;
 	ArrayList<ModularClass> list = new ArrayList<>();
@@ -94,7 +94,7 @@ public final class ModularClassManager
 		("{call getClassesByIndex(? ) }", startIndex ))
 	{
 	    result = statement.executeQuery() ;
-	    
+
 	    while( result.next() )
 	    {
 		ModularClass tempClass =  new ModularClass
@@ -107,7 +107,7 @@ public final class ModularClassManager
 	    if( result !=null ) result.close();
 	}
 	return list.toArray( new ModularClass[ list.size() ] );
-    
+
     }
     public static boolean isInDatabase( ModularClass cert ){
 	return false;

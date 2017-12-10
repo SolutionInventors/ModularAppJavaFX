@@ -14,54 +14,50 @@ import java.sql.Types;
 import database.bean.student.Biodata;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
-import exception.InvalidBiodataException;
 import utils.ValidationType;
 
 public class BiodataManager
 {   
     public static boolean insert(Biodata data) 
-	    throws SQLException, InvalidAdminException, InvalidBeanException
+	    throws SQLException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !data.isValid(ValidationType.NEW_BEAN )) throw new InvalidBiodataException();
+	if( data.isValid(ValidationType.NEW_BEAN )){
+	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		    ("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
+			    data.getStudentId(),data.getTitle(), data.getSurname(),  
+			    data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+			    data.getCountry(), data.getGender(), data.getDateOfBirth(), 
+			    data.getPlaceOfBirth()); ) 
 
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			data.getStudentId(),data.getTitle(), data.getSurname(),  
-			data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
-			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
-			data.getCountry(), data.getGender(), data.getDateOfBirth(), 
-			data.getPlaceOfBirth()); ) 
-
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected >0 ) return true ;
+	    {
+		int affected = statement.executeUpdate();
+		if( affected >0 ) return true ;
+	    }
 	}
-
 	return false;
     }
 
     public static boolean update(Student existingStudent, Biodata data) 
-	    throws InvalidAdminException, InvalidBeanException, SQLException
+	    throws InvalidAdminException,  SQLException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !(data.isValid(ValidationType.NEW_BEAN ) && 
-		data.getStudentId().equals(existingStudent.getIdCardNumber()))){
-	    throw new InvalidBiodataException();
+	if( (data.isValid(ValidationType.NEW_BEAN ) && 
+		data.getStudentId().equals(existingStudent.getIdCardNumber())))
+	{
+	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		    ("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
+			    data.getStudentId(),data.getTitle(), data.getSurname(),  
+			    data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+			    data.getCountry(), data.getGender(), data.getDateOfBirth(),
+			    data.getPlaceOfBirth()); ) 
+	    {
+		int affected = statement.executeUpdate();
+		if( affected >0 ) return true ;	
+	    }
+
 	}
 
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			data.getStudentId(),data.getTitle(), data.getSurname(),  
-			data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
-			data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
-			data.getCountry(), data.getGender(), data.getDateOfBirth(),
-			data.getPlaceOfBirth()); ) 
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected >0 ) return true ;	
-	}
 
 	return false;
     }

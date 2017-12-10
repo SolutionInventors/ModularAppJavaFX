@@ -19,70 +19,73 @@ import database.bean.student.Sponsor;
 import database.bean.student.Student;
 import database.bean.student.StudentData;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
-import exception.InvalidStudentException;
 import utils.ValidationType;
 
 public final class StudentManager
 {
-    public static boolean update( Student existingStudent, Student newStudent ) throws SQLException, InvalidBeanException, InvalidAdminException{
+    public static boolean update( Student existingStudent, Student newStudent ) throws SQLException,  InvalidAdminException{
 
-	if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN)  && 
+	if( ( existingStudent.isValid(ValidationType.EXISTING_BEAN)  && 
 		newStudent.isValid(ValidationType.NEW_BEAN)) ) 
-	    throw new InvalidBeanException("The student object contains some invalid values");
-	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		"{CALL updateStudent(?, ?,?,? ,?) } ", existingStudent.getIdCardNumber(), 
-		newStudent.getCertificateIssued(), newStudent.isActive(), 
-		newStudent.getEmailAddress());)
 	{
-	    statement.registerOutParameter(5, Types.DATE);
-	    int affected = statement.executeUpdate();
-	    newStudent.setDateAdmitted( statement.getDate(5) );
-	    if( affected == 1 ) return true;
+	    try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		    "{CALL updateStudent(?, ?,?,? ,?) } ", existingStudent.getIdCardNumber(), 
+		    newStudent.getCertificateIssued(), newStudent.isActive(), 
+		    newStudent.getEmailAddress());)
+	    {
+		statement.registerOutParameter(5, Types.DATE);
+		int affected = statement.executeUpdate();
+		newStudent.setDateAdmitted( statement.getDate(5) );
+		if( affected == 1 ) return true;
+	    }
 	}
+
 	return false;
     }
 
     public static boolean updateImage( Student existingStudent, File image) 
-	    throws SQLException, InvalidAdminException, InvalidBeanException
+	    throws SQLException, InvalidAdminException
     {
-	if( !existingStudent.isValid(ValidationType.EXISTING_BEAN) ) throw new InvalidBeanException();
-	String sql = "{call updateStudentImage( ?,? ,?)}";
-	try( 
-		FileInputStream inStream = new FileInputStream(image) ;
-		CallableStatement stmt = DatabaseManager.getCallableStatement(sql,
-		existingStudent.getIdCardNumber(), inStream))
-	{
-	    stmt.registerOutParameter(3, Types.DATE);
-	    int affected = stmt.executeUpdate();
+	if( existingStudent.isValid(ValidationType.EXISTING_BEAN) ) {
+	    String sql = "{call updateStudentImage( ?,? ,?)}";
+	    try( 
+		    FileInputStream inStream = new FileInputStream(image) ;
+		    CallableStatement stmt = DatabaseManager.getCallableStatement(sql,
+			    existingStudent.getIdCardNumber(), inStream))
+	    {
+		stmt.registerOutParameter(3, Types.DATE);
+		int affected = stmt.executeUpdate();
 
-	    existingStudent.setDateAdmitted( stmt.getDate(3) );
-	    if( affected >= 1 ) return true;
+		existingStudent.setDateAdmitted( stmt.getDate(3) );
+		if( affected >= 1 ) return true;
+	    }
+
+	    catch (IOException e)
+	    {
+		e.printStackTrace();
+	    }
 	}
-	
-	catch (IOException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+
 	return false;
     }
-    
-    
-    public static boolean updateEmailAddress( Student existingStudent, String mail ) 
-	    throws SQLException, InvalidBeanException, InvalidAdminException
-    {
-	if( !( existingStudent.isValid(ValidationType.EXISTING_BEAN) && mail.length() >0 ) ) 
-	    throw new InvalidBeanException("The student object contains some invalid values");
-	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		"{CALL updateMail(?, ?, ?) } ", existingStudent.getIdCardNumber(),mail);)
-	{
-	    statement.registerOutParameter(3, Types.DATE);
-	    int affected = statement.executeUpdate();
 
-	    existingStudent.setDateAdmitted( statement.getDate(3) );
-	    if( affected >= 1 ) return true;
+
+    public static boolean updateEmailAddress( Student existingStudent, String mail ) 
+	    throws SQLException,  InvalidAdminException
+    {
+	if( ( existingStudent.isValid(ValidationType.EXISTING_BEAN) && mail.length() >0 ) ) 
+	{
+	    try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		    "{CALL updateMail(?, ?, ?) } ", existingStudent.getIdCardNumber(),mail);)
+	    {
+		statement.registerOutParameter(3, Types.DATE);
+		int affected = statement.executeUpdate();
+
+		existingStudent.setDateAdmitted( statement.getDate(3) );
+		if( affected >= 1 ) return true;
+	    }
 	}
+
 	return false;
     }
 
@@ -102,20 +105,21 @@ public final class StudentManager
      * 
      */
     public static StudentData retrieveStudentData(Student student) 
-	    throws InvalidAdminException, SQLException, InvalidBeanException
+	    throws InvalidAdminException, SQLException
     {
-	if( !DatabaseManager.validateAdmin()) throw  new InvalidAdminException();
+	StudentData studData= null;
+	if( student.isValid(ValidationType.EXISTING_BEAN) ){
+	    Biodata data = BiodataManager.getBiodata( student);
+	    EducationalBackground[] edu = EducationManager.getEducationInfo(student);
+	    Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
+	    ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);
+	    MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
+	    Sponsor[] spons =  SponsorManager.getSponsors( student);
+	    studData = new StudentData(data, edu, phoneNumbers,
+		    experiences, meansOfDisc, spons);
 
-	if( !student.isValid(ValidationType.EXISTING_BEAN) ) throw new InvalidStudentException();
+	}
 
-	Biodata data = BiodataManager.getBiodata( student);
-	EducationalBackground[] edu = EducationManager.getEducationInfo(student);
-	Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
-	ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);
-	MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
-	Sponsor[] spons =  SponsorManager.getSponsors( student);
-	StudentData studData = new StudentData(data, edu, phoneNumbers,
-		experiences, meansOfDisc, spons);
 	return studData.isValid(ValidationType.EXISTING_BEAN) ? studData : null;
     }
     /**
@@ -135,40 +139,37 @@ public final class StudentManager
      * @throws InvalidAdminException when the current {@code Admin} that wants to make the change is invalid
      */
     public static boolean registerStudent( Student newStudent, StudentData studentData) 
-	    throws SQLException, InvalidBeanException, InvalidAdminException
+	    throws SQLException, InvalidAdminException
     {
-	if( ! DatabaseManager.validateAdmin() ) 
-	    throw new InvalidAdminException( "The Admin that wants to make the change is ivalid");
 
-	if( !Student.isValid(ValidationType.NEW_BEAN, newStudent))
+	if( Student.isValid(ValidationType.NEW_BEAN, newStudent))
 	{
-	    throw new InvalidBeanException("The Student object cannot be inserted "
-		    + "Please ensure that the email, firstName and other attributes are valid.");
-	}
-
-	try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
-		Connection conn =  ConnectionManager.getInstance().getConnection();
-		CallableStatement statement = DatabaseManager.getCallableStatement("{call insertStudent(?,?,?, ?, ?) }",
-			newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
-			newStudent.getModClassName()) ; )
-	{
-	    conn.setAutoCommit( false);
-	    statement.registerOutParameter(5,  Types.DATE);
-	    int affected = statement.executeUpdate();
-	    if( affected > 0  && StudentDataManager.insert( studentData) )
+	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
+		    Connection conn =  ConnectionManager.getInstance().getConnection();
+		    CallableStatement statement = DatabaseManager.getCallableStatement("{call insertStudent(?,?,?, ?, ?) }",
+			    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
+			    newStudent.getModClassName()) ; )
 	    {
-		conn.commit();
-		conn.setAutoCommit( true);
-		newStudent.setDateAdmitted( statement.getDate( 5 ) );
-		return true;
+		conn.setAutoCommit( false);
+		statement.registerOutParameter(5,  Types.DATE);
+		int affected = statement.executeUpdate();
+		if( affected > 0  && StudentDataManager.insert( studentData) )
+		{
+		    conn.commit();
+		    conn.setAutoCommit( true);
+		    newStudent.setDateAdmitted( statement.getDate( 5 ) );
+		    return true;
+		}
+		else
+		    conn.rollback();
 	    }
-	    else
-		conn.rollback();
+	    catch (IOException e)
+	    {
+		e.printStackTrace();
+	    }
 	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+
+
 	return false;
     }
 
@@ -228,21 +229,17 @@ public final class StudentManager
     private static final class StudentDataManager
     {
 	public static  boolean insert( StudentData studData)
-		throws InvalidAdminException, InvalidBeanException, SQLException
+		throws InvalidAdminException, SQLException
 	{
-	    if( !DatabaseManager.validateAdmin())
-		throw new InvalidAdminException();
-
-	    if( !studData.isValid(ValidationType.NEW_BEAN) )
-		throw new InvalidBeanException("Student object data inputed was not valid");
-
+	    if( !studData.isValid(ValidationType.NEW_BEAN) ) return false;
+	
 	    boolean edu = Arrays.stream( studData.getEducation() )
 		    .allMatch( education-> {
 			try
 			{
 			    return EducationManager.insert( education ) ;
 			}
-			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			catch (SQLException | InvalidAdminException  e)
 			{
 			    e.printStackTrace();
 			    return false;
@@ -256,7 +253,7 @@ public final class StudentManager
 			{
 			    return DiscoveryManager.insert( disc ) ;
 			}
-			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			catch (SQLException | InvalidAdminException  e)
 			{
 			    e.printStackTrace();
 			    return false;
@@ -271,7 +268,7 @@ public final class StudentManager
 			{
 			    return PhoneManager.insert( newPhone) ;
 			}
-			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			catch (SQLException | InvalidAdminException  e)
 			{
 			    e.printStackTrace();
 			    return false;
@@ -284,7 +281,7 @@ public final class StudentManager
 			{
 			    return ExperienceManager.insert( experience ) ;
 			}
-			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			catch (SQLException | InvalidAdminException e)
 			{
 			    e.printStackTrace();
 			    return false;
@@ -297,7 +294,7 @@ public final class StudentManager
 			{
 			    return SponsorManager.insert(spons);
 			}
-			catch (SQLException | InvalidAdminException | InvalidBeanException e)
+			catch (SQLException | InvalidAdminException  e)
 			{
 			    // TODO Auto-generated catch block
 			    e.printStackTrace();

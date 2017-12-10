@@ -12,8 +12,6 @@ import database.bean.student.JobResponsibility;
 import database.bean.student.ProfessionalExperience;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
-import exception.InvalidExperienceException;
 import utils.ValidationType;
 
 public final class ExperienceManager
@@ -33,61 +31,57 @@ public final class ExperienceManager
      */
     @SuppressWarnings("resource")
     public static boolean insert(ProfessionalExperience experience) 
-	    throws SQLException, InvalidAdminException, InvalidBeanException
+	    throws SQLException, InvalidAdminException
     {
-	if( !experience.isValid(ValidationType.NEW_BEAN ) ) throw new InvalidExperienceException();
+	if( experience.isValid(ValidationType.NEW_BEAN ) ){
+	    Connection conn = ConnectionManager.getInstance().getConnection();
+	    try(
+		    CallableStatement statement =  DatabaseManager.getCallableStatement
+		    ("{call addExperienceRecord(?,?,?,?, ? ,?) }", experience.getStudentId(), 
+			    experience.getStartDate(), experience.getEndDate(), 
+			    experience.getEmployer(), experience.getJobTitle() ) ; )
+	    {
+		conn.setAutoCommit(false);
+		statement.registerOutParameter(6, Types.INTEGER);
+		int affected = statement.executeUpdate();
+		JobResponsibility res;
+		boolean successful = true;
+		if( affected >0 ){
+		    final int expId =statement.getInt( 6 );
+		    final String[] duties = experience.getDuties();
 
-	Connection conn = ConnectionManager.getInstance().getConnection();
-	try(
-		CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call addExperienceRecord(?,?,?,?, ? ,?) }", experience.getStudentId(), 
-			experience.getStartDate(), experience.getEndDate(), 
-			experience.getEmployer(), experience.getJobTitle() ) ; )
-	{
-	    conn.setAutoCommit(false);
-	    statement.registerOutParameter(6, Types.INTEGER);
-	    int affected = statement.executeUpdate();
-	    JobResponsibility res;
-	    boolean successful = true;
-	    if( affected >0 ){
-		final int expId =statement.getInt( 6 );
-		final String[] duties = experience.getDuties();
+		    for( String duty : duties ){
+			res = new JobResponsibility(expId, duty );
+			if( !ResponsibilityManager.insert( res ) ){
+			    successful = false;
+			    break;
+			}
+		    }
 
-		for( String duty : duties ){
-		    res = new JobResponsibility(expId, duty );
-		    if( !ResponsibilityManager.insert( res ) ){
-			successful = false;
-			break;
+		    if( successful){
+			return true;
+		    }
+		    else{
+			conn.rollback();
+			return false;
 		    }
 		}
-
-		if( successful){
-		    return true;
-		}
-		else{
-		    conn.rollback();
-		    return false;
-		}
 	    }
-	    conn.setAutoCommit(true);
-
 	}
-
 	return false;
     }
 
     public static boolean update(Student existingStudent, ProfessionalExperience experience)
-	    throws InvalidBeanException, InvalidAdminException
+	    throws  InvalidAdminException
     {
-	if( !experience.isValid(ValidationType.EXISTING_BEAN) ) 
-	    throw new InvalidExperienceException("The Experience cannot be updated");
+	if( !experience.isValid(ValidationType.EXISTING_BEAN) ) return false;
 	return false;
     }
 
     public static ProfessionalExperience[] getExpriences(Student student) 
 	    throws SQLException, InvalidAdminException
     {
-	
+
 	ResultSet result = null;
 	List<ProfessionalExperience> list = new LinkedList<>();
 

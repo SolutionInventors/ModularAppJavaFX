@@ -4,32 +4,31 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
 import database.bean.student.Sponsor;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 public class SponsorManager
 {
     public static boolean insert( Sponsor sponsor) 
-	    throws SQLException, InvalidAdminException, InvalidBeanException
+	    throws SQLException, InvalidAdminException
     {
-	if( !DatabaseManager.validateAdmin()) throw new InvalidAdminException();
-	if( !sponsor.isValid(ValidationType.NEW_BEAN)) throw new InvalidBeanException();
-
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call addSponsor(?,?, ?, ? , ?, ?) }", sponsor.getStudentId(), 
-			sponsor.getFirstName() , sponsor.getLastName(), sponsor.getAddress(), 
-			sponsor.getTelephone(), sponsor.getEmail()) ; )
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected >0 ) return true ;
+	if( !sponsor.isValid(ValidationType.NEW_BEAN)){
+	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		    ("{call addSponsor(?,?, ?, ? , ?, ?) }", sponsor.getStudentId(), 
+			    sponsor.getFirstName() , sponsor.getLastName(), sponsor.getAddress(), 
+			    sponsor.getTelephone(), sponsor.getEmail()) ; )
+	    {
+		int affected = statement.executeUpdate();
+		if( affected >0 ) return true ;
+	    }
 	}
+
+
 	return false;
     }
 
@@ -48,23 +47,23 @@ public class SponsorManager
      * @throws InvalidBeanException when either {@code Sponsor} object is invalid.
      */
     public static boolean update( Sponsor oldSponsor, Sponsor newSpons) 
-	    throws SQLException, InvalidAdminException, InvalidBeanException
+	    throws SQLException, InvalidAdminException
     {
-	if( !( oldSponsor.isValid(ValidationType.EXISTING_BEAN)  && 
+	if( ( oldSponsor.isValid(ValidationType.EXISTING_BEAN)  && 
 		newSpons.isValid(ValidationType.NEW_BEAN) && 
 		oldSponsor.getStudentId().equals(newSpons.getStudentId())) ) 
 	{
-	    throw new InvalidBeanException("The Sponsor object contains some invalid values"); 
+	    try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
+		    "{CALL updateSponsor(?,?,?,?,?,?,?,?,?) } ", 
+		    newSpons.getStudentId(), newSpons.getFirstName(), newSpons.getLastName(),
+		    newSpons.getAddress(), newSpons.getTelephone(), newSpons.getEmail(), 
+		    oldSponsor.getFirstName(), oldSponsor.getLastName(), oldSponsor.getEmail());)
+	    {
+		if( statement.executeUpdate() > 0 ) return true;
+	    }
 	}
-	    
-	try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		"{CALL updateSponsor(?,?,?,?,?,?,?,?,?) } ", 
-		newSpons.getStudentId(), newSpons.getFirstName(), newSpons.getLastName(),
-		newSpons.getAddress(), newSpons.getTelephone(), newSpons.getEmail(), 
-		oldSponsor.getFirstName(), oldSponsor.getLastName(), oldSponsor.getEmail());)
-	{
-	   if( statement.executeUpdate() > 0 ) return true;
-	}
+
+
 	return false;
     }
 

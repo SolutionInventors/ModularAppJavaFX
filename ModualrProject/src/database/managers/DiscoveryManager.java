@@ -9,48 +9,48 @@ import java.util.List;
 import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 public final class DiscoveryManager
 {
     public static boolean insert( MeanOfDiscovery means) 
-	    throws SQLException, InvalidAdminException, InvalidBeanException
+	    throws SQLException, InvalidAdminException
     {
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !means.isValid(ValidationType.NEW_BEAN )) throw new InvalidBeanException();
-
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call addMeansOfDiscovery(?,?) }", means.getStudentId(), 
-			means.getMeans()) ; )
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected >0 ) return true ;
+	if( !means.isValid(ValidationType.NEW_BEAN )){
+	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		    ("{call addMeansOfDiscovery(?,?) }", means.getStudentId(), 
+			    means.getMeans()) ; )
+	    {
+		int affected = statement.executeUpdate();
+		if( affected >0 ) return true ;
+	    }
 	}
+
+
 
 	return false;
     }
 
     public static boolean update(MeanOfDiscovery oldDisc, MeanOfDiscovery newMeans) 
-	    throws InvalidBeanException, InvalidAdminException, SQLException
+	    throws  InvalidAdminException, SQLException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	//Ensures that the two objects are valid and that the both have the same 
 	//student id card number
-	if( ! ( newMeans.isValid(ValidationType.NEW_BEAN ) &&
+	if( ( newMeans.isValid(ValidationType.NEW_BEAN ) &&
 		oldDisc.isValid(ValidationType.EXISTING_BEAN)&& 
 		oldDisc.getStudentId().equals( newMeans.getStudentId()) ))
 	{
-	    throw new InvalidBeanException();
+	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
+		    ("{call updateDiscoveryRecord(? ,?, ? ) }", 
+			    newMeans.getStudentId(), newMeans.getMeans(), oldDisc.getMeans()); )
+	    {
+		int affected = statement.executeUpdate();
+		if( affected >0 ) return true ;
+	    }
 	}
 
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call updateDiscoveryRecord(? ,?, ? ) }", 
-			newMeans.getStudentId(), newMeans.getMeans(), oldDisc.getMeans()); )
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected >0 ) return true ;
-	}
+
 	return false;
     }
 
@@ -72,7 +72,7 @@ public final class DiscoveryManager
 	finally{
 	    if( result != null ) result.close();
 	}
-	
+
 	return list.toArray( new MeanOfDiscovery[ list.size()] );
     }
 }

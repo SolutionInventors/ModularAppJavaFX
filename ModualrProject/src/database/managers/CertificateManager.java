@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import database.bean.Certificate;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 public final class CertificateManager
@@ -26,22 +25,22 @@ public final class CertificateManager
      * change is invalid
      */
     public static boolean createCertificate(  Certificate cert) 
-	    throws SQLException, InvalidBeanException, InvalidAdminException
+	    throws SQLException,  InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !cert.isValid( ValidationType.NEW_BEAN )) 
-	    throw new InvalidBeanException("The Certificate is invalid");
-	
-	try(CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call createCertificate(?,?)}", cert.getName());){
-	    int affected = statement.executeUpdate();
-	    statement.registerOutParameter( 2 , Types.DATE );
-	    if( affected > 0 ){
-		Date creationDate = statement.getDate(2);
-		cert.setDateCreated( creationDate);
-		return true;
-	    }
+	if( cert.isValid( ValidationType.NEW_BEAN )){
+	    try(CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call createCertificate(?,?)}", cert.getName());){
+		int affected = statement.executeUpdate();
+		statement.registerOutParameter( 2 , Types.DATE );
+		if( affected > 0 ){
+		    Date creationDate = statement.getDate(2);
+		    cert.setDateCreated( creationDate);
+		    return true;
+		}
+	    } 
 	}
+
+
 
 	return false;
     }
@@ -60,17 +59,16 @@ public final class CertificateManager
      * @throws SQLException  when an error occurs at the database level
      * @throws InvalidAdminException 
      */
-    public static boolean delete( Certificate cert ) throws InvalidBeanException, SQLException, InvalidAdminException{
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !cert.isValid( ValidationType.EXISTING_BEAN )) 
-	    throw new InvalidBeanException("The Certificate is invalid");
-	
-	
-	try(CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call removeCertificate(?)}", cert.getName())){
+    public static boolean delete( Certificate cert ) 
+	    throws  SQLException, InvalidAdminException
+    {
+	if( cert.isValid( ValidationType.EXISTING_BEAN )){
+	    try(CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call removeCertificate(?)}", cert.getName())){
 
-	    int  affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
+		int  affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+	    }
 	}
 	return false;
     }
@@ -87,20 +85,20 @@ public final class CertificateManager
      * is invalid
      */
     public static boolean update( Certificate oldCert, Certificate newCert ) 
-	    throws SQLException, InvalidBeanException, InvalidAdminException
+	    throws SQLException,  InvalidAdminException
     {
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	if( !newCert .isValid( ValidationType.NEW_BEAN ) ||
+	if( newCert .isValid( ValidationType.NEW_BEAN ) ||
 		!oldCert.isValid(ValidationType.EXISTING_BEAN) 	) 
 	{
-	    throw new InvalidBeanException("One of the two Certificates is invalid"); 
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call updateCertificate(?,?)}", oldCert.getName() , newCert.getName()))
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+	    }
 	}
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call updateCertificate(?,?)}", oldCert.getName() , newCert.getName()))
-	{
-	    int affected = statement.executeUpdate();
-	    if( affected > 0 ) return true;
-	}
+
 	return false;
     }
 
