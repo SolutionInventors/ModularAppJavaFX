@@ -7,7 +7,6 @@ import database.bean.student.Sponsor;
 import database.managers.DatabaseManager;
 import database.managers.SponsorManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 
 public class SponsorTest
 {
@@ -42,11 +41,7 @@ public class SponsorTest
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	catch (InvalidBeanException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+	
 	
     }
 }

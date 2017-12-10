@@ -15,8 +15,7 @@ public final class CertificateModuleManager
     public static boolean addModuleToCertificate( CertificateModule certModule) 
 	    throws SQLException,  InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-
+	
 	if( certModule.isValid( ValidationType.NEW_BEAN) ){
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
 		    ("{call addModToCert(?,?) }", certModule.getCertificateName(), 

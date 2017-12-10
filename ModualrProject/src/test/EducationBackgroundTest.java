@@ -11,7 +11,6 @@ import database.bean.student.EducationalBackground;
 import database.managers.DatabaseManager;
 import database.managers.EducationManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 public class EducationBackgroundTest
@@ -54,11 +53,6 @@ public class EducationBackgroundTest
 	{
 	    System.err.println( "The admin that want to make the change is invalid");
 	}
-	catch (InvalidBeanException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	    System.err.println("Format is invalid");
-	}
+	
     }
 }

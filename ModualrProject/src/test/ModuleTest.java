@@ -8,7 +8,6 @@ import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.ModuleManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.BeanType;
 
 public class ModuleTest
@@ -28,24 +27,19 @@ public class ModuleTest
 
 	    System.out.println("---------------CREATING A NEW MODULE TEST--------------");
 	    Module newModule = getNewModule();
-	    try
-	    {
-		if( ModuleManager.addNewModule(newModule) ) {
-		    System.out.println("Successfully created a new module and "
-			    + "also  updated the dateCreated attribute.");
-		    TestUtils.displayBean(BeanType.MODULE , 0 );
 
-		}
-		else
-		{
-		    System.out.println("Was Unsuccessful for unknown reasons!!!");
-		}
+	    if( ModuleManager.addNewModule(newModule) ) {
+		System.out.println("Successfully created a new module and "
+			+ "also  updated the dateCreated attribute.");
+		TestUtils.displayBean(BeanType.MODULE , 0 );
+
 	    }
-	    catch (InvalidBeanException e)
+	    else
 	    {
-		e.printStackTrace();
-		System.err.println( "The format of the Modular Class was invalid" );
+		System.out.println("Was Unsuccessful for unknown reasons!!!");
 	    }
+
+
 
 
 	    System.out.println("---------------REMOVING AN EXISTING MODULE TEST--------------");
@@ -53,24 +47,17 @@ public class ModuleTest
 
 	    /*This should be used when we want to remove an existing Module*/
 	    Module existingModule = new Module(name);
-
-	    try
-	    {
-		if( ModuleManager.removeModule(existingModule)){
-		    System.out.println( "Module was removed succcessfullly!!!");
-		    TestUtils.displayBean(BeanType.MODULE , 0 );
-		}
-		else
-		{
-		    System.out.println("Nothing was removed! "
-			    + "Maybe the module name you inputed is not in the database");
-		}
+	    if( ModuleManager.removeModule(existingModule)){
+		System.out.println( "Module was removed succcessfullly!!!");
+		TestUtils.displayBean(BeanType.MODULE , 0 );
 	    }
-	    catch (InvalidBeanException e)
+	    else
 	    {
-		System.err.println( "The format of the Module object  was invalid" );
-
+		System.out.println("Nothing was removed! "
+			+ "Maybe the module name you inputed is not in the database");
 	    }
+
+
 
 	    System.out.println("-------------UPDATING AN EXISTING CLASS TEST--------------");
 
@@ -78,25 +65,18 @@ public class ModuleTest
 
 	    existingModule = new Module( name ); // ony name is required for existing module
 	    newModule = getNewModule();// name, numberOfUnits and amount are all required for units
-	    try
-	    {
-		if( ModuleManager.updateModule(newModule, existingModule) ){
-		    System.out.println( "The Module was updated succcessfullly!!!");
-		    TestUtils.displayBean(BeanType.MODULE, 0 );
 
-		}
-		else
-		{
-		    System.out.println("Nothing was removed! "
-			    + "Maybe the module name you inputed is not in the database");
-		}
-	    }
-	    catch (InvalidBeanException e)
-	    {
-		System.err.println( "The format one of the Module "
-			+ "object(s) is invalid" );
+	    if( ModuleManager.updateModule(newModule, existingModule) ){
+		System.out.println( "The Module was updated succcessfullly!!!");
+		TestUtils.displayBean(BeanType.MODULE, 0 );
 
 	    }
+	    else
+	    {
+		System.out.println("Nothing was removed! "
+			+ "Maybe the module name you inputed is not in the database");
+	    }
+
 
 
 	}

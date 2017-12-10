@@ -8,7 +8,6 @@ import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.PhoneManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.BeanType;
 
 public class PhoneTest
@@ -19,7 +18,7 @@ public class PhoneTest
 	//	making the change as follows
 
 	Admin currentAdmin = new Admin("Chidiebere", "Fred" );
-	
+
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 
 	//	Rest of the code
@@ -29,74 +28,55 @@ public class PhoneTest
 
 	    System.out.println("---------------INSERTING A NEW PHONE TEST--------------");
 	    Phone newPhone = getPhone("new");
-	    try
-	    {
-		if( PhoneManager.insert(newPhone)) {
-		    System.out.println("Successfully inserted a new phone number to "
-			    + "the specified student.");
-		    TestUtils.displayBean(BeanType.PHONE , 0 );
 
-		}
-		else
-		{
-		    System.out.println("Was Unsuccessful Maybe the studentId does not exist!!!");
-		}
+	    if( PhoneManager.insert(newPhone)) {
+		System.out.println("Successfully inserted a new phone number to "
+			+ "the specified student.");
+		TestUtils.displayBean(BeanType.PHONE , 0 );
+
 	    }
-	    catch (InvalidBeanException e)
+	    else
 	    {
-		e.printStackTrace();
-		System.err.println( "The format of the Phone object was invalid" );
+		System.out.println("Was Unsuccessful Maybe the studentId does not exist!!!");
 	    }
+
+
 
 
 	    System.out.println("---------------REMOVING AN EXISTING PHONE TEST--------------");
 
 	    /*This should be used when we want to remove an existing Phone*/
 	    Phone existingPhone = getPhone("existing");
-	    try
-	    {
-		if( PhoneManager.removePhone(existingPhone)){
-		    System.out.println( "Phone was removed succcessfullly!!!");
-		    TestUtils.displayBean(BeanType.PHONE , 0 );
-		}
-		else
-		{
-		    System.out.println("Nothing was removed! "
-			    + "Maybe the phone  object you inputed is not in the database");
-		}
-	    }
-	    catch (InvalidBeanException e)
-	    {
-		System.err.println( "The format of the Phone object  was invalid" );
 
+	    if( PhoneManager.removePhone(existingPhone)){
+		System.out.println( "Phone was removed succcessfullly!!!");
+		TestUtils.displayBean(BeanType.PHONE , 0 );
 	    }
+	    else
+	    {
+		System.out.println("Nothing was removed! "
+			+ "Maybe the phone  object you inputed is not in the database");
+	    }
+
 
 	    System.out.println("-------------UPDATING AN EXISTING PHONE TEST--------------");
 
-	   existingPhone =  getPhone("existing" );
-	   String newNumber = TestUtils.getStringInput("Enter new phone number: ");
-	    
+	    existingPhone =  getPhone("existing" );
+	    String newNumber = TestUtils.getStringInput("Enter new phone number: ");
+
 	    newPhone = new Phone( existingPhone.getStudentId(), newNumber );
-	    
-	    try
-	    {
-		if(  PhoneManager.update(existingPhone, newPhone) ){
-		    System.out.println( "The Phone was updated succcessfullly!!!");
-		    TestUtils.displayBean(BeanType.PHONE, 0 );
 
-		}
-		else
-		{
-		    System.out.println("Nothing was updated! "
-			    + "Maybe the Phone pbject you inputed is not in the database");
-		}
-	    }
-	    catch (InvalidBeanException e)
-	    {
-		System.err.println( "The format one of the Phone "
-			+ "object(s) is invalid" );
+	    if(  PhoneManager.update(existingPhone, newPhone) ){
+		System.out.println( "The Phone was updated succcessfullly!!!");
+		TestUtils.displayBean(BeanType.PHONE, 0 );
 
 	    }
+	    else
+	    {
+		System.out.println("Nothing was updated! "
+			+ "Maybe the Phone pbject you inputed is not in the database");
+	    }
+
 
 	    System.out.println("-------------RETRIEVING STUDENT PHONE TEST--------------");
 
@@ -113,7 +93,7 @@ public class PhoneTest
 		System.out.println("No numbers was found for the specified student");
 
 
-	    
+
 	}
 	catch ( InvalidAdminException e)
 	{
@@ -122,8 +102,7 @@ public class PhoneTest
 	}
 	catch (SQLException e)
 	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	   e.printStackTrace();
 	}
 	finally{
 	    // This is also very important. Close the ConnectionManager when you are done

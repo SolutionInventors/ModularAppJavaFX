@@ -25,8 +25,6 @@ import database.managers.PhoneManager;
 import database.managers.SponsorManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
-import utils.ValidationType;
 
 public class UpdateTest
 {
@@ -116,12 +114,15 @@ public class UpdateTest
 		System.err.println("Failed. Probalbly not in database");
 
 	}
-	catch (SQLException | InvalidAdminException | InvalidBeanException e)
+	catch (SQLException | InvalidAdminException  e)
 	{
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	ConnectionManager.close();
+	finally{
+	    ConnectionManager.close();
+	}
+	
     }
 
 }

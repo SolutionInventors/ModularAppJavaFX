@@ -27,13 +27,12 @@ import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 import utils.ValidationType;
 
 public class StudentTest
 {
 
-    public static void main(String[] args) throws InvalidBeanException, SQLException, InvalidAdminException
+    public static void main(String[] args) throws  SQLException, InvalidAdminException
     {
 	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred" ) );
 	if( !DatabaseManager.validateAdmin())
@@ -58,8 +57,10 @@ public class StudentTest
 
 	if( student.isValid(ValidationType.NEW_BEAN)) 
 	    System.out.println("The Student object is valid" );
-	else
-	    throw new InvalidBeanException("The Student is not valid");
+	else{
+	    System.err.println("The Student is not valid");
+	    System.exit(0);
+	}
 
 	System.out.println("\n----Creating Biodata object------");
 	String surname = TestUtils.getStringInput("Input Student Surname:" );
@@ -90,8 +91,10 @@ public class StudentTest
 
 	if( bio.isValid(ValidationType.NEW_BEAN)) 	
 	    System.out.println("The bio data is valid" );
-	else
-	    throw new InvalidBeanException("The bio data object is invalid" );
+	else{
+	    System.err.println("The bio data object is invalid");
+	    System.exit(0);
+	}
 
 	System.out.println("-------Creating Educational Background object------");
 	ArrayList<EducationalBackground> educationList = new ArrayList<>();
@@ -113,8 +116,10 @@ public class StudentTest
 
 	if( educationList.stream().allMatch(e->e.isValid(ValidationType.NEW_BEAN)))
 	    System.out.println("EducationBacground object can be inputed into the database" );
-	else
-	    throw new InvalidBeanException("EducationBackground object is invalid");
+	else{
+	    System.err.println("EducationBackground object is invalid");
+	    System.exit(0);
+	}
 
 	System.out.println("-----Creating MeansOfDiscovery objects------" );
 	ArrayList<MeanOfDiscovery> meanList = new ArrayList<>();
@@ -133,8 +138,10 @@ public class StudentTest
 
 	if( meanList.stream().allMatch(mean->mean.isValid( ValidationType.NEW_BEAN) ) )	
 	    System.out.println("All inputed discovery means are valid" );
-	else
-	    throw new InvalidBeanException("A means of discvory was invalid" );
+	else{
+	    System.err.println("A means of discvory was invalid" );
+	    System.exit(0);
+	}
 
 	System.out.println("---Creating phone number objects for the Student------" );
 	String number = TestUtils.getStringInput("Input phone number" );
@@ -155,8 +162,10 @@ public class StudentTest
 
 	if( phoneSet.stream().allMatch( pNum-> pNum.isValid(ValidationType.NEW_BEAN) ) )
 	    System.out.println("All the phone numbers format are valid" );
-	else
-	    throw new InvalidBeanException("At least one phone number was invalid");
+	else{
+	    System.err.println("At least one phone number was invalid") ;
+	    System.exit(0);
+	}
 
 	System.out.println("-------Creating ProfessionalExperience object------" );
 	System.out.println("Have you worked before? " );
@@ -174,8 +183,10 @@ public class StudentTest
 
 	if( expList.stream().allMatch( ex->ex.isValid( ValidationType.NEW_BEAN) ) )
 	    System.out.println("The ProfessionalExperience object is valid" );
-	else
-	    throw new InvalidBeanException("At least on Experience in the list is invalid" );
+	else{
+	    System.err.println("At least one Experience in the list  was invalid") ;
+	    System.exit(0);
+	}
 
 	System.out.println("----Creating the Sponsor aray object--------");
 	System.out.println("Do you have any sponsor? ");

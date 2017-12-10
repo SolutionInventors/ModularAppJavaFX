@@ -7,7 +7,6 @@ import database.bean.student.MeanOfDiscovery;
 import database.managers.DatabaseManager;
 import database.managers.DiscoveryManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 
 public class DiscoveryMeansTest
 {
@@ -36,11 +35,7 @@ public class DiscoveryMeansTest
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	catch (InvalidBeanException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+	
     }
 
 }

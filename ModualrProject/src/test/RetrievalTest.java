@@ -21,11 +21,10 @@ import database.managers.PhoneManager;
 import database.managers.SponsorManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
-import exception.InvalidBeanException;
 
 public class RetrievalTest
 {
-    public static void main(String[] args) throws InvalidBeanException, InvalidAdminException
+    public static void main(String[] args) throws  InvalidAdminException
     {
 	System.out.println( DatabaseManager.getDate());
 	    
