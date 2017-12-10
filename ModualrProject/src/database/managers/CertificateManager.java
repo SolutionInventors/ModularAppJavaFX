@@ -2,6 +2,7 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -114,11 +115,13 @@ public final class CertificateManager
     public static Certificate[] getCertificates(int startIndex) 
 	    throws SQLException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	String sql  = "SELECT * FROM certificate" + 
+		" LIMIT ?, 30 ";
+	
 	ResultSet result = null;
-	ArrayList<Certificate> list = new ArrayList<>();
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call getCertificatesByIndex(? ) }", startIndex ))
+	ArrayList<Certificate> list = new ArrayList<>(30);
+	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		(sql, startIndex ))
 	{
 	    result = statement.executeQuery() ;
 	    while( result.next() )

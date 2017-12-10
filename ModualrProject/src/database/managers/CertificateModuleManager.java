@@ -52,11 +52,13 @@ public final class CertificateModuleManager
     public static CertificateModule[] getCertificateModules( int  startIndex )
 	    throws SQLException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	ResultSet result = null;
 	ArrayList<CertificateModule> list = new ArrayList<>();
+	String sql  = "SELECT * FROM certificatemodule" + 
+		" LIMIT ?, 30 ";
+	
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call getCertModulesByIndex(?) }", startIndex ))
+		(sql, startIndex ))
 	{
 	    result = statement.executeQuery() ;
 

@@ -79,22 +79,21 @@ public final class ModularClassManager
 	    }
 
 	}
-
-
 	return false;
     }
 
 
     public static ModularClass[] getClasses( int startIndex) throws SQLException, InvalidAdminException {
 
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	ResultSet result = null ;
-	ArrayList<ModularClass> list = new ArrayList<>();
+	String sql  = "SELECT * FROM modular_class" + 
+		" LIMIT ?, 30 ";
+	
+	ArrayList<ModularClass> list = new ArrayList<>(30);
 	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call getClassesByIndex(? ) }", startIndex ))
+		(sql, startIndex ))
 	{
 	    result = statement.executeQuery() ;
-
 	    while( result.next() )
 	    {
 		ModularClass tempClass =  new ModularClass

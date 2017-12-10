@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import database.bean.ModularClass;
 import database.bean.ModuleRegister;
 import exception.InvalidAdminException;
 import utils.ValidationType;
@@ -22,7 +23,6 @@ public final class ModuleRegisterManager
     public static boolean insert(ModuleRegister modReg ) 
 	    throws  SQLException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 	if( modReg.isValid( ValidationType.NEW_BEAN )){
 	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
 		    ("{call registerForModule(?,?,?)}", modReg.getStudentId(), modReg.getModuleName());)
@@ -33,6 +33,31 @@ public final class ModuleRegisterManager
 		    return true;
 		}
 	    }
+	}
+	return false;
+    }
+    
+    
+    
+    public static boolean update( ModuleRegister oldClass, ModuleRegister newClass ) 
+	    throws  SQLException, InvalidAdminException
+    {
+	if( ( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
+		newClass.isValid(ValidationType.NEW_BEAN) ))
+	{
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    ("{call updateModRegister(?, ?, ?) }", oldClass.getName(),
+			    newClass.getName()))
+	    {
+		statement.registerOutParameter(3, Types.DATE);
+		int affected = statement.executeUpdate();
+		if( affected > 0 ){
+		    newClass.setDateCreated( statement.getDate(3) );
+		    return true;
+		}
+
+	    }
+
 	}
 	return false;
     }

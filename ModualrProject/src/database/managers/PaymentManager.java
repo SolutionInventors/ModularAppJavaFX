@@ -32,7 +32,11 @@ public final class PaymentManager
 	return false;
     }
 
-    public boolean isInDatabase( Payment cert ){
+    public boolean isInDatabase( Payment payment ){
 	return false;
+    }
+    
+    public static Payment[] getPayments( int startIndex ){
+	return null;
     }
 }

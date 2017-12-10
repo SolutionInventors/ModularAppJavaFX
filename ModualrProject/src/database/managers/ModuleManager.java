@@ -1,6 +1,7 @@
 package database.managers;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -83,14 +84,14 @@ public final class ModuleManager
 
     public static Module[] getModules(int startIndex) throws SQLException, InvalidAdminException
     {
-	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
+	String sql  = "SELECT * FROM module" + 
+		" LIMIT ?, 30 ";
 	ResultSet result = null;
 	ArrayList<Module> list = new ArrayList<>();
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
-		("{call getModuleByIndex(?) }", startIndex ))
+	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		(sql, startIndex ))
 	{
 	    result = statement.executeQuery() ;
-
 	    while( result.next() )
 	    {
 		Module tempModule = new Module( result.getString("name" ) ,

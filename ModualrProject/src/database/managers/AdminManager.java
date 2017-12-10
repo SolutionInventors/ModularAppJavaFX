@@ -3,6 +3,7 @@ package database.managers;
 import java.security.SecureRandom;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -111,9 +112,11 @@ public final class AdminManager
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 
-	ArrayList<Admin> list = new ArrayList<>();
-	try(CallableStatement statement = DatabaseManager.getCallableStatement
-		( "{Call getAllAdminFrom(?) }", startIndex );)
+	ArrayList<Admin> list = new ArrayList<>(30);
+	String sql  = "SELECT * FROM admin" + 
+			" LIMIT ?, 30 ";
+	try(PreparedStatement statement = DatabaseManager.getPreparedStatement
+		(sql, startIndex );)
 	{
 	    ResultSet result = statement.executeQuery();
 	    Admin admin;
@@ -138,9 +141,9 @@ public final class AdminManager
     public static int getTotalAdmin() throws SQLException, InvalidAdminException
     {
 	ResultSet result =  null;
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-	try(  CallableStatement statement = DatabaseManager.getCallableStatement
-		("{Call getTotalAdmin() }");)
+	String sql = "SELECT COUNT(*) FROM admin";
+	try(  PreparedStatement statement = DatabaseManager.getPreparedStatement
+		(sql);)
 	{
 	    result = statement.executeQuery();
 	    if( result.next() )

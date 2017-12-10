@@ -2,13 +2,18 @@ package database.managers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import database.bean.student.Biodata;
 import database.bean.student.EducationalBackground;
@@ -183,9 +188,11 @@ public final class StudentManager
      */
     public static int getStudentsCount( boolean active) throws SQLException, InvalidAdminException
     {
-	String sql = active ? "{CALL getActiveStudentsCount() } " :"{CALL getInactiveStudentsCount() } ";
+	String sql = String.format("SELECT COUNT(*) FROM student "
+		+ "WHERE active = %d" 	, active ? 1: 0);
 	ResultSet result  = null;
-	try(  CallableStatement  statement = DatabaseManager.getCallableStatement( sql);)
+	try(  PreparedStatement  statement = DatabaseManager.getPreparedStatement
+		( sql);)
 	{
 	    result = statement.executeQuery();
 	    if( result.next() )
@@ -197,6 +204,65 @@ public final class StudentManager
 	}
 	return 0;
 
+    }
+
+    public static Student[] getStudents(boolean active , int startIndex ) throws SQLException, InvalidAdminException
+    {
+	String sql = String.format("SELECT * FROM student "
+		+ "WHERE active = %d"
+		+ "LIMIT ?, 30" , active ? 1: 0);
+	
+	ResultSet result  = null;
+	List<Student> list = new ArrayList<>(30);
+	try(  PreparedStatement  statement = DatabaseManager.getPreparedStatement
+		( sql, startIndex);)
+	{
+	    result = statement.executeQuery();
+	    Student stud;
+	    while( result.next() ){
+		String id = result.getString("id_card_number");
+		stud = new Student(id, result.getString("className"),
+			result.getString("emailAddress"), 
+			getImageFromStream(id, result.getBinaryStream("image")));
+		list.add(stud);
+	    }
+	}
+	finally
+	{
+	    if( result!= null ) result.close();
+	}
+	return list.toArray( new Student[list.size()] );
+    }
+
+    private static File getImageFromStream( String id , InputStream input) throws SQLException
+    {
+	File studentImage = new File( id );
+	try(FileOutputStream output = new FileOutputStream( studentImage );){
+
+
+	    byte[] buffer = new byte[1024];
+	    while( input.read( buffer) >0 ){
+		output.write( buffer );
+	    }
+	}
+
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	}
+	finally
+	{
+	    try
+	    {
+		if( input != null ) input.close();
+	    }
+	    catch (IOException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	studentImage.deleteOnExit();
+	return studentImage;
     }
 
     /**
@@ -232,7 +298,7 @@ public final class StudentManager
 		throws InvalidAdminException, SQLException
 	{
 	    if( !studData.isValid(ValidationType.NEW_BEAN) ) return false;
-	
+
 	    boolean edu = Arrays.stream( studData.getEducation() )
 		    .allMatch( education-> {
 			try
@@ -296,7 +362,6 @@ public final class StudentManager
 			}
 			catch (SQLException | InvalidAdminException  e)
 			{
-			    // TODO Auto-generated catch block
 			    e.printStackTrace();
 			}
 			return false;

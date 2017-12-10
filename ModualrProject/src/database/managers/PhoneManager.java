@@ -1,6 +1,7 @@
 package database.managers;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -111,17 +112,12 @@ public final class PhoneManager
     public static Phone[] getPhoneNumber( String studentId)
 	    throws SQLException, InvalidAdminException
     {
-	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
-
-	if( studentId ==  null ){
-	    return null;
-	}
-
+	String sql = "SELECT * FROM phone " + 
+		     "WHERE phone.student_id = ? ";
 	ResultSet result  = null;
 	List<Phone> list;
-	try(CallableStatement statement = DatabaseManager.getCallableStatement( 
-		"{CALL getStudentPhone(? ) } ", studentId);
-		)
+	try(PreparedStatement statement = DatabaseManager.getPreparedStatement( 
+		sql , studentId);)
 
 	{
 	    result  = statement.executeQuery();
