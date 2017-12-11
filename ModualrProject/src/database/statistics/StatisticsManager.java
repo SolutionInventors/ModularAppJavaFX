@@ -66,9 +66,9 @@ public class StatisticsManager
 	String sql = 
 		"SELECT COUNT( DISTINCT module.name) as 'Num of Modules', "+
 			"	COUNT(DISTINCT reg.id) as 'Reg Module', " +
-			"	COUNT(DISTINCT reg.id, if(reg.attendedStatus = 1 ,true , null)) as 'Total Mod Attended', "+
-			"	COUNT(DISTINCT if(reg.result = 'Pass',true , null)) as 'Total Mod Passed', "+
-			"	COUNT(DISTINCT if(reg.result = 'Fail',true , null)) as 'Total Mod Failed', "+
+			"	COUNT(DISTINCT reg.id, if(reg.AttendanceStatus = 1 ,true , null)) as 'Total Mod Attended', "+
+			"	COUNT(DISTINCT if(UPPER(reg.Result) = 'PASS',true , null)) as 'Total Mod Passed', "+
+			"	COUNT(DISTINCT if(UPPER(reg.Result) = 'FAIL',true , null)) as 'Total Mod Failed', "+
 			"	COUNT(DISTINCT stud.id_card_number) as 'Num of Students' , "+
 			"	COUNT(DISTINCT stud.id_card_number, IF(stud.active = true,1, null)) as 'Active Stud', "+ 
 			"	COUNT(DISTINCT stud.id_card_number, IF(stud.active = false,1, null)) as 'Inactive Stud',  "+
@@ -81,7 +81,7 @@ public class StatisticsManager
 
 		"LEFT JOIN module  ON true "+
 		"LEFT JOIN module_register as reg "+
-		"	ON reg.student_id = stud.id_card_number AND reg.module_name = module.name "+
+		"	ON reg.studentId = stud.id_card_number AND reg.moduleName = module.name "+
 		"LEFT JOIN certificate as cert" +
 		"	ON true \n"+
 		"LEFT JOIN certificatemodule csMod"+
@@ -117,14 +117,14 @@ public class StatisticsManager
 		"SELECT student.id_card_number as ID,  " +
 			"	COUNT( reg.id)  as 'Registered' , " +
 			"	COUNT( isPaymentComplete(reg.id)) as 'Paid', "+
-			"	COUNT( if( reg.bookingStatus = 1 , 1, NULL)) AS 'Booked',"+
-			"	COUNT( if( reg.attendedStatus = 1,1,NULL))	 AS 'Attended',"+
-			"	COUNT( IF( reg.result = 'Pass',1, NULL)) AS 'Passed',"+ 
-			"	COUNT( IF( reg.result = 'Fail', 1, null)) as 'Failed' "+
+			"	COUNT( if( reg.BookingStatus = 1 , 1, NULL)) AS 'Booked',"+
+			"	COUNT( if( reg.AttendanceStatus = 1,1,NULL))	 AS 'Attended',"+
+			"	COUNT( IF( reg.Result = 'Pass',1, NULL)) AS 'Passed',"+ 
+			"	COUNT( IF( reg.Result = 'Fail', 1, null)) as 'Failed' "+
 			"FROM student \n"+ 
 
 		"LEFT JOIN module_register as reg"+ 
-		"	ON reg.student_id = student.id_card_number\n"+
+		"	ON reg.StudentId = student.id_card_number\n"+
 		"WHERE student.id_card_number = ?"+
 		"GROUP BY student.id_card_number";
 
@@ -149,14 +149,14 @@ public class StatisticsManager
 		"SELECT module.name as Name, "+
 			"	COUNT( reg.id)  as 'Registered' , "+
 			"	COUNT( IF( isPaymentComplete(reg.id)  , 1, NULL)) as 'Paid', "+
-			"	COUNT( IF( reg.bookingStatus = 1 , 1, NULL)) AS 'Booked', "+
-			"	COUNT( IF( reg.attendedStatus = 1,1,NULL))   AS 'Attended', "+
+			"	COUNT( IF( reg.BookingStatus = 1 , 1, NULL)) AS 'Booked', "+
+			"	COUNT( IF( reg.AttendanceStatus = 1,1,NULL))   AS 'Attended', "+
 			"	COUNT( IF( reg.result = 'Pass',1, NULL)) AS 'Passed', "+ 
 			"	COUNT( IF( reg.result = 'Fail', 1, null)) as 'Failed' "+
 			"FROM module "+
 
 	    	"LEFT JOIN module_register as reg " +
-	    	"	ON reg.module_name = module.name " +
+	    	"	ON reg.moduleName = module.name " +
 	    	"WHERE module.name =  ?" +
 	    	"GROUP BY module.name;";
 

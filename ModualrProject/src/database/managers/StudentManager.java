@@ -209,7 +209,7 @@ public final class StudentManager
     public static Student[] getStudents(boolean active , int startIndex ) throws SQLException, InvalidAdminException
     {
 	String sql = String.format("SELECT * FROM student "
-		+ "WHERE active = %d"
+		+ "WHERE active = %d "
 		+ "LIMIT ?, 30" , active ? 1: 0);
 	
 	ResultSet result  = null;

@@ -56,7 +56,6 @@ public final class DatabaseManager
     @SuppressWarnings("resource")
     public static PreparedStatement getPreparedStatement(String sqlCall, Object ... arguments ) throws SQLException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
-
 	PreparedStatement statement =  conn.prepareStatement(
 		sqlCall,
 		ResultSet.TYPE_FORWARD_ONLY,

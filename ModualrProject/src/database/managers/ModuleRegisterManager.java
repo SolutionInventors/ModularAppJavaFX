@@ -1,10 +1,12 @@
 package database.managers;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 
-import database.bean.ModularClass;
 import database.bean.ModuleRegister;
 import exception.InvalidAdminException;
 import utils.ValidationType;
@@ -36,31 +38,111 @@ public final class ModuleRegisterManager
 	}
 	return false;
     }
-    
-    
-    
-    public static boolean update( ModuleRegister oldClass, ModuleRegister newClass ) 
-	    throws  SQLException, InvalidAdminException
-    {
-	if( ( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
-		newClass.isValid(ValidationType.NEW_BEAN) ))
-	{
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call updateModRegister(?, ?, ?) }", oldClass.getName(),
-			    newClass.getName()))
-	    {
-		statement.registerOutParameter(3, Types.DATE);
-		int affected = statement.executeUpdate();
-		if( affected > 0 ){
-		    newClass.setDateCreated( statement.getDate(3) );
-		    return true;
-		}
 
+    public static ModuleRegister getModRegById( int id ) throws SQLException{
+	String sql = "SELECT * , isPaymentComplete( reg.id) as 'Paid' " + 
+		"WHERE reg.id = ? ";
+	ResultSet result = null;
+	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		(sql, id))
+	{
+	    ModuleRegister modReg = null;
+	    result = statement.executeQuery();
+	    if(result.next()){
+		modReg =  new ModuleRegister(result.getString("ModuleName"),
+			result.getString("StudentId"), 
+			result.getBoolean("Booked"),
+			result.getBoolean("AttendanceStatus"), result.getString("Result"));
+		modReg.setDateRegistered( result.getDate("DateRegistered"));
+		modReg.setPaymentStatus(result.getBoolean("Paid"));
 	    }
 
 	}
+	finally{
+	    if( result !=null ) result.close();
+	}
+	return null;
+
+
+    }
+
+    public static boolean bookModule( int modRegId, String studId , String moduleName) throws SQLException, InvalidAdminException{
+
+	ModuleRegister modReg = getModRegById(modRegId);
+	if( modReg == null ) return false;
+	if( !modReg.hasAttended() && modReg.getResult() == null){
+	    String sql  = "{call bookModule(?,?, ?) }";
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    (sql, modRegId, studId, moduleName))
+	    {
+		if( statement.executeUpdate() > 0 ) return true;
+	    }
+	}
 	return false;
     }
-    
-    
+
+
+    public static boolean setAttendanceForModule( int modRegId, String studId, String moduleName ) throws SQLException, InvalidAdminException{
+
+	ModuleRegister modReg = getModRegById(modRegId);
+	if( modReg != null &&  !modReg.hasBooked() && modReg.getResult() == null){
+	    String sql  = "{call attendModule(?,?,?) }";
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    (sql, modRegId, studId, moduleName))
+	    {
+		if( statement.executeUpdate() > 0 ) return true;
+	    }
+	}
+	return false;
+    }
+
+
+    public static boolean setResultForModule( int modRegId, String studId, String moduleName, String result ) throws SQLException, InvalidAdminException{
+
+	ModuleRegister modReg = getModRegById(modRegId);
+	result = result.toUpperCase().equals("P") ? "Pass" : result;
+	result = result.toUpperCase().equals("F") ? "Fail" : result;
+	
+	if( modReg != null &&  modReg.hasAttended() && 
+		(result.toLowerCase().equals("pass") || result.toLowerCase().equals("Fail")))
+	{
+	    String sql  = "{call setAttendance(?,?,?, ?) }";
+	    try( CallableStatement statement = DatabaseManager.getCallableStatement
+		    (sql, modRegId, studId, moduleName, result))
+	    {
+		if( statement.executeUpdate() > 0 ) return true;
+	    }
+	}
+	return false;
+    }
+
+
+   
+    public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
+	String sql = "SELECT *,isPaymentComplete(id) as Paid FROM module_register " + 
+		"ORDER BY dateRegistered " +
+		"LIMIT ? , 30";
+	ResultSet result = null;
+
+	ArrayList<ModuleRegister> list = new ArrayList<>(30);
+	try( PreparedStatement stmt =
+		DatabaseManager.getPreparedStatement(sql, startIndex); )
+	{
+	    result = stmt.executeQuery();
+	    ModuleRegister modReg = null;
+
+	    while( result.next()){
+		modReg = new ModuleRegister(result.getString("ModuleName"),
+			result.getString("StudentId"), result.getBoolean("BookingStatus"),
+			result.getBoolean("AttendanceStatus"), result.getString("Result"));
+		modReg.setDateRegistered( result.getDate("DateRegistered"));
+		modReg.setId(result.getInt("id"));
+		list.add(modReg);
+	    }
+	}
+	finally{
+	    if( result!=null) result.close();
+	}
+	return list.toArray(new ModuleRegister[list.size()] );
+    }
 }

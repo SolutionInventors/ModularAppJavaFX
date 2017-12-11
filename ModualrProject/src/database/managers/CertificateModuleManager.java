@@ -1,6 +1,7 @@
 package database.managers;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -53,11 +54,12 @@ public final class CertificateModuleManager
 	    throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
-	ArrayList<CertificateModule> list = new ArrayList<>();
-	String sql  = "SELECT * FROM certificatemodule" + 
+	ArrayList<CertificateModule> list = new ArrayList<>(30);
+	String sql  = "SELECT * FROM certificatemodule" +  
+		  " ORDER BY certificateName " +
 		" LIMIT ?, 30 ";
 	
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
+	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
 		(sql, startIndex ))
 	{
 	    result = statement.executeQuery() ;

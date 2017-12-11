@@ -59,16 +59,14 @@ public class ModuleRegister  implements Bean
      * 
      * @param moduleName
      * @param studentId
-     * @param paid
-     * @param booked
+       @param booked
      * @param attended
      * @param result
      */
-    public ModuleRegister( String moduleName , String studentId, boolean paid,
+    public ModuleRegister( String moduleName , String studentId,
 	    boolean booked, boolean attended, String result )
     {
 	this(  moduleName, studentId);
-	setPaymentStatus( paid );
 	setBookingStatus(booked);
 	setAttended(attended);
 	setResult(result);
