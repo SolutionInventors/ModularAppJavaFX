@@ -2,7 +2,7 @@ package database.bean.log;
 
 import java.sql.Date;
 
-public class ModuleLog
+public class ModuleLog implements Log
 {
     private Date dateOfOperation;
     private String moduleName;

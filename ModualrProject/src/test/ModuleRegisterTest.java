@@ -3,9 +3,7 @@ package test;
 import java.sql.SQLException;
 
 import database.bean.Admin;
-import database.bean.CertificateModule;
 import database.bean.ModuleRegister;
-import database.managers.CertificateModuleManager;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.ModuleRegisterManager;

@@ -93,10 +93,10 @@ public class TestUtils
     public static String getStringInput( String prompt ){
 	System.out.print( prompt );
 	String userInput = null ;
+	@SuppressWarnings("resource")
 	Scanner input = new Scanner( System.in) ;
 
 	userInput = input.nextLine();
-	
 	return userInput;
     }
 
