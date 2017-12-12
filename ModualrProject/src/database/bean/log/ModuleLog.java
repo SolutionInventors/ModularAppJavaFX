@@ -8,9 +8,12 @@ public class ModuleLog
     private String moduleName;
     private LogType operationType;
     
-    public ModuleLog()
+    
+    public ModuleLog(String modName, String operType, Date operationDate)
     {
-	// TODO Auto-generated constructor stub
+	setModuleName(modName);
+	setOperationType( LogType.getLogType( operType) );
+	setDateOfOperation(operationDate);
     }
 
     public Date getDateOfOperation()

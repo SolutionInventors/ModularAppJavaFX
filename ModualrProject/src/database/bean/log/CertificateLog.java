@@ -6,11 +6,17 @@ import java.sql.Date;
 public class CertificateLog implements Log
 {
     private Date dateOfOperation;
-    private int id;
+    private String certificateName;
     private LogType operationType;
     
     public CertificateLog(){}
 
+    public CertificateLog( Date operationDate, String certName, String type ){
+	setDateOfOperation(operationDate);
+	setCertificateName(certName);
+	setOperationType(LogType.getLogType(type) );
+    }
+    
     public Date getDateOfOperation()
     {
         return dateOfOperation;
@@ -21,16 +27,6 @@ public class CertificateLog implements Log
         this.dateOfOperation = dateOfOperation;
     }
 
-    public int getId()
-    {
-        return id;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
-    }
-
     public LogType getOperationType()
     {
 	return operationType;
@@ -39,6 +35,16 @@ public class CertificateLog implements Log
     public void setOperationType(LogType operationType)
     {
 	this.operationType = operationType;
+    }
+
+    public String getCertificateName()
+    {
+        return certificateName;
+    }
+
+    public void setCertificateName(String certificateName)
+    {
+        this.certificateName = certificateName;
     }
 
    

@@ -74,6 +74,7 @@ public class RetrievalTest
 	    }
 	    
 	    StudentData studData = StudentManager.retrieveStudentData(stud);
+	    
 	    System.out.println(studData);
 	}
 	catch (SQLException e)

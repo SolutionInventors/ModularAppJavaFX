@@ -234,14 +234,17 @@ public final class StudentManager
 	return list.toArray( new Student[list.size()] );
     }
 
-    private static File getImageFromStream( String id , InputStream input) throws SQLException
+    private static File getImageFromStream( String id , InputStream inputStream) throws SQLException
     {
-	File studentImage = new File( id );
-	try(FileOutputStream output = new FileOutputStream( studentImage );){
-
-
+	File studentImage = null;
+	FileOutputStream output = null;
+	try{
+	    if( inputStream.available() <=0 ) return null;
+	    studentImage = new File( "res\\" + id + ".jpg" );
+	    output = new FileOutputStream( studentImage );
+	    studentImage.deleteOnExit();
 	    byte[] buffer = new byte[1024];
-	    while( input.read( buffer) >0 ){
+	    while( inputStream.read( buffer) >0 ){
 		output.write( buffer );
 	    }
 	}
@@ -249,19 +252,20 @@ public final class StudentManager
 	catch (IOException e)
 	{
 	    e.printStackTrace();
+	    return null;
 	}
 	finally
 	{
 	    try
 	    {
-		if( input != null ) input.close();
+		if( output !=null ) output.close();
+		if( inputStream != null ) inputStream.close();
 	    }
 	    catch (IOException e)
 	    {
 		e.printStackTrace();
 	    }
 	}
-	studentImage.deleteOnExit();
 	return studentImage;
     }
 

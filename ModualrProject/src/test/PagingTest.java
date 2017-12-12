@@ -76,6 +76,7 @@ public class PagingTest
 	for (int i = 0; i < studs.length; i++)
 	{
 	   System.out.println( "ID: " + studs[i].getIdCardNumber());
+	   System.out.println("Image Exists: " + studs[i].getImage());
 	}
 	
 	studs = StudentManager.getStudents(false, 0);

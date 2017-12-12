@@ -1,13 +1,17 @@
 package database.bean.log;
 
+import java.sql.Date;
+
 public class StudentLog implements Log
 {
     private String studentId;
     private LogType operationType;
-    
-    public StudentLog()
-    {
-	// TODO Auto-generated constructor stub
+    private Date dateOfOperation;
+   
+    public StudentLog( String studId, String operationType, Date operationDate ){
+	setStudentId(studId);
+	setOperationType( LogType.getLogType( operationType) );
+	setDateOfOperation(operationDate);
     }
 
     public String getStudentId()
@@ -28,6 +32,16 @@ public class StudentLog implements Log
     public void setOperationType(LogType operationType)
     {
         this.operationType = operationType;
+    }
+
+    public Date getDateOfOperation()
+    {
+        return dateOfOperation;
+    }
+
+    public void setDateOfOperation(Date dateOfOperation)
+    {
+        this.dateOfOperation = dateOfOperation;
     }
 
 }
