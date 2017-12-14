@@ -2,51 +2,32 @@ package database.bean.log;
 
 import java.sql.Date;
 
-
-public class CertificateLog implements Log
+/**
+ * A {@code Certificatelog} represents a single row in the CertificateLog 
+ * table in the database. The {@code CertificatLog} table keeps track of
+ * transactions that are performed on the {@code Certificate} table.<br>
+ * @author Oguejiofor Chidiebere
+ *
+ */
+public class CertificateLog extends Log
 {
-    private Date dateOfOperation;
-    private String certificateName;
-    private LogType operationType;
-    
-    public CertificateLog(){}
-
+   private final String CERTIFICATE_NAME;
+   
+   /**
+    * Initializes this {@code CertificateLog} by specifying the required 
+    * information. Once initialized the data cannot be change
+    * @param operationDate the date in which a transaction was performed
+    * @param certName the {@code Certificate} name 
+    * @param type contains the transaction type as a {@code String}. 
+    * This should contain either "INSERT", "UPDATE" or "DELETE"
+    */
     public CertificateLog( Date operationDate, String certName, String type ){
-	setDateOfOperation(operationDate);
-	setCertificateName(certName);
-	setOperationType(LogType.getLogType(type) );
+	super( operationDate, type );
+	CERTIFICATE_NAME = certName;
     }
-    
-    public Date getDateOfOperation()
-    {
-        return dateOfOperation;
-    }
-
-    public void setDateOfOperation(Date dateOfOperation)
-    {
-        this.dateOfOperation = dateOfOperation;
-    }
-
-    public LogType getOperationType()
-    {
-	return operationType;
-    }
-
-    public void setOperationType(LogType operationType)
-    {
-	this.operationType = operationType;
-    }
-
+   
     public String getCertificateName()
     {
-        return certificateName;
+        return CERTIFICATE_NAME;
     }
-
-    public void setCertificateName(String certificateName)
-    {
-        this.certificateName = certificateName;
-    }
-
-   
-
 }

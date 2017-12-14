@@ -2,65 +2,47 @@ package database.bean.log;
 
 import java.sql.Date;
 
-public class RegisterLog implements Log
+public class RegisterLog extends Log
 {
     private int regId;
-    private LogType operationType;
-    private Date dateOfOpertion; 
     private String studentId;
     private String moduleName;
-    
+
     public RegisterLog( int regId, String operationType, Date operationDate ,
 	    String studId, String modName )
     {
+	super( operationDate, operationType );
 	setRegId(regId);
-	setOperationType(LogType.getLogType(operationType));
-	setDateOfOpertion(operationDate);
 	setStudentId(studId);
 	setModuleName(modName);
     }
-    
+
     public int getRegId()
     {
-        return regId;
+	return regId;
     }
     public void setRegId(int regId)
     {
-        this.regId = regId;
+	this.regId = regId;
     }
-    public LogType getOperationType()
-    {
-        return operationType;
-    }
-    public void setOperationType(LogType operationType)
-    {
-        this.operationType = operationType;
-    }
-    public Date getDateOfOpertion()
-    {
-        return dateOfOpertion;
-    }
-    public void setDateOfOpertion(Date dateOfOpertion)
-    {
-        this.dateOfOpertion = dateOfOpertion;
-    }
+
     public String getStudentId()
     {
-        return studentId;
+	return studentId;
     }
     public void setStudentId(String studentId)
     {
-        this.studentId = studentId;
+	this.studentId = studentId;
     }
     public String getModuleName()
     {
-        return moduleName;
+	return moduleName;
     }
     public void setModuleName(String moduleName)
     {
-        this.moduleName = moduleName;
+	this.moduleName = moduleName;
     }
-    
-    
-    
+
+
+
 }

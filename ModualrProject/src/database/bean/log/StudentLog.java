@@ -2,16 +2,14 @@ package database.bean.log;
 
 import java.sql.Date;
 
-public class StudentLog implements Log
+public class StudentLog extends Log
 {
     private String studentId;
-    private LogType operationType;
-    private Date dateOfOperation;
    
     public StudentLog( String studId, String operationType, Date operationDate ){
+	super( operationDate, operationType );
 	setStudentId(studId);
-	setOperationType( LogType.getLogType( operationType) );
-	setDateOfOperation(operationDate);
+	
     }
 
     public String getStudentId()
@@ -24,24 +22,5 @@ public class StudentLog implements Log
         this.studentId = studentId;
     }
 
-    public LogType getOperationType()
-    {
-        return operationType;
-    }
-
-    public void setOperationType(LogType operationType)
-    {
-        this.operationType = operationType;
-    }
-
-    public Date getDateOfOperation()
-    {
-        return dateOfOperation;
-    }
-
-    public void setDateOfOperation(Date dateOfOperation)
-    {
-        this.dateOfOperation = dateOfOperation;
-    }
 
 }
