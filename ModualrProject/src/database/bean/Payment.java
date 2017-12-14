@@ -1,11 +1,7 @@
 package database.bean;
 
 import java.sql.Date;
-import java.util.Calendar;
 
-import javax.xml.bind.ValidationException;
-
-import database.managers.DatabaseManager;
 import utils.ValidationType;
 
 /**
