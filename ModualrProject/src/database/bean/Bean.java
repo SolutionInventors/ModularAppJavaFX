@@ -7,8 +7,13 @@ import java.util.stream.Collectors;
 
 import utils.ValidationType;
 
-/**This interface is used to mark all the classes that represent a single row of a
- * table in the database. It is used extensively by a {@code DatabaseManager} 
+/**This interface is used to mark all the classes  that represent a single row of a
+ * table( except the logging tables) in the database. It is used extensively by a 
+ * {@code DatabaseManager}. All implementation of this interface must implement
+ * method {@link #isValid(ValidationType)} that checks if this object is valid. <br>
+ * This method contains some static methods that aid testing of its subclasses. These
+ * methods should also be used before performing operations with the manager classes
+ * 
  * @author Oguejiofor Chidiebere
  *
  */
@@ -16,21 +21,22 @@ public interface Bean extends Serializable
 {
 
     /**
-     * Checks that a {@code String} has only letters and space.
-     * Returns {@code true } if validation is met
-     * @param word
+     * Checks that the {@code String} begins with a letter and has only letters and space.
+     * Returns {@code true } if validation is met. 
+     * @param word 
      * @return
      */
     public static boolean hasOnlyLetters( String word)
     {
-	if( word.trim().matches( "[[A-za-z]{1,}\\s[A-Za-z]{0,}]{1,}") ){
+	if( word.trim().matches( "[A-za-z]{1,}[A-Za-z|\\s]*") ){
 	    return true;
 	}
 	return false;
     }
 
     /**
-     * Checks if a phone number format passed as {@code String} is valid
+     * Checks if a phone number format passed as {@code String} is valid. 
+     * For example,  +21331302 and 21331302 are both valid phone numbers
      * @param phoneNumber the phone number to validate
      * @return {@code true} if the phone number inputed is valid
      */
@@ -40,29 +46,30 @@ public interface Bean extends Serializable
 	return false;
     }
     /**
-     * Checks if a {@code String } passed as its argument contains numbers and letters
-     * with a letter coming first. This is used to validate class names and 
-     * module names
+     * Checks if a {@code String } passed as its argument contains numbers and letters.
+     *  This is used to validate {@code Admin} username. 
      * @param word the {@code String } to be checked
      * @return {@code true } if the word is alphanumeric 
      */
     public static boolean isAlphanumeric( String word ){
-	return word.matches("[A-Za-z]{1,}[\\s|A-Za-z|0-9]*");
+	String regex1 = "[A-Za-z]{1,}[0-9]{1,}[A-Za-z|0-9]*";
+	String regex2 = "[0-9]{1,}[A-Za-z]{1,}[A-Za-z|0-9]*";
+	return word.matches(regex1 +"|"+ regex2);
     }
 
     /**
      * Removes any double  space anywhere in  a {@code String } passed as 
-     * argument 
+     * argument. This ensures that invalid {@code String } is not inputed into
+     * the database. If {@code null  } is passed as argument the an empty {@code String}
+     * is returned<br> 
+     * For example " Some    String    "  when passed as argument returns "Some String"
      * @param string the {@code String} whose spaces would be removed 
-     * @return a {@code String } with no extra spaces
+     * @return a {@code String } with no extra spaces or an empty {@code String} if the
+     * argument is {@code null }
      */
     public static String removeExtraSpaces(String string ){
-	if ( string == null ) return string;
-	string = string.trim();
-	while( string.matches( "\\S*\\s{2,}\\S*" ) )
-	    string = string.replaceAll("  " , " " ).replaceAll("  ", " ");
-
-	return string;
+	if ( string == null ) return "";
+	return string.replaceAll( "\\s{2,}", " ").trim();
     }
 
     /**
@@ -75,33 +82,24 @@ public interface Bean extends Serializable
     public static String capitalizeWords(String string)
     {
 	if( string.length() <= 0  ) return string;
-	
+	string = removeExtraSpaces(string);
 	List<String> list =  Arrays.stream( string.split( " " ) )
-		.map( s-> 
-		s.substring(0, 1).toUpperCase() + 
-		s.substring(1).toLowerCase())
+		.map( s-> s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase())
 		.collect( Collectors.toList());
-	
+
 	return String.join( " ", list.toArray( new String[list.size()] )) ;
-	
+
     }
 
-    /**
-     * This class level method checks if a {@code Bean} object is valid by calling
-     * instance method isValid
-     * @param bean  the {@code Bean} to check
-     * @param type the {@code ValidationType}
-     * @see object level method for a detailed explanation 
-     * isValid( ValidationType)
-     * @return {@code true} if the object is valid
-     */
-    public static boolean isValid( Bean bean , ValidationType type){
-	return bean.isValid(type);
-    }
+
 
     /**
-     * Checks the format of a {@code Bean} object.<br>
-     * Returns {@code true } if a {@code Bean } object is valid. 
+     * Checks the format of a {@code Bean} object based on a {@code ValidationType}.
+     * {@code ValidationType } values may be NEW_BEAN or EXISTING_BEAN. The 
+     * {@code ValidationType.EXISTING_BEAN} tests only the primary keys or unique values
+     * in the database while {@code ValidationType.NEW_BEAN} checks that all the attributes in 
+     * the object are valid
+     * <br>
      * Implementations are found in the subclasses of {@code Bean } object
      * 
      * @param type the {@code ValidationType} object. If this is set to 
@@ -113,4 +111,15 @@ public interface Bean extends Serializable
      * @return {@code true} when the object has valid data
      */
     public boolean isValid( ValidationType type);
+
+    /**
+     * Checks if a {@code String } passed as argument contains only 
+     * numbers. Note that empty {@code String} returns {@code false}
+     * @param string
+     */
+    public static boolean hasOnlyNumbers(String string)
+    {
+	return string.matches("[0-9]{1,}");
+	
+    }
 }
