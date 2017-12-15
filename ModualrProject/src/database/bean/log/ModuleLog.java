@@ -4,22 +4,24 @@ import java.sql.Date;
 
 public class ModuleLog extends Log
 {
-    private String moduleName;
+    private final String NEW_MODULE_NAME;
+    private final String OLD_MODULE_NAME;
 
-
-    public ModuleLog(String modName, String operType, Date operationDate)
+    public ModuleLog( Date operationDate, String operType,String oldModName, 
+	    String newModuleName)
     {
 	super( operationDate , operType);
-	setModuleName(modName);
+	NEW_MODULE_NAME = newModuleName;
+	OLD_MODULE_NAME = oldModName;
+    }
+   
+    public String getNewModuleName()
+    {
+        return NEW_MODULE_NAME;
     }
 
-    public String getModuleName()
+    public String getOldModuleName()
     {
-	return moduleName;
-    }
-
-    public void setModuleName(String moduleName)
-    {
-	this.moduleName = moduleName;
+        return OLD_MODULE_NAME;
     }
 }

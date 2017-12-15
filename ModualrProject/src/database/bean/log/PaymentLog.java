@@ -4,58 +4,52 @@ import java.sql.Date;
 
 public class PaymentLog extends Log
 {
-    private int regId;
-    private String studentId ;
-    private String moduleName;
-    private double amount;
-
-    public PaymentLog( int regId, String operationType, Date operationDate,
-	    String studId, String modName, double amount )
+    private final int REG_ID;
+    private final String STUDENT_ID ;
+    private final String MODULE_NAME;
+    private final double AMOUNT;
+    private final String BANK_NAME;
+    
+    public PaymentLog( Date operationDate,String operationType, int regId,  
+	    String studId, String moduleName, String bankName,  double amount )
     {
 	super( operationDate, operationType);
-	setRegId(regId);
-	setStudentId(studId);
-	setModuleName(modName);
-	setAmount(amount);
+	REG_ID = regId;
+	STUDENT_ID = studId;
+	AMOUNT  = amount;
+	MODULE_NAME = moduleName;
+	BANK_NAME= bankName;
     }
 
-    public String getStudentId()
+    public String getStudentID()
     {
-	return studentId;
+	return STUDENT_ID;
     }
 
-    public void setStudentId(String studentId)
-    {
-	this.studentId = studentId;
-    }
-
-    public String getModuleName()
-    {
-	return moduleName;
-    }
-
-    public void setModuleName(String moduleName)
-    {
-	this.moduleName = moduleName;
-    }
 
     public double getAmount()
     {
-	return amount;
+	return AMOUNT;
     }
 
-    public void setAmount(double amount)
+
+    public int getRegID()
     {
-	this.amount = amount;
+	return REG_ID;
     }
 
-    public int getRegId()
+    
+
+    public String getModuleName()
     {
-	return regId;
+        return MODULE_NAME;
     }
 
-    public void setRegId(int regId)
+    
+
+    public String getBankName()
     {
-	this.regId = regId;
+        return BANK_NAME;
     }
+
 }

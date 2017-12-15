@@ -11,8 +11,9 @@ import java.sql.Date;
  */
 public class CertificateLog extends Log
 {
-   private final String CERTIFICATE_NAME;
+   private final String NEW_CERTIFICATE_NAME;
    
+   private final String OLD_CERTIFICATE_NAME;
    /**
     * Initializes this {@code CertificateLog} by specifying the required 
     * information. Once initialized the data cannot be change
@@ -21,13 +22,24 @@ public class CertificateLog extends Log
     * @param type contains the transaction type as a {@code String}. 
     * This should contain either "INSERT", "UPDATE" or "DELETE"
     */
-    public CertificateLog( Date operationDate, String certName, String type ){
+    public CertificateLog( Date operationDate,String type,  String newCertName, 
+	    String oldCertName ){
 	super( operationDate, type );
-	CERTIFICATE_NAME = certName;
+	NEW_CERTIFICATE_NAME = newCertName;
+	OLD_CERTIFICATE_NAME = oldCertName;
     }
    
-    public String getCertificateName()
+    public String getOldCertificateName()
     {
-        return CERTIFICATE_NAME;
+        return OLD_CERTIFICATE_NAME;
     }
+    
+    
+    public String getNewCertificateName()
+    {
+        return NEW_CERTIFICATE_NAME;
+    }
+
+  
+    
 }
