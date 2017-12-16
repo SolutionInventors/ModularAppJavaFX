@@ -61,9 +61,7 @@ public class StudentData implements Bean
     @Override
     public boolean isValid(ValidationType type)
     {
-	/*This method validates this object by ensuring that all its instances have
-	 * the same student id attribute and that they are all valid
-	 */
+	
 	final String studentId = getBiodata().getStudentId();
 
 //	This ensures that all the attributes of this object have the same studentId and that the length of the

@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import database.bean.Admin;
 import database.bean.log.CertificateLog;
+import database.bean.log.CertificateRegisterLog;
 import database.bean.log.LogType;
 import database.bean.log.ModuleLog;
 import database.bean.log.PaymentLog;
@@ -23,9 +24,10 @@ public class LogTest
 	System.out.println("--------CertificateLogs----------");
 	Arrays.stream(certLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("CertificateName: " + log.getCertificateName());
-	    System.out.println("Operation Type: " + log.getOperationType());
+	    System.out.println("OldCertificateNmae: " + log.getOldCertificateName());
+	    System.out.println("NewCertificateNmae: " + log.getNewCertificateName());
 	    
+	    System.out.println("Operation Type: " + log.getOperationType());
 	    
 	});
 	
@@ -34,9 +36,11 @@ public class LogTest
 	System.out.println("-----ModuleLogs--------" );
 	Arrays.stream(modLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("Module Name: " + log.getModuleName());
-	    System.out.println("Operation Type: " + log.getOperationType());
+	    System.out.println("Old Module Name: " + log.getOldModuleName());
+	    System.out.println("New Module Name: " + log.getNewModuleName());
 	    
+	    System.out.println("Operation Type: " + log.getOperationType());
+	    System.out.println( ">>");
 	    
 	});
 	
@@ -50,12 +54,25 @@ public class LogTest
 	});
 	
 	StudentLog[] studLog =  LogManager.getLog(StudentLog.class,
-		LogType.DELETE, 0);
+		LogType.INSERT, 0);
 	System.out.println("-----StudentLogs--------" );
 	Arrays.stream(studLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("Module Name: " + log.getStudentId());
+	    System.out.println("Old Student ID: " + log.getOldStudentID());
+	    System.out.println("New Student ID: " + log.getNewStudentID());
 	    System.out.println("Operation Type: " + log.getOperationType());
+	});
+	
+	CertificateRegisterLog[] certRegLog = 
+		LogManager.getLog(CertificateRegisterLog.class, 
+		LogType.ALL, 0);
+	
+	System.out.println( "---CertRegisterLog----" );
+	Arrays.stream(certRegLog).forEach( log ->{
+	    System.out.println("New CertName: " + log.getNewCertificateName());
+	    System.out.println("Old CertName: " + log.getOldCertificateName());
+	    System.out.println("New Module Name: " + log.getNewModuleName());
+	    System.out.println("Old Module Name:: " + log.getOldModuleName());
 	});
 	
     }

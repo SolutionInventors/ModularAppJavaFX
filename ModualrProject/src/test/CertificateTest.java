@@ -58,7 +58,7 @@ public class CertificateTest
 	    }
 
 
-	    System.out.println("---------------UPDATING AN EXISTING CLASS TEST--------------");
+	    System.out.println("---------------UPDATING AN EXISTING CERTIFICATE TEST--------------");
 
 	    name = TestUtils.getStringInput("Enter the existing class name: ");
 	    String newName = TestUtils.getStringInput("Enter the new class name: ");
@@ -67,7 +67,7 @@ public class CertificateTest
 	    Certificate newCert = new Certificate( newName);
 
 	    if( CertificateManager.update(certificate, newCert) ){
-		System.out.println( "Class was updated succcessfullly!!!");
+		System.out.println( "Certificate was updated succcessfullly!!!");
 		TestUtils.displayBean( BeanType.CERTIFICATE , 0);
 
 	    }

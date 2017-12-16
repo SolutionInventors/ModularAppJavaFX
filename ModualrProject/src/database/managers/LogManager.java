@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.bean.log.CertificateLog;
+import database.bean.log.CertificateRegisterLog;
 import database.bean.log.Log;
 import database.bean.log.LogType;
+import database.bean.log.ModularClassLog;
 import database.bean.log.ModuleLog;
+import database.bean.log.ModuleRegisterLog;
 import database.bean.log.PaymentLog;
-import database.bean.log.RegisterLog;
 import database.bean.log.StudentLog;
 
 public final class LogManager
@@ -26,13 +28,20 @@ public final class LogManager
 		return  (T[]) getModuleLog(logType,startIndex ) ;
 	    case "PaymentLog":
 		return  (T[]) getPaymentLog(logType,startIndex ) ;
-	    case "RegisterLog":
-		return  (T[]) getRegisterLog(logType,startIndex ) ;
+	    case "ModuleRegisterLog":
+		return  (T[]) getModuleRegisterLog(logType,startIndex ) ;
+	    case "CertificateRegisterLog":
+		return  (T[]) getCertificateRegisterLog(logType,startIndex ) ;
+	    case "ModularClassLog":
+		return  (T[]) getModularClassLog(logType,startIndex ) ;
 	    case "StudentLog":
 		return  (T[]) getStudentLog(logType,startIndex ) ;
+		
 	}
 	return null;
     }
+
+   
 
     private static CertificateLog[] getCertificateLog(LogType logType, int startIndex) throws SQLException
     {
@@ -49,8 +58,10 @@ public final class LogManager
 	    result = stmt.executeQuery();
 	    CertificateLog certLog = null;
 	    while( result.next()){
-		certLog = new CertificateLog(result.getDate("dateOfOperation" ),
-			result.getString("certificateName"), result.getString("operationType"));
+		certLog = new CertificateLog(result.getDate("DateOfOperation"), 
+			result.getString("operationType"),
+			result.getString("newCertificateName"), result.getString("oldCertificateName") 	);
+		
 		list.add(certLog);
 	    }
 	}
@@ -75,12 +86,13 @@ public final class LogManager
 	    result = stmt.executeQuery();
 	    PaymentLog payLog = null;
 	    while( result.next()){
-		payLog = new PaymentLog(result.getInt("regId"), 
+		payLog = new PaymentLog(result.getDate("dateofoperation"),
 			result.getString("operationType"),
-			result.getDate("dateofoperation"),
-			result.getString("StudentId"), result.getString("moduleName"), 
-			result.getDouble("amount"));
-
+			result.getInt("regId"),
+			result.getString("StudentId"),
+			result.getString("moduleName"), 
+			result.getString("BankName"), result.getDouble("amount"));
+		
 		list.add(payLog);
 	    }
 	}
@@ -90,7 +102,7 @@ public final class LogManager
 	return list.toArray( new PaymentLog[list.size()] );
     }
 
-    private static RegisterLog[] getRegisterLog(LogType logType, int startIndex) throws SQLException
+    private static ModuleRegisterLog[] getModuleRegisterLog(LogType logType, int startIndex) throws SQLException
     {
 	String  sql = 
 		"SELECT * FROM ModuleRegisterLog "
@@ -99,22 +111,27 @@ public final class LogManager
 		+ "LIMIT ?, 30";
 
 	ResultSet result = null;
-	List<RegisterLog> list = new ArrayList<>(30);
-	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, logType.getSqlTypeCode(), startIndex))
+	List<ModuleRegisterLog> list = new ArrayList<>(30);
+	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql,
+		logType.getSqlTypeCode(), startIndex))
 	{
 	    result = stmt.executeQuery();
-	    RegisterLog regLog = null;
+	    ModuleRegisterLog regLog = null;
 	    while( result.next()){
-		regLog = new RegisterLog(result.getInt("regid"), result.getString("operationType"),
-			result.getDate("DateOfOperation"), 
-			result.getString("StudentId"), result.getString("ModuleName"));
+		regLog = new ModuleRegisterLog(result.getDate("DateOfOperation"),
+			result.getString("operationType"), result.getInt("regid"),
+			result.getString("StudentId"),result.getString("oldModuleName"), 
+			result.getString("NewModuleName"), result.getBoolean("oldBookingStatus" ),
+			result.getBoolean("newBookingStatus"),result.getBoolean("OldAttendanceStatus"), 
+			result.getBoolean("NewAttendanceStatus"), 
+			result.getString("oldResult"), result.getString("newResult"));
 		list.add(regLog);
 	    }
 	}
 	finally{
 	    if( result!=null) result.close();
 	}
-	return list.toArray( new RegisterLog[list.size()] );
+	return list.toArray( new ModuleRegisterLog[list.size()] );
     }
 
     private static StudentLog[] getStudentLog(LogType logType, int startIndex) throws SQLException
@@ -131,9 +148,13 @@ public final class LogManager
 	    result = stmt.executeQuery();
 	    StudentLog studLog = null;
 	    while( result.next()){
-		studLog = new StudentLog(result.getString("StudentId"),
+		studLog = new StudentLog(result.getDate("dateOfOperation"), 
 			result.getString("operationType"),
-			result.getDate("dateOfOperation"));
+			result.getString("OldID"), result.getString("newID"),
+			result.getString("PrevCertificateIssued"),
+			result.getString("NewCertificateIssued"),
+			result.getBoolean("PrevActiveStatus"),result.getBoolean("NewActiveStatus"),
+			result.getString("PrevEmail"), result.getString("NewEmail"));
 		list.add(studLog);
 	    }
 	}
@@ -157,9 +178,9 @@ public final class LogManager
 	    result = stmt.executeQuery();
 	    ModuleLog modLog = null;
 	    while( result.next()){
-		modLog = new ModuleLog(result.getString("moduleName"),
-			result.getString("operationType"),
-			result.getDate("dateOfOperation"));
+		modLog = new ModuleLog(result.getDate("dateOfOperation"),
+			result.getString("operationType"),result.getString("OldModuleName"),
+			result.getString("NewModuleName"));
 		list.add(modLog);
 	    }
 	}
@@ -168,4 +189,59 @@ public final class LogManager
 	}
 	return list.toArray( new ModuleLog[list.size()] );
     }
+    
+    private static ModularClassLog[] getModularClassLog(LogType logType, int startIndex) throws SQLException
+    {
+	String  sql = String.format("SELECT * FROM Modular_Class_Log "
+		+ "WHERE operationType LIKE ?"
+		+ "ORDER BY dateOfOperation DESC "
+		+ "LIMIT ?, 30", logType.getSqlTypeCode(), startIndex);
+
+	ResultSet result = null;
+	List<ModularClassLog> list = new ArrayList<>(30);
+	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, logType.getSqlTypeCode(), startIndex))
+	{
+	    result = stmt.executeQuery();
+	    ModularClassLog classLog = null;
+	    while( result.next()){
+		classLog= new ModularClassLog(result.getDate("dateOfOperation"), 
+			result.getString("operationType"), result.getString("NewModuleName"),
+			result.getString("OldModuleName"));
+		
+		list.add(classLog);
+	    }
+	}
+	finally{
+	    if( result!=null) result.close();
+	}
+	return list.toArray( new ModularClassLog[list.size()] );
+    }
+
+    private static CertificateRegisterLog[] getCertificateRegisterLog(LogType logType, int startIndex) throws SQLException
+    {
+	String  sql = String.format("SELECT * FROM CertificateRegisterLog "
+		+ "WHERE operationType LIKE ?"
+		+ "ORDER BY dateOfOperation DESC "
+		+ "LIMIT ?, 30", logType.getSqlTypeCode(), startIndex);
+
+	ResultSet result = null;
+	List<CertificateRegisterLog> list = new ArrayList<>(30);
+	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, logType.getSqlTypeCode(), startIndex))
+	{
+	    result = stmt.executeQuery();
+	    CertificateRegisterLog certRegLog = null;
+	    while( result.next()){
+		certRegLog = new CertificateRegisterLog(result.getDate("dateOfOperation"),
+			result.getString("operationType"),
+			result.getString("oldCertificateName"), result.getString("newCertificateName"), 
+			result.getString("OldModuleName"), result.getString("NewModuleName"));
+		list.add(certRegLog);
+	    }
+	}
+	finally{
+	    if( result!=null) result.close();
+	}
+	return list.toArray( new CertificateRegisterLog[list.size()] );
+    }
+    
 }

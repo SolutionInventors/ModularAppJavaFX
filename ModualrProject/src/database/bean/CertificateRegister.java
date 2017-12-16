@@ -3,7 +3,7 @@ package database.bean;
 import utils.ValidationType;
 
 /**
- * This object represents a single entity of a {@code CertificateModule} in 
+ * This object represents a single entity of a {@code CertificateRegister} in 
  * the database and can be used to add a {@code Module } as a requirement
  * for getting a  {@code Certificate}. Deletes and Inserts represent removing
  * a {@code Module} from the list of {@code Certificate } requirements and
@@ -12,41 +12,41 @@ import utils.ValidationType;
  * <b>Constructors:</b><br>
  * This class contains two constructors: one with no parameters and another that
  * takes the module name and certificate. Note that the certificate name and
- * module name must be specified before a {@code CertificateModule} can be
+ * module name must be specified before a {@code CertificateRegister} can be
  * added to the database.
  * @author Oguejiofor Chidiebere
  * @see Certificate
  * @see Module
  *
  */
-public class CertificateModule implements Bean
+public class CertificateRegister implements Bean
 {
-   
+
     private static final long serialVersionUID = -4064819087006901787L;
     private String certificateName;
     private  String moduleName;
-    
+
     /**
-     * Initialises this {@code CertificateModule} with the certificate name and
-     * module name. This {@code CertificateModule} can be inserted into the
+     * Initialises this {@code CertificateRegister} with the certificate name and
+     * module name. This {@code CertificateRegister} can be inserted into the
      * database once this constructor is used with valid data.
      * @param certName the name of the {@code Certificate}
      * @param modName the name of the {@code Module}
      */
-    public CertificateModule(String certName , String modName){
+    public CertificateRegister(String certName , String modName){
 	setCertificateName( certName);
 	setModuleName( modName);
     }
 
-    
+
     /**
-     * Gets the certificate name stored in this {@code CertificateModule} as
+     * Gets the certificate name stored in this {@code CertificateRegister} as
      * a {@code String}
      * @return a {@code String} containing the certificate name
      */
     public String getCertificateName()
     {
-        return certificateName;
+	return certificateName;
     }
 
     /**
@@ -58,28 +58,28 @@ public class CertificateModule implements Bean
      */
     public void setCertificateName(String certName)
     {
-        this.certificateName = Bean.removeExtraSpaces( certName);
+	this.certificateName = Bean.removeExtraSpaces( certName);
     }
 
-    
+
     /**
      * Gets the name of the module name for this {@code Certificate}
      * @return  a {@code String} containing the module name 
      */
     public String getModuleName()
     {
-        return moduleName;
+	return moduleName;
     }
 
-    
+
     /**
      * Removes any extra space in its argument and uses the resulting 
-     * {@code String} to set the module name of this {@code CertificateModule}
+     * {@code String} to set the module name of this {@code CertificateRegister}
      * @param moduleName the {@code String} containing the module name
      */
     public void setModuleName(String moduleName)
     {
-        this.moduleName = Bean.removeExtraSpaces( moduleName );
+	this.moduleName = Bean.removeExtraSpaces( moduleName );
     }
 
     /**
@@ -98,6 +98,7 @@ public class CertificateModule implements Bean
      */
     public boolean isValid( ValidationType type)
     {
+	System.out.println( validateModuleName() );
 	return validateCertificateName() && validateModuleName();
     }
 
@@ -122,9 +123,9 @@ public class CertificateModule implements Bean
     public boolean validateModuleName()
     {
 	String modName = getModuleName();
-	 return modName != null  && Bean.isAlphanumeric( modName) &&
-		 modName.substring(0,1).matches("A-Za-z");
+	return modName != null  && Bean.containsEitherAlphaNum( modName)  &&
+		modName.substring(0,1).matches("[A-Za-z]");
     }
-    
-   
+
+
 }

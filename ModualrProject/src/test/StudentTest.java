@@ -210,7 +210,7 @@ public class StudentTest
 	StudentData studentData = 
 		new StudentData(bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
 
-
+	System.out.println( "isStudData valid: " + studentData.isValid(ValidationType.NEW_BEAN));
 	if( StudentManager.registerStudent(student, studentData))
 	    System.out.println("The new Student was registered successfully" );
 	else

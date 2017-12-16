@@ -45,17 +45,29 @@ public interface Bean extends Serializable
 
 	return false;
     }
+    //    /**
+    //     * Checks if its argument has at least one number and one alphabet with
+    //     * no spce in between
+    //     * @param word the {@code String } to be checked
+    //     * @return {@code true } if the word is alphanumeric 
+    //     */
+    //    public static boolean isAlphanumericWithNoSpace( String word ){
+    //	String regex1 = "[A-Za-z]{1,}[0-9]{1,}[A-Za-z|0-9]*";
+    //	String regex2 = "[0-9]{1,}[A-Za-z]{1,}[A-Za-z|0-9]*";
+    //	return word.matches(regex1 +"|"+ regex2);
+    //    }
+
     /**
-     * Checks if a {@code String } passed as its argument contains numbers and letters.
-     *  This is used to validate {@code Admin} username. 
+     * Returns {@code true} if the argument contains either alphabet, numbers or
+     * both. Note that spaces are  ignored
      * @param word the {@code String } to be checked
      * @return {@code true } if the word is alphanumeric 
      */
-    public static boolean isAlphanumeric( String word ){
-	String regex1 = "[A-Za-z]{1,}[0-9]{1,}[A-Za-z|0-9]*";
-	String regex2 = "[0-9]{1,}[A-Za-z]{1,}[A-Za-z|0-9]*";
-	return word.matches(regex1 +"|"+ regex2);
+    public static boolean containsEitherAlphaNum( String word ){
+
+	return word.trim().matches("[\\w|\\d]+[\\w|\\d|\\s]*");
     }
+
 
     /**
      * Removes any double  space anywhere in  a {@code String } passed as 
@@ -120,6 +132,6 @@ public interface Bean extends Serializable
     public static boolean hasOnlyNumbers(String string)
     {
 	return string.matches("[0-9]{1,}");
-	
+
     }
 }

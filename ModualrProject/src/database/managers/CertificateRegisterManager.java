@@ -6,14 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.bean.CertificateModule;
+import database.bean.CertificateRegister;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
-public final class CertificateModuleManager
+public final class CertificateRegisterManager
 {
 
-    public static boolean addModuleToCertificate( CertificateModule certModule) 
+    public static boolean addModuleToCertificate( CertificateRegister certModule) 
 	    throws SQLException,  InvalidAdminException
     {
 	
@@ -31,11 +31,11 @@ public final class CertificateModuleManager
 	return false;
     }
 
-    public static boolean removeModuleFromCertificate( CertificateModule certModule ) 
+    public static boolean removeModuleFromCertificate( CertificateRegister certModule ) 
 	    throws  SQLException, InvalidAdminException
     {
 
-	if( !certModule.isValid( ValidationType.EXISTING_BEAN)){
+	if( certModule.isValid( ValidationType.EXISTING_BEAN)){
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
 		    ("{call removeModFromCert(?,?) }", certModule.getCertificateName(), 
 			    certModule.getModuleName() ))
@@ -50,12 +50,12 @@ public final class CertificateModuleManager
     }
 
 
-    public static CertificateModule[] getCertificateModules( int  startIndex )
+    public static CertificateRegister[] getCertificateModules( int  startIndex )
 	    throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
-	ArrayList<CertificateModule> list = new ArrayList<>(30);
-	String sql  = "SELECT * FROM certificatemodule" +  
+	ArrayList<CertificateRegister> list = new ArrayList<>(30);
+	String sql  = "SELECT * FROM certificateRegister" +  
 		  " ORDER BY certificateName " +
 		" LIMIT ?, 30 ";
 	
@@ -66,8 +66,8 @@ public final class CertificateModuleManager
 
 	    while( result.next() )
 	    {
-		CertificateModule tempCert = 
-			new CertificateModule(result.getString("certificateName") , 
+		CertificateRegister tempCert = 
+			new CertificateRegister(result.getString("certificateName") , 
 				result.getString("moduleName"));
 		list.add(tempCert );
 
@@ -76,7 +76,7 @@ public final class CertificateModuleManager
 	finally{
 	    if( result != null ) result.close();
 	}
-	return list.toArray( new CertificateModule[ list.size() ] );
+	return list.toArray( new CertificateRegister[ list.size() ] );
 
     }
 

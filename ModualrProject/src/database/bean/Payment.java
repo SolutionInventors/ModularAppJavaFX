@@ -29,6 +29,15 @@ public class Payment implements Bean
     private Date paymentDate;
     
     
+    public Payment( int id , int modRegId, double amount, String bank , 
+	    String tellerNum , Date payDate ){
+	setId(id);
+	setModuleRegisterId(modRegId);
+	setAmount(amount);
+	setBankName(bank);
+	setTellerNumber(tellerNum);
+	setPaymentDate(payDate);
+    }
     public Payment(){}
     
     /**

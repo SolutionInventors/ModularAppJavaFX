@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import database.bean.Admin;
 import database.bean.Certificate;
-import database.bean.CertificateModule;
+import database.bean.CertificateRegister;
 import database.bean.ModularClass;
 import database.bean.Module;
 import database.bean.student.EducationalBackground;
@@ -18,7 +18,7 @@ import database.bean.student.Phone;
 import database.bean.student.ProfessionalExperience;
 import database.bean.student.Sponsor;
 import database.managers.CertificateManager;
-import database.managers.CertificateModuleManager;
+import database.managers.CertificateRegisterManager;
 import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
 import database.managers.PhoneManager;
@@ -135,8 +135,8 @@ public class TestUtils
 
 		break;
 	    case CERTIFICATE_MODULE:
-		CertificateModule[] certMod  = 
-		CertificateModuleManager.getCertificateModules(0);
+		CertificateRegister[] certMod  = 
+		CertificateRegisterManager.getCertificateModules(0);
 		for ( int i = 0 ; i < certMod.length ; i++ ){
 
 		    System.out.println( "*\tCert Name --->" + certMod[i].getCertificateName()+ 

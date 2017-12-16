@@ -4,13 +4,13 @@ import java.sql.SQLException;
 
 import database.bean.Admin;
 import database.bean.Certificate;
-import database.bean.CertificateModule;
+import database.bean.CertificateRegister;
 import database.bean.ModularClass;
 import database.bean.Module;
 import database.bean.ModuleRegister;
 import database.bean.student.Student;
 import database.managers.CertificateManager;
-import database.managers.CertificateModuleManager;
+import database.managers.CertificateRegisterManager;
 import database.managers.DatabaseManager;
 import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
@@ -32,7 +32,7 @@ public class PagingTest
 	    System.out.println("Cert Name:" +certs[i].getName());
 	}
 	
-	CertificateModule[] certsMods = CertificateModuleManager.getCertificateModules(0);
+	CertificateRegister[] certsMods = CertificateRegisterManager.getCertificateModules(0);
 	System.out.println("-------List of Certificates Modules----------" );
 	for (int i = 0; i < certsMods.length; i++)
 	{

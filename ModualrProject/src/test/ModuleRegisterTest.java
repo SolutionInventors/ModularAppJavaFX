@@ -24,16 +24,20 @@ public class ModuleRegisterTest
 	//	Rest of the code
 	try
 	{
-	    TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
+	    System.out.println("----AVAILABLE MODULES----");
+	    TestUtils.displayBean( BeanType.MODULE , 0);
 
-	    System.out.println("---------------ADDING A MODULE FROM CERTIFICATE REQUIREMENT--------------");
+//	    System.out.println("----AVAILABLE STUDENTS----");
+//	    TestUtils.displayBean( BeanType.STUDENT , 0);
+//	    
+	    System.out.println("---------------REGISTERING STUDENT FOR MODULE--------------");
 	    String studId = TestUtils.getStringInput
 		    ("Enter the existing Student ID: ");
 	    String modName = TestUtils.getStringInput
 		    ("Enter the existing module name: ");
-	   ModuleRegister modReg = new ModuleRegister(modName, studId);
+	    ModuleRegister modReg = new ModuleRegister(modName, studId);
 
-	    if( ModuleRegisterManager.insert(modReg)) {
+	    if( ModuleRegisterManager.registerForModule(modReg)) {
 		System.out.println("Successfully registered Student for module and  "
 			+ "also gave updated the dateCreated attribute.");
 		TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);

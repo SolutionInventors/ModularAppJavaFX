@@ -107,8 +107,8 @@ public class Admin implements Bean
     public boolean validatePassword()
     {
 	String pass = getPassword();
-	return  pass!= null && pass.length() >=5 &&
-		Bean.isAlphanumeric(pass);
+	return  pass!= null && pass.length() >=4 &&
+		Bean.containsEitherAlphaNum(pass);
     }
 
     /**
@@ -119,6 +119,6 @@ public class Admin implements Bean
     public boolean validateUsername()
     {
 	String username = getUsername();
-	return username!= null && username.length() >=5;
+	return username!= null && username.length() >=4;
     }
 }

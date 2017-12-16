@@ -18,7 +18,6 @@ public class DateTest
 	System.out.println(calendar.before(end));
 	System.out.println(calendar.get( Calendar.DAY_OF_MONTH));
 	System.out.println(calendar.get( Calendar.MILLISECOND));
-	
     }
 
 }

@@ -257,8 +257,8 @@ public class ModuleRegister  implements Bean
     public boolean validateModuleName()
     {
 	String name = getModuleName();
-	return name != null && Bean.isAlphanumeric(name) && 
-		name.substring(0,1).matches("A-Za-z");
+	return name != null && Bean.containsEitherAlphaNum(name) && 
+		name.substring(0,1).matches("[A-Za-z]");
     }
 
     /**
@@ -269,8 +269,7 @@ public class ModuleRegister  implements Bean
     public boolean validateStudentId()
     {
 	String name = getStudentId();
-	return name != null && Bean.isAlphanumeric(name) && 
-		name.substring(0,1).matches("A-Za-z");
+	return name != null && Bean.containsEitherAlphaNum(name) ;
     }
 
 }

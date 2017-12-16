@@ -16,13 +16,12 @@ public final class ModuleRegisterManager
     /**
      * This registers a Student for a {@code Module}. The {@code ModuleRegister} 
      * object passed as an argument must contain a studentId and moduleName
-     * before it can be used to register a {@code Student} for a {@code Module}.
-     * 
+     * before it can be used to register a {@code Student} for a {@code Module}.<br> 
      * @return {@code true } if the insertion was successful.
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static boolean insert(ModuleRegister modReg ) 
+    public static boolean registerForModule(ModuleRegister modReg ) 
 	    throws  SQLException, InvalidAdminException
     {
 	if( modReg.isValid( ValidationType.NEW_BEAN )){
@@ -39,6 +38,12 @@ public final class ModuleRegisterManager
 	return false;
     }
 
+    /**
+     * 
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public static ModuleRegister getModRegById( int id ) throws SQLException{
 	String sql = "SELECT * , isPaymentComplete( reg.id) as 'Paid' " + 
 		"WHERE reg.id = ? ";
