@@ -2,10 +2,9 @@
  * 
  */
 /**
- * The classes of this package represent tables that contain informations
- * about a {@code Student}. All most information are encapsulated in the 
- * {@code StudentData} class.
- * @author Chidiebere
+ * The classes in this package represents tables that contain  informations 
+ * about a Student. This includes the student bio data and other informations
+ * @author Oguejiofor Chidiebere
  *
  */
 package database.bean.student;

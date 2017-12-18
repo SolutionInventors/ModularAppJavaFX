@@ -6,11 +6,14 @@ import database.bean.Bean;
 import utils.ValidationType;
 
 /** 
- * This object represents a single entity of the {@code Biodata} table in the
- * database. The {@code Biodata}  table stores the information about a particular
- * {@code Student}. The {@code Student }is link via the {@code studentId} attribute
- * of this object. 
- * @author Chidiebere
+ * A {@code Biodata} object represents a single row in the {@code Biodata} table in 
+ * the database. The {@code Biodata} table contains column {@code studentId}
+ * which is a foreign key to the {@code Student} table. Each {@code Student} can
+ * only have one {@code Biodata} <br>
+ * The{@code Biodata} object can then be used to insert and update a {@code Student}'s
+ * biodata. 
+ * @author Oguejiofor Chidiebere
+ * @see Student
  *
  */
 public class Biodata implements Bean
@@ -32,10 +35,6 @@ public class Biodata implements Bean
     private String religion;
 
 
-    public Biodata(){
-	this("", "", "", "", "", "", "", "", "", null, "", "", "");
-
-    }
 
     /**
      * This constructor initializes this object with the studentId. This object
@@ -49,9 +48,7 @@ public class Biodata implements Bean
 
     /**
      * This constructor initializes this object with all the required parameters
-     * for it to be inserted into database. This object can be used to 
-     * check if a {@code Biodata} exists in the database
-
+     * for it to be inserted into database.
      * @param fName the first name of the {@code Student}
      * @param lName the last name of the {@code Student}
      * @param sutdentId the student id card number
@@ -95,13 +92,14 @@ public class Biodata implements Bean
 
     /**
      * Sets the name of this object by removing any extra spaces that
-     * may exist anywhere in the {@code String}
-     * @param fName the middleName of the {@code Student}
+     * may exist anywhere in the {@code String} an capitalizes the first word in the
+     * {@code String}. If the {@code String } is {@code null}
+     * then an empty {@code String } is used to set the value
+     * @param midName the middleName of the {@code Student}
      */
     public void setMiddleName(String midName)
     {
-	String temp = Bean.removeExtraSpaces( midName);
-	this.middleName = temp !=null ? temp : "";
+	this.middleName =Bean.capitalizeWords(midName ) ;
     }
 
     /**
@@ -116,13 +114,14 @@ public class Biodata implements Bean
 
     /**
      * Sets the last name of this object by removing any extra spaces that
-     * may exist anywhere in the {@code String}
+     * may exist anywhere in the {@code String} an capitalizes the first word in the
+     * {@code String}. If the {@code String } is {@code null}
+     * then an empty {@code String } is used to set the value
      * @param lName the lastName of the {@code Student}
      */
     public void setLastName(String lName)
     {
-	String temp = Bean.removeExtraSpaces( lName);
-	this.lastName =temp!=null ? temp : "";
+	this.lastName = Bean.capitalizeWords( lName);
     }
 
 
@@ -132,21 +131,20 @@ public class Biodata implements Bean
      * the {@code Student} table
      * @return a {@code String } containing the StudentId
      */
-    public String getStudentId()
+    public String getStudentID()
     {
 	return studentId;
     }
 
     /**
-     * Sets the student id of this {@code Biodata} object
-     * Any extra spaces are removed in the {@code String} before the
-     * Student id is set
+     *Removes any extra spaces that exists in its argument and cpaitalises the
+     *first letter of each word. Then uses the output {@code String} to set
+     *this studentId attribute of this {@code Biodata}.
      * @return a {@code String } containing the StudentId
      */
     public void setStudentId(String studentId)
     {
-	String temp= Bean.removeExtraSpaces(studentId);
-	this.studentId = temp!=null ? temp : "";
+	this.studentId = Bean.removeExtraSpaces(studentId).toUpperCase();
     }
 
     /**
@@ -165,8 +163,7 @@ public class Biodata implements Bean
      */
     public void setPermanentAddress(String address )
     {
-	String temp = Bean.removeExtraSpaces(address );
-	this.permanentAddress = temp!=null ? temp: "";
+	this.permanentAddress =Bean.capitalizeWords(address) ;
     }
 
     /**
@@ -186,8 +183,7 @@ public class Biodata implements Bean
      */
     public void setStateOfOrigin(String stateOfOrigin)
     {
-	String temp = Bean.removeExtraSpaces(stateOfOrigin );
-	this.stateOfOrigin = temp != null ? temp : "";
+	this.stateOfOrigin = Bean.capitalizeWords(stateOfOrigin) ;
     }
 
 
@@ -206,8 +202,7 @@ public class Biodata implements Bean
      */
     public void setCountry(String country)
     {
-	String temp = Bean.removeExtraSpaces(country );
-	this.country = temp!=null ? temp : "";
+	this.country = Bean.capitalizeWords(country);
     }
 
     /**
@@ -225,7 +220,7 @@ public class Biodata implements Bean
      * <br>
      * <h3>Note: </h3>If the {@code String} argument is 'M', this method sets the gender
      * to 'Male'. Also if the {@code String} is 'F' this method sets the gender
-     * to 'Female'
+     * to 'Female' Else it sets the gender to an empty {@code String} ""
      * 
      * @param gender the {@code String} argument.
      */
@@ -233,9 +228,9 @@ public class Biodata implements Bean
     {
 	gender = Bean.removeExtraSpaces( gender);
 	if( gender != null ){
-	    gender = gender.toUpperCase().equals("M") ? "Male": gender;
-	    gender = gender.toUpperCase().equals("F") ? "Female": gender;
-	    this.gender = gender;
+	    gender = gender.equalsIgnoreCase("M") ? "Male": gender;
+	    gender = gender.equalsIgnoreCase("F") ? "Female": gender;
+	    this.gender = Bean.capitalizeWords( gender);
 	}
 	else
 	    this.gender = "";
@@ -252,49 +247,59 @@ public class Biodata implements Bean
 	return dateOfBirth;
     }
 
+    /**
+     * Sets the date of birth of the student that this {@code Biodata} references
+     * @param dateOfBirth
+     */ 
     public void setDateOfBirth(Date dateOfBirth)
     {
 	this.dateOfBirth = dateOfBirth;
     }
 
+    /**
+     * Gets the place this {@code Student } referenced by this {@code Biodata} was
+     * born as a {@code String}.
+     * @return a {@code String} containing the place the {@code Student} was born
+     */
     public String getPlaceOfBirth()
     {
 	return placeOfBirth;
     }
 
+    /**
+     * Sets the place of birth of this {@code Biodata} object
+     * @param placeOfBirth
+     */
     public void setPlaceOfBirth(String placeOfBirth)
     {
-	String temp = Bean.removeExtraSpaces( placeOfBirth);
-	this.placeOfBirth = temp!=null ? temp : "";
+	this.placeOfBirth = Bean.capitalizeWords( placeOfBirth);
+
     }
 
 
 
     /**
-     * Checks if the specified gender is valid
+     * Checks if the  gender stored is not an empty {@code String}
      * @param gender {@code String } representing the gender
      * @return {@code true} if the gender is valid
      */
-    private  boolean validateGender()
+    public  boolean validateGender()
     {
-	if( getGender()!= null && ( getGender().toLowerCase().equals("male" ) || 
-		getGender().toLowerCase().equals( "female" ) )) 
-	{
-	    return true;
-	}
-	return false;
+	if( gender  == null ) return false;
+	return getGender().toLowerCase().matches("male|female");
     }
 
-    private  boolean validateName()
+    /**
+     * Checks that all the names( Surname and lastName ) contain at most 50 characters
+     * and that they are only letters 
+     * 
+     * @return
+     */
+    public  boolean validateName()
     {
-	if( getSurname().length() <=  50 && 
-		getLastName().length() <= 50 && 
-		getSurname().matches( "[A-Za-z]{1,}") && 
-		getLastName().matches( "[A-Za-z]{1,}" ) )
-	{
-	    return true;
-	}
-	return false;
+	return getSurname().matches( "[A-Za-z]{1,50}") && 
+		getLastName().matches( "[A-Za-z]{1,50}" ); 
+
     }
 
     /**
@@ -318,10 +323,10 @@ public class Biodata implements Bean
 
 	switch( type){
 	    case EXISTING_BEAN:
-		return getStudentId()!= null && getStudentId().length() > 0;
+		return getStudentID()!= null && getStudentID().length() > 0;
 	    case NEW_BEAN:
 		return getDateOfBirth() != null && validateName() && 
-		getCountry().length() > 0  && getStudentId().length() > 0 &&
+		getCountry().length() > 0  && getStudentID().length() > 0 &&
 		getLastName().length() >0 && getMiddleName().length() >0 && 
 		getSurname().length() >0 && getPermanentAddress().length() >0 &&
 		getCurrentAddress().length() >0 && getTitle().length() >0 &&
@@ -330,49 +335,78 @@ public class Biodata implements Bean
 	return false;
     }
 
-   
 
+    /**
+     * Gets the title of the {@code Student}  stored in this {@code Biodata} object
+     * @return a {@code String} containing the title
+     */
     public String getTitle()
     {
 	return title;
     }
 
+    /**
+     * Sets the title stored in this of this {@code Biodata}.It truncates the 
+     * {@code String } argument to 15 which is the maximum lenght of a title
+     * @param title
+     */
     public void setTitle(String title)
     {
 	String temp = Bean.removeExtraSpaces( title);
-	this.title = temp!=null ? temp : "";
+	this.title = Bean.truncateString(temp, 15);
     }
 
+    /**
+     * Gets the surname stored in this {@code Biodata } object 
+     * @return a {@code String} containing the surname of the {@code Student}
+     */
     public String getSurname()
     {
 	return surname;
     }
 
+    /**
+     * Sets the surname of {@code Student} that this {@code Biodata} references
+     * @param surname a {@code String} containing the surname of the student
+     */
     public void setSurname(String surname)
     {
-	String temp = Bean.removeExtraSpaces( surname);
-	this.surname = temp != null ? temp : "";
+	this.surname = Bean.removeExtraSpaces( surname);
     }
 
+    /**
+     * Gets the current address of the {@code Student}
+     * @return a {@code String } containing the current address of the referenced student
+     */
     public String getCurrentAddress()
     {
 	return currentAddress;
     }
 
+    /**
+     * Sets the current address of the referenced student
+     * @param currAddr the current address as {@code String}
+     */
     public void setCurrentAddress(String currAddr)
     {
-	String temp = Bean.removeExtraSpaces(currAddr );
-	this.currentAddress = temp!=null ? temp : "";
+	this.currentAddress= Bean.capitalizeWords(currAddr );
     }
 
+    /**
+     * Gets the religion of the referenced {@code Student} as {@code String}
+     * @return a {@code String}
+     */
     public String getReligion()
     {
 	return religion;
     }
 
+    /**
+     * Sets the religion that the referenced {@code Student} believes in
+     * @param religion a {@code String} containing the {@code Student} religion
+     */
     public void setReligion(String religion)
     {
-	String temp = Bean.removeExtraSpaces(religion );
-	this.religion = temp != null ? temp : "";
+	this.religion = Bean.capitalizeWords(religion );
     }
 }

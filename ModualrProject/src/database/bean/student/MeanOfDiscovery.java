@@ -53,7 +53,7 @@ public class MeanOfDiscovery implements Bean
      */
     public void setStudentId(String studentId)
     {
-        this.studentId = Bean.removeExtraSpaces( studentId);
+        this.studentId = Bean.removeExtraSpaces( studentId).toUpperCase();
     }
 
     /**
@@ -77,18 +77,25 @@ public class MeanOfDiscovery implements Bean
         this.means = Bean.removeExtraSpaces( means);
     }
 
+    /**
+     * Checks that the format of this {@code MeansOfDiscovery} is valid by
+     *  checking that the studentId and {@code means} attributes are not  
+     *  empty {@code String}s. If the 
+     * {@code ValidationType } is {@code ValidationType.EXISTING_BEAN} then only the
+     * {@code studentId} is checked
+     */
     @Override
     public boolean isValid(ValidationType type)
     {
 	switch (type)
 	{
 	    case NEW_BEAN:
+		return getStudentId()!= null && getStudentId().length() > 0;
 	    case EXISTING_BEAN:
 		return getMeans() != null && getMeans().length() >0 && 
 			getStudentId() != null && getStudentId().length() > 0;
-	    default:
-		return false;
 	}
+	return false;
     }
 
 }

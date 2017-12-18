@@ -14,10 +14,20 @@ public class DateTest
 	DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
 	Date end = new Date( df.parse("10-10-2018").getTime());
 	Calendar calendar = Calendar.getInstance();
-	calendar.setTime( new Date( df.parse("22-10-2017").getTime()) );
+	Date date  = new Date( df.parse("01-10-2017").getTime());
+	Date temp = new Date( df.parse("01-10-2017").getTime());
+	System.out.println( date.equals(temp));
+	calendar.setTime(date  );
 	System.out.println(calendar.before(end));
-	System.out.println(calendar.get( Calendar.DAY_OF_MONTH));
+	System.out.println(calendar.get( Calendar.YEAR));
 	System.out.println(calendar.get( Calendar.MILLISECOND));
+	calendar.add(Calendar.YEAR, -100);
+	System.out.println(calendar.get( Calendar.YEAR));
+	System.out.println(date);
+	Calendar endCal  = Calendar.getInstance();
+	endCal.add(Calendar.YEAR, -100); 
+//	Date d  = new Date( endCal.getTime().getTime());
+	System.out.println(calendar.before(endCal));
     }
 
 }

@@ -66,6 +66,10 @@ public class Sponsor implements Bean
 	this( studId, fName, lName, null, null, mail );
     }
 
+    /**
+     * Gets the address of the sponsor
+     * @return
+     */
     public String getAddress()
     {
         return address;
@@ -165,31 +169,52 @@ public class Sponsor implements Bean
 	return false;
     }
 
-    private boolean validateName()
+    /**
+     * Checks that the {@code firstName} and {@code lastName} attribute of
+     * this object contains only letters
+     * @return  {@code true } if the name is valid
+     */
+    public boolean validateName()
     {
 	
 	return Bean.hasOnlyLetters(getFirstName()) && 
 		Bean.hasOnlyLetters(getLastName());
     }
 
+    /**
+     * Gets the first name of this {@code Sponsor}
+     * @return
+     */
     public String getFirstName()
     {
 	return firstName;
     }
 
+    /**
+     * Sets the last name of this {@code Sponsor}
+     * @param firstName
+     */
     public void setFirstName(String firstName)
     {
-	this.firstName = Bean.removeExtraSpaces( firstName);
+	this.firstName = Bean.capitalizeWords( firstName);
     }
 
+    /**
+     * Gets the last name of this {@code Sponsor}
+     * @return
+     */
     public String getLastName()
     {
 	return lastName;
     }
 
+    /**
+     * Sets the last name of this {@code Sponsor}
+     * @param lastName
+     */
     public void setLastName(String lastName)
     {
-	this.lastName = Bean.removeExtraSpaces(lastName);
+	this.lastName = Bean.capitalizeWords(lastName);
     }
 
 }

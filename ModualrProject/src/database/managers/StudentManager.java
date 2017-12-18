@@ -147,7 +147,7 @@ public final class StudentManager
 	    throws SQLException, InvalidAdminException
     {
 
-	if( Student.isValid(ValidationType.NEW_BEAN, newStudent))
+	if( newStudent.isValid(ValidationType.NEW_BEAN))
 	{
 	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
 		    Connection conn =  ConnectionManager.getInstance().getConnection();

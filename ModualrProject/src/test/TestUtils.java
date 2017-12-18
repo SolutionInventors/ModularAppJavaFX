@@ -162,7 +162,7 @@ public class TestUtils
 		Phone[] phones  =  PhoneManager.getAllByIndex(startIndex);
 		for ( int i = 0 ; i < phones.length ; i++ ){
 
-		    System.out.println( (i+1) + ". " + phones[i].getStudentId() + "(" + 
+		    System.out.println( (i+1) + ". " + phones[i].getStudentID() + "(" + 
 			    phones[i].getNumber() + ")");
 		}
 	    case BIODATA:

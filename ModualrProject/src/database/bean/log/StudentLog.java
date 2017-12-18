@@ -14,12 +14,12 @@ public class StudentLog extends Log
     private final String NEW_EMAIL;
    
     public StudentLog( 
-	    Date operationDate,  String operationType, String oldStudId,
+	    Date operationDate,  TransactionType transactionType, String oldStudId,
 	    String newStudId, String prevCertIssued, String newCertIssued, 
 	    boolean prevActiveStatus, boolean newActiveStatus, 
 	    String oldMail , String newMail )
     {
-	super( operationDate, operationType );
+	super( operationDate, transactionType );
 	OLD_ID = oldStudId;
 	NEW_ID = newStudId;
 	PREV_CERT_ISSUED = prevCertIssued;

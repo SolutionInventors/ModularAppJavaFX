@@ -17,7 +17,7 @@ public class BiodataManager
 	if( data.isValid(ValidationType.NEW_BEAN )){
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			    data.getStudentId(),data.getTitle(), data.getSurname(),  
+			    data.getStudentID(),data.getTitle(), data.getSurname(),  
 			    data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
 			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
 			    data.getCountry(), data.getGender(), data.getDateOfBirth(), 
@@ -35,11 +35,11 @@ public class BiodataManager
 	    throws InvalidAdminException,  SQLException
     {
 	if( (data.isValid(ValidationType.NEW_BEAN ) && 
-		data.getStudentId().equals(existingStudent.getIdCardNumber())))
+		data.getStudentID().equals(existingStudent.getIdCardNumber())))
 	{
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			    data.getStudentId(),data.getTitle(), data.getSurname(),  
+			    data.getStudentID(),data.getTitle(), data.getSurname(),  
 			    data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
 			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
 			    data.getCountry(), data.getGender(), data.getDateOfBirth(),
@@ -85,7 +85,7 @@ public class BiodataManager
 	finally{
 	    if( result != null ) result.close();
 	}
-	return new Biodata();
+	return new Biodata("");
     }
 
 }

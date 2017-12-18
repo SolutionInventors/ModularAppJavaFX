@@ -7,8 +7,14 @@ import database.bean.Bean;
 import utils.ValidationType;
 
 /**
- * 
- * @author Chidiebere
+ * The {@code Student} table contains only the frequently required information
+ * about a {@code Student} including  his id card number, email, className etc.
+ * The {@code idCardNumber} attribute is this table's primary key thus it is
+ * referenced by other tables.<br>
+ * Other Informations about a {@code Student} ( such as his phone number, 
+ * {@code ProfessionalExperience} etc.)can be retrieved from his {@code StudentData} 
+ * object.
+ * @author Oguejiofor Chidiebere
  *
  */
 public class Student  implements Bean 
@@ -27,13 +33,14 @@ public class Student  implements Bean
     private File image;
 
     /**
-     * This initialises a this {@code Student} by specifyiing the required data to 
+     * This initializes a this {@code Student} by specifyiing the required data to 
      * input this object into the database. 
      * This {@code Student } can be inputed if the parameters inputed are valid. The
      * Validity can be checked via call to {@link isValid}
-     * @param id
-     * @param className
-     * @param mail
+     * @param id the id_card_number of the {@code Student}
+     * @param className the {@code ModularClass} that the student would be inputed
+     * into
+     * @param mail the email address of this {@code Student}
      */
     public Student(String id, String className,  String mail, File image)
     {
@@ -44,114 +51,188 @@ public class Student  implements Bean
     }
 
     /**
-     * Initialises this {@code Student } by specifying only the id card number
-     * Once this object is initialised with this constructor, it can then be
-     * used to test if a {@code Student} exists using the id card number.
+     * Initializes this {@code Student } by specifying only the id card number
+     * Once this object is initialized with this constructor, it can then be
+     * used to test if a {@code Student} exists using the id card number. It
+     * can also be used to retrieve a {@code Student } from the database
      * @param studId
      */
     public Student(String idCardNumber)
     {
 	setIdCardNumber(idCardNumber);
     }
-    
-    public Student(){ }
-
-   
-
+  
+    /**
+     * Gets the {@code idCardNumber } of this student
+     * @return a {@code String} representing the id card number of this student
+     */
     public String getIdCardNumber()
     {
 	return idCardNumber;
     }
+    
+    /**
+     * Sets the {@code idCardNumeber} of this student
+     * @param idCardNumber
+     */
     public void setIdCardNumber(String idCardNumber)
     {
-	this.idCardNumber = idCardNumber;
+	this.idCardNumber = Bean.removeExtraSpaces(idCardNumber).toUpperCase();
     }
 
+    /**
+     * Returns {@code true } if this {@code Student }is active
+     * @return {@code boolean}
+     */
     public boolean isActive()
     {
 	return active;
     }
+    
+    /**
+     * Sets {@code active} attribute contained in this {@code Student}
+     * @param active
+     */
     public void setActive(boolean active)
     {
 	this.active = active;
     }
+    
+    /**
+     * Gets this {@code Student}'s email address 
+     * @return {@code String} containing email
+     */
     public String getEmailAddress()
     {
 	return emailAddress;
     }
+    
+    /**
+     * Sets the email address by first removing any spaces
+     * @param emailAddress the email address
+     */
     public void setEmailAddress(String emailAddress)
     {
-	this.emailAddress = emailAddress;
+	this.emailAddress = emailAddress.replaceAll("\\s", "");
     }
 
-    public static boolean isValid(ValidationType type,  Student student ){
-	if( student != null && student.getEmailAddress()  != null)
-	{
-	    return true;
-	}
-	return false;
-    }
 
+
+    /**
+     * Gets the date this {@code Student } was admitted 
+     * @param date
+     */
     public void setDateAdmitted(Date date)
     {
 	dateAdmitted = date;
     }
 
+    /**
+     * Gets the date this {@code Student} was admitted
+     * @return
+     */
     public Date getDateAdmitted()
     {
 	return dateAdmitted ;
     }
 
+    /**
+     * Gets the certificate that this {@code Student} was issued as
+     * a {@code String}.
+     * @return
+     */
     public String getCertificateIssued()
     {
 	return certificateIssued;
     }
 
+    /**
+     * Set the certificate that this {@code Student} was issued
+     * @param certificateIssued
+     */
     public void setCertificateIssued(String certificateIssued)
     {
-	this.certificateIssued = certificateIssued;
+	this.certificateIssued = Bean.capitalizeWords( certificateIssued);
     }
 
-
+    /**
+     * 
+     */
     @Override
     public boolean isValid(ValidationType type)
     {
-
-
 	switch (type)
 	{
 	    case NEW_BEAN:
-		if( image == null ) return false;
-		String name = image.getName();
-		name = name.substring(name.lastIndexOf( "."), name.length() );
-		boolean isImageValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp|.gif");
-		return isImageValid && getEmailAddress() != null && getEmailAddress().length() >0 &&
-			getIdCardNumber() != null && getModClassName() != null;
-
+		return isImageValid()  && isEmailValid() &&
+			validateStudentID(getIdCardNumber()) && 
+			getModClassName() != null;
 	    case EXISTING_BEAN:
-		return getIdCardNumber() != null && getIdCardNumber().length() >0;
-
+		return validateStudentID(getIdCardNumber());
 	}
 	return false;
     }
 
+    
+    public boolean isEmailValid()
+    {
+	 return getEmailAddress() != null && getEmailAddress().length() >0;
+    }
+    /**
+     * @return
+     */
+    public boolean isImageValid()
+    {
+	if( image == null ) return false;
+	String name = image.getName();
+	name = name.substring(name.lastIndexOf( "."), name.length() );
+	boolean isImageValid = name.toLowerCase().matches( ".jpg|.png|.jpeg|.bmp|.gif");
+	return isImageValid;
+    }
+
+    /**
+     * Gets this {@code Student}'s class name
+     * @return a {@code String}
+     */
     public String getModClassName()
     {
 	return modClass;
     }
 
+    /**
+     * Sets this {@code Student}'s class
+     * @param modClass
+     */
     public void setModClass(String modClass)
     {
-	this.modClass = Bean.removeExtraSpaces(modClass);
+	this.modClass = Bean.capitalizeWords(modClass);
     }
 
+    /**
+     * Gets the image of this {@code Student } as a {@code File}. 
+     * @return
+     */
     public File getImage(){
 	return this.image;
     }
+    
+    /**
+     * Sets the image of this {@code Student} as a {@code File}
+     * @param image
+     */
     public void setImage(File image) 
     {
 	this.image = image;
     }
 
-
+    /**
+     * Checks if the {@code String } passed as argument is a valid 
+     * studentID. This method is used by other classes that reference
+     * studentID
+     * @param studentID
+     * @return
+     */
+    public static boolean validateStudentID( String studentID ){
+	return studentID != null && studentID.length() > 0;
+    }
 }

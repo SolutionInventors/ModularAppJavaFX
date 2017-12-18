@@ -1,10 +1,12 @@
 package database.bean;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import database.managers.DatabaseManager;
 import utils.ValidationType;
 
 /**This interface is used to mark all the classes  that represent a single row of a
@@ -35,27 +37,20 @@ public interface Bean extends Serializable
     }
 
     /**
-     * Checks if a phone number format passed as {@code String} is valid. 
+     * Checks if a phone number format passed as {@code String} is valid. It
+     * does this by ensuring that the phone number contains only numbers which
+     * may be prepended by a plus sign.<br>
      * For example,  +21331302 and 21331302 are both valid phone numbers
      * @param phoneNumber the phone number to validate
      * @return {@code true} if the phone number inputed is valid
      */
     public static boolean isPhoneValid( String phoneNumber ){
+	if( phoneNumber == null) return false;
 	if( phoneNumber.matches("[+|0-9][0-9]{1,}" ) ) return true;
 
 	return false;
     }
-    //    /**
-    //     * Checks if its argument has at least one number and one alphabet with
-    //     * no spce in between
-    //     * @param word the {@code String } to be checked
-    //     * @return {@code true } if the word is alphanumeric 
-    //     */
-    //    public static boolean isAlphanumericWithNoSpace( String word ){
-    //	String regex1 = "[A-Za-z]{1,}[0-9]{1,}[A-Za-z|0-9]*";
-    //	String regex2 = "[0-9]{1,}[A-Za-z]{1,}[A-Za-z|0-9]*";
-    //	return word.matches(regex1 +"|"+ regex2);
-    //    }
+  
 
     /**
      * Returns {@code true} if the argument contains either alphabet, numbers or
@@ -68,7 +63,7 @@ public interface Bean extends Serializable
 	return word.trim().matches("[\\w|\\d]+[\\w|\\d|\\s]*");
     }
 
-
+    
     /**
      * Removes any double  space anywhere in  a {@code String } passed as 
      * argument. This ensures that invalid {@code String } is not inputed into
@@ -102,8 +97,24 @@ public interface Bean extends Serializable
 	return String.join( " ", list.toArray( new String[list.size()] )) ;
 
     }
+    
+   
 
-
+    /**
+     * Truncates any extra {@code String} in its argument and returns a {@code String}	that
+     * is within the specified maxLength. For example, if the {@code String} is
+     * "SomeString" and the max lenth is 5 then "SomeS" is returned. This is handy when
+     * enforcing the maximum {@code String}  length that  a table would provide in the
+     * database.
+     * @param string the containing {@code String}
+     * @param maxLength the maximum length that is required. If this is above the length of 
+     * the string then the string is returned.
+     * @return a truncated {@code String}
+     */
+    public static String truncateString( String string, int maxLength ){
+	int strinLength = string.length() <= maxLength ? string.length() : maxLength;
+	return string.substring(0, strinLength);
+    }
 
     /**
      * Checks the format of a {@code Bean} object based on a {@code ValidationType}.
@@ -133,5 +144,20 @@ public interface Bean extends Serializable
     {
 	return string.matches("[0-9]{1,}");
 
+    }
+    
+    /**
+     * Checks that the two dates are before the current date in the database and
+     * that the first argument  is before the second
+     * @param earlier
+     * @param later
+     * @return
+     */
+    public static boolean validateDate(Date earlier, Date later){
+	Date currentDate = DatabaseManager.getCurrentDate();
+	return  earlier !=null  && later != null && 
+		( earlier.before(later) || earlier.equals( later ) ) && 
+		( currentDate.after(earlier) || currentDate.equals(earlier)) && 
+		( currentDate.after(later) || currentDate.equals(later));
     }
 }

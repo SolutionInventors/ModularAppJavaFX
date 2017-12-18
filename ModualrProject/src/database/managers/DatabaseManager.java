@@ -94,9 +94,8 @@ public final class DatabaseManager
      * Returns a java.sql.Date object that contains the current date in the database 
      * @return {@code java.sql.Date} object that contains the current date or {@code null } if
      * an error occured while processing retrieving the information.
-     * @throws InvalidAdminException if the current {@code Admin} making this request is invalid
      */
-    public static Date getDate() 
+    public static Date getCurrentDate() 
     {
 	if( currentDate == null ) {
 	    ConnectionManager.openConnection();

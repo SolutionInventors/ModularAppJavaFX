@@ -29,7 +29,7 @@ public final class PhoneManager
 
 	    try( CallableStatement  statement  = DatabaseManager.getCallableStatement( 
 		    "{CALL addPhoneNumber(?, ? ) } ", 
-		    newNumber.getStudentId(), newNumber.getNumber());)
+		    newNumber.getStudentID(), newNumber.getNumber());)
 	    {
 
 		int affected = statement.executeUpdate();
@@ -58,10 +58,10 @@ public final class PhoneManager
     {
 	if( (oldPhone.isValid(ValidationType.EXISTING_BEAN) &&
 		newPhone.isValid(ValidationType.NEW_BEAN) && 
-		newPhone.getStudentId().equals(oldPhone.getStudentId()))) 
+		newPhone.getStudentID().equals(oldPhone.getStudentID()))) 
 	{
 	    try(CallableStatement statement  = DatabaseManager.getCallableStatement( 
-		    "{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentId(),
+		    "{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentID(),
 		    oldPhone.getNumber(), newPhone.getNumber() ); )
 	    {
 
@@ -87,7 +87,7 @@ public final class PhoneManager
     {
 	if( phone.isValid( ValidationType.EXISTING_BEAN ) ){
 	    try(  CallableStatement  statement  = DatabaseManager.getCallableStatement( 
-		    "{CALL removePhoneNumber(?, ? ) } ", phone.getStudentId(), phone.getNumber());)
+		    "{CALL removePhoneNumber(?, ? ) } ", phone.getStudentID(), phone.getNumber());)
 	    {
 		int affected = statement.executeUpdate();
 

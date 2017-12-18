@@ -17,7 +17,7 @@ public class ResponsibilityManager
     {
 	try( CallableStatement  statement  = 
 		DatabaseManager.getCallableStatement(  "{CALL insertDuty(?, ?, ? ) } ", 
-			res.getExpId(), res.getDuty());)
+			res.getExpId(), res.getRole());)
 	{
 	    statement.registerOutParameter(3, Types.INTEGER);
 	    int affected = statement.executeUpdate();

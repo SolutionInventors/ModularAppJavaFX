@@ -6,7 +6,7 @@ import java.util.Arrays;
 import database.bean.Admin;
 import database.bean.log.CertificateLog;
 import database.bean.log.CertificateRegisterLog;
-import database.bean.log.LogType;
+import database.bean.log.TransactionType;
 import database.bean.log.ModuleLog;
 import database.bean.log.PaymentLog;
 import database.bean.log.StudentLog;
@@ -20,7 +20,7 @@ public class LogTest
 	DatabaseManager.setCurrentAdmin( new Admin("Chidiebere", "Fred") );
 	
 	CertificateLog[] certLog =  LogManager.getLog(CertificateLog.class,
-		LogType.INSERT, 0);
+		TransactionType.INSERT, 0);
 	System.out.println("--------CertificateLogs----------");
 	Arrays.stream(certLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
@@ -32,7 +32,7 @@ public class LogTest
 	});
 	
 	ModuleLog[] modLog =  LogManager.getLog(ModuleLog.class,
-		LogType.ALL, 0);
+		TransactionType.NONE, 0);
 	System.out.println("-----ModuleLogs--------" );
 	Arrays.stream(modLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
@@ -45,7 +45,7 @@ public class LogTest
 	});
 	
 	PaymentLog[] payLog =  LogManager.getLog(PaymentLog.class,
-		LogType.ALL, 0);
+		TransactionType.NONE, 0);
 	System.out.println("-----PaymentLogs--------" );
 	Arrays.stream(payLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
@@ -54,7 +54,7 @@ public class LogTest
 	});
 	
 	StudentLog[] studLog =  LogManager.getLog(StudentLog.class,
-		LogType.INSERT, 0);
+		TransactionType.INSERT, 0);
 	System.out.println("-----StudentLogs--------" );
 	Arrays.stream(studLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
@@ -65,7 +65,7 @@ public class LogTest
 	
 	CertificateRegisterLog[] certRegLog = 
 		LogManager.getLog(CertificateRegisterLog.class, 
-		LogType.ALL, 0);
+		TransactionType.NONE, 0);
 	
 	System.out.println( "---CertRegisterLog----" );
 	Arrays.stream(certRegLog).forEach( log ->{

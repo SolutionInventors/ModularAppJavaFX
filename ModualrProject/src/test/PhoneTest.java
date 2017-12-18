@@ -64,7 +64,7 @@ public class PhoneTest
 	    existingPhone =  getPhone("existing" );
 	    String newNumber = TestUtils.getStringInput("Enter new phone number: ");
 
-	    newPhone = new Phone( existingPhone.getStudentId(), newNumber );
+	    newPhone = new Phone( existingPhone.getStudentID(), newNumber );
 
 	    if(  PhoneManager.update(existingPhone, newPhone) ){
 		System.out.println( "The Phone was updated succcessfullly!!!");
