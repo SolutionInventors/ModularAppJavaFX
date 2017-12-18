@@ -43,6 +43,7 @@ public class ModuleRegister  implements Bean
     private boolean attended;
     private String result;
 
+    private double totalPriceForModule;
     private Date dateRegistered;
 
     public ModuleRegister(){}
@@ -69,12 +70,13 @@ public class ModuleRegister  implements Bean
      * @param result
      */
     public ModuleRegister( String moduleName , String studentId,
-	    boolean booked, boolean attended, String result )
+	    boolean booked, boolean attended, double totalPrice, String result )
     {
 	this(  moduleName, studentId);
 	setBookingStatus(booked);
 	setAttended(attended);
 	setResult(result);
+	setTotalPriceForModule(totalPrice);
     }
     /**
      * Gets the module name of stored in this object
@@ -189,12 +191,12 @@ public class ModuleRegister  implements Bean
      */
     public void setResult(String result) 
     {
-	if( result.toLowerCase().equals("pass" ) || 
-		result.toLowerCase().equals("fail") )
+	if( result != null && ( result.toLowerCase().equals("pass" ) || 
+		result.toLowerCase().equals("fail") ))
 	{
 	    this.result = result.toUpperCase();
 	}
-
+	
     }
 
     /**
@@ -270,6 +272,16 @@ public class ModuleRegister  implements Bean
     {
 	String name = getStudentId();
 	return name != null && Bean.containsEitherAlphaNum(name) ;
+    }
+
+    public double getTotalPriceForModule()
+    {
+        return totalPriceForModule;
+    }
+
+    public void setTotalPriceForModule(double totalPriceForModule)
+    {
+        this.totalPriceForModule = totalPriceForModule;
     }
 
 }

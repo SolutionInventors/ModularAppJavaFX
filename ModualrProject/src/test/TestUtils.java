@@ -12,6 +12,7 @@ import database.bean.Certificate;
 import database.bean.CertificateRegister;
 import database.bean.ModularClass;
 import database.bean.Module;
+import database.bean.ModuleRegister;
 import database.bean.student.EducationalBackground;
 import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Phone;
@@ -21,6 +22,7 @@ import database.managers.CertificateManager;
 import database.managers.CertificateRegisterManager;
 import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
+import database.managers.ModuleRegisterManager;
 import database.managers.PhoneManager;
 import exception.InvalidAdminException;
 import utils.BeanType;
@@ -156,8 +158,6 @@ public class TestUtils
 		    "\n\tUnits: " + modules[i].getNumberOfUnits() +
 		    "\n\tAmount Per Unit: " + modules[i].getAmountPerUnit() +"\n");
 		}
-
-
 		break;
 		
 	    case PHONE:
@@ -167,11 +167,19 @@ public class TestUtils
 		    System.out.println( (i+1) + ". " + phones[i].getStudentID() + "(" + 
 			    phones[i].getNumber() + ")");
 		}
+		break;
 	    case BIODATA:
 		break;
 
 
 	    case MODULE_REGISTER:
+		ModuleRegister[] modRegs  =  ModuleRegisterManager.getRegisteredModules(0);
+		for ( int i = 0 ; i < modRegs.length ; i++ ){
+		    System.out.println("Module Name: " + modRegs[i].getModuleName()); 	
+		    System.out.println("StudentID: " + modRegs[i].getStudentId());
+		    System.out.println("Total Price: " + modRegs[i].getTotalPriceForModule());
+		    System.out.println("--->");
+		}
 		break;
 	    case PAYMENT:
 		break;

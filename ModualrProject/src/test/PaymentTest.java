@@ -21,11 +21,7 @@ public class PaymentTest
 	    System.out.println("----AVAILABLE MODULES----");
 	    TestUtils.displayBean( BeanType.MODULE_REGISTER , 0);
 
-	    //	    System.out.println("----AVAILABLE STUDENTS----");
-	    //	    TestUtils.displayBean( BeanType.STUDENT , 0);
-	    //	    
-	    System.out.println("---------------REGISTERING STUDENT FOR MODULE--------------");
-
+	    
 	}
 	catch ( InvalidAdminException e)
 	{

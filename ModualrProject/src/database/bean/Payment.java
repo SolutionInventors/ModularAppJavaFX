@@ -22,7 +22,7 @@ public class Payment implements Bean
   
     private static final long serialVersionUID = 6495853015546110411L;
     private int id;
-    private int moduleRegisterId;
+    private int regId;
     private double amount;
     private String bankName;
     private String tellerNumber;
@@ -60,22 +60,22 @@ public class Payment implements Bean
     }
 
     /**
-     * Gets the moduleRegisterId stored in this object
+     * Gets the regId stored in this object
      * @return
      */
-    public int getModuleRegisterId()
+    public int getRegId()
     {
-        return moduleRegisterId;
+        return regId;
     }
 
     /**
      * Sets the id module register id that is being referenced by
      * this {@code Payment } object
-     * @param moduleRegisterId
+     * @param regId
      */
     public void setModuleRegisterId(int moduleRegisterId)
     {
-        this.moduleRegisterId = moduleRegisterId;
+        this.regId = moduleRegisterId;
     }
 
     /**
@@ -208,7 +208,7 @@ public class Payment implements Bean
      * @return {@code true} if the payment has been done
      */
     public boolean validateModuleRegId(){
-	return getModuleRegisterId() > 0;
+	return getRegId() > 0;
     }
     
     public boolean validateBankName(){

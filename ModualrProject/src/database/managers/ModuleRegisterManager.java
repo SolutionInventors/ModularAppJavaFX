@@ -38,6 +38,13 @@ public final class ModuleRegisterManager
 	return false;
     }
 
+    public static double getTotalPriceForModule(int regID) throws SQLException
+    {
+	ModuleRegister modReg = ModuleRegisterManager.getModRegById(regID);
+	double totalPrice = modReg.getTotalPriceForModule();
+	return totalPrice;
+    }
+    
     /**
      * 
      * @param id
@@ -57,7 +64,9 @@ public final class ModuleRegisterManager
 		modReg =  new ModuleRegister(result.getString("ModuleName"),
 			result.getString("StudentId"), 
 			result.getBoolean("Booked"),
-			result.getBoolean("AttendanceStatus"), result.getString("Result"));
+			result.getBoolean("AttendanceStatus"),
+			result.getDouble("totalPriceForModule" ), 
+			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
 		modReg.setPaymentStatus(result.getBoolean("Paid"));
 	    }
@@ -139,7 +148,9 @@ public final class ModuleRegisterManager
 	    while( result.next()){
 		modReg = new ModuleRegister(result.getString("ModuleName"),
 			result.getString("StudentId"), result.getBoolean("BookingStatus"),
-			result.getBoolean("AttendanceStatus"), result.getString("Result"));
+			result.getBoolean("AttendanceStatus"), 
+			result.getDouble("totalPriceForModule"), 
+			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
 		modReg.setId(result.getInt("id"));
 		list.add(modReg);

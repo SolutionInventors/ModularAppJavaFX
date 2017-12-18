@@ -11,7 +11,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import database.bean.Admin;
 import exception.InvalidAdminException;
-import exception.InvalidPrimaryKeyException;
 import utils.ValidationType;
 
 /**
