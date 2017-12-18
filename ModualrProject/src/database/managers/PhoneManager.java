@@ -113,7 +113,7 @@ public final class PhoneManager
 	    throws SQLException, InvalidAdminException
     {
 	String sql = "SELECT * FROM phone " + 
-		     "WHERE phone.student_id = ? ";
+		     "WHERE phone.studentId = ? ";
 	ResultSet result  = null;
 	List<Phone> list;
 	try(PreparedStatement statement = DatabaseManager.getPreparedStatement( 

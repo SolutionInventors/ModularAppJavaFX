@@ -11,6 +11,11 @@ import database.bean.student.Student;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
+/**
+ * 
+ * @author Chidiebere
+ *
+ */
 public final class DiscoveryManager
 {
     public static boolean insert( MeanOfDiscovery means) 
@@ -25,12 +30,17 @@ public final class DiscoveryManager
 		if( affected >0 ) return true ;
 	    }
 	}
-
-
-
 	return false;
     }
 
+    /**
+     * 
+     * @param oldDisc
+     * @param newMeans
+     * @return
+     * @throws InvalidAdminException
+     * @throws SQLException
+     */
     public static boolean update(MeanOfDiscovery oldDisc, MeanOfDiscovery newMeans) 
 	    throws  InvalidAdminException, SQLException
     {
@@ -49,8 +59,6 @@ public final class DiscoveryManager
 		if( affected >0 ) return true ;
 	    }
 	}
-
-
 	return false;
     }
 

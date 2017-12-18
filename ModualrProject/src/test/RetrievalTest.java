@@ -28,14 +28,13 @@ public class RetrievalTest
     {
 	System.out.println( DatabaseManager.getCurrentDate());
 	    
-	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred" ));
-	Student stud = new Student() ;
-	stud.setIdCardNumber("ETY-C3");
+	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred", "" ));
+	Student stud = new Student("ETY-C3") ;
 	try
 	{
 	    
-	    Biodata data = BiodataManager.getBiodata( stud);
-	    System.out.println( "Biodaata country: " +data.getCountry());
+	    Biodata data = BiodataManager.getBiodata( stud.getIdCardNumber());
+	    System.out.println( "Biodata country: " +data.getCountry());
 	    stud.setIdCardNumber("EYY-C232");
 	    ProfessionalExperience[] exp = ExperienceManager.getExpriences(stud);
 	    System.out.println("-------Experiences------" );

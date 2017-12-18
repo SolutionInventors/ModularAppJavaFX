@@ -103,7 +103,7 @@ public class UpdateTest
 	    else
 		System.err.println("Failed. Probalbly not in database");
 
-	    if( BiodataManager.update(oldStud, newBio) )
+	    if( BiodataManager.update(newBio) )
 		System.out.println("BioData updated" );
 	    else
 		System.err.println("Failed. Probalbly not in database");

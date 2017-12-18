@@ -24,6 +24,7 @@ import database.managers.ModuleManager;
 import database.managers.PhoneManager;
 import exception.InvalidAdminException;
 import utils.BeanType;
+import utils.OrderBy;
 
 public class TestUtils
 {
@@ -126,7 +127,8 @@ public class TestUtils
 
 		break;
 	    case CERTIFICATE:
-		Certificate[] certs  =  CertificateManager.getCertificates(startIndex);
+		Certificate[] certs  =  CertificateManager.getCertificates
+					(startIndex, OrderBy.DATE_CREATED_ASC);
 		for ( int i = 0 ; i < certs.length ; i++ ){
 
 		    System.out.println( (i+1) + ". " + certs[i].getName() + "(" + 

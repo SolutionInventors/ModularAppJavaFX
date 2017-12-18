@@ -20,7 +20,7 @@ public class CertificateRegisterTest
 	//	First and very important step is to specify the Admin that is 
 	//	making the change as follows
 
-	Admin currentAdmin = new Admin("Chidiebere", "Fred" );
+	Admin currentAdmin = new Admin("Chidiebere", "Fred" , "email");
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 
 	//	Rest of the code

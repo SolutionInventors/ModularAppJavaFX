@@ -13,16 +13,15 @@ public class AdminTest
 {
     public static void main(String[] args) throws InvalidAdminException, SQLException
     {
-	Admin currentAdmin = new Admin("Jacob", "Jerry" );
+	Admin currentAdmin = new Admin("ChidiO", "ChidiIsSoGood" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 	Scanner input = new Scanner( System.in);
 	
 	System.out.println("-----------------INSERTING A NEW ADMIN---------------");
-	System.out.print("Input username: ");
-	String  name = input.nextLine();
-	System.out.print("Input password: ");
-	String pass = input.nextLine();
-	Admin newAdmin = new Admin( name,pass);
+	String  name = TestUtils.getStringInput("Input username: ");
+	String pass = TestUtils.getStringInput("Input password: ");
+	String mail = TestUtils.getStringInput("Input Email: ");
+	Admin newAdmin = new Admin( name,pass, mail);
 	
 	if( AdminManager.insert(newAdmin) ){
 	    System.out.println("Insertion Successful");

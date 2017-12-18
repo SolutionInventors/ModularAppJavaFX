@@ -5,13 +5,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import database.bean.student.Biodata;
-import database.bean.student.Student;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
+/**
+ * The {@code BiodataManager} contains static methods that are used for 
+ * inserting and updating a {@code Student}'s biodata. Method {@link #insert(Biodata)}
+ * is protected to ensure that a {@code Biodata} can only be inserted during 
+ * registration
+ * @author Oguejiofor Chidiebere
+ *
+ */
 public class BiodataManager
 {   
-    public static boolean insert(Biodata data) 
+    /**
+     * Inserts a new {@code Biodata } object into the {@code Biodata} table. 
+     * It returns {@code true } if the insertion was successful
+     * @param data the {@code Biodata} object to be inserted
+     * @return {@code true} if the insertion was successful
+     * @throws SQLException when an error occured in the database
+     * @throws InvalidAdminException when the {@code Admin} that wants to make
+     * the change is invalid
+     */
+    protected static boolean insert(Biodata data) 
 	    throws SQLException, InvalidAdminException
     {
 	if( data.isValid(ValidationType.NEW_BEAN )){
@@ -31,11 +47,20 @@ public class BiodataManager
 	return false;
     }
 
-    public static boolean update(Student existingStudent, Biodata data) 
-	    throws InvalidAdminException,  SQLException
+    /**
+     * Updates an existing {@code Student}'s {@code Biodata}. It uses the {@code studentID} 
+     * attribute stored in the {@code Biodata} object to locate the row in the
+     * {@code Biodata} table that would be updated since the studentID is unique in that
+     * table.
+     * @param data the {@code Biodata} object to be inserted into the database.
+     * @return {@code true} if the update was successful.
+     * @throws InvalidAdminException if the {@code Admin} that wants to make the change is invalid
+     * @throws SQLException when a exception occurs like 
+     */
+    public static boolean update(Biodata data) 
+	    throws InvalidAdminException, SQLException
     {
-	if( (data.isValid(ValidationType.NEW_BEAN ) && 
-		data.getStudentID().equals(existingStudent.getIdCardNumber())))
+	if( (data.isValid(ValidationType.NEW_BEAN ) ))
 	{
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
@@ -48,27 +73,26 @@ public class BiodataManager
 		int affected = statement.executeUpdate();
 		if( affected >0 ) return true ;	
 	    }
-
 	}
-
-
 	return false;
     }
 
-    
-
     /**
-     * Retrieves a {@code Student}'s  {@code Biodata} object from the database
-     * @param student
-     * @return
-     * @throws SQLException
-     * @throws InvalidAdminException
+     * Retrieves a {@code Student}'s  {@code Biodata} object from the database using
+     * the id card number of the {@code Student}
+     * @param studentID the id card number of the student
+     * @return a {@code Biodata} that contains the specified {@code Student}'s
+     * bio data or returns {@code null } if nothing was found
+     * @throws SQLException when a database exception occured
+     * @throws InvalidAdminException when the {@code Admin} that wants to make
+     * the change is invalid
      */
-    public static Biodata getBiodata(Student student) throws SQLException, InvalidAdminException
+    public static Biodata getBiodata(String studentID) 
+	    throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call getBiodata(?) }", student.getIdCardNumber());)
+		("{call getBiodata(?) }", studentID);)
 	{
 	    if( statement.execute()){
 		result = statement.getResultSet();
@@ -85,7 +109,7 @@ public class BiodataManager
 	finally{
 	    if( result != null ) result.close();
 	}
-	return new Biodata("");
+	return null ;
     }
 
 }

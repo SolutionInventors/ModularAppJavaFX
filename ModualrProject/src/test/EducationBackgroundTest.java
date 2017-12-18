@@ -17,7 +17,7 @@ public class EducationBackgroundTest
 {
     public static void main( String[] args ) throws ParseException{
 	
-	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred" ));
+	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred", "email.com" ));
 	String studId = TestUtils.getStringInput("Input student id: " );
 	String beginString = TestUtils.getStringInput("Input begin date in format dd-mm-yyyy: ");
 	String endString = TestUtils.getStringInput("Input end date in format dd-mm-yyyy: ");

@@ -114,7 +114,7 @@ public final class StudentManager
     {
 	StudentData studData= null;
 	if( student.isValid(ValidationType.EXISTING_BEAN) ){
-	    Biodata data = BiodataManager.getBiodata( student);
+	    Biodata data = BiodataManager.getBiodata( student.getIdCardNumber());
 	    EducationalBackground[] edu = EducationManager.getEducationInfo(student);
 	    Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
 	    ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);

@@ -11,6 +11,16 @@ import database.bean.Admin;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
+/**
+ * This contains common methods that retrieve are used to retrieve, insert, update
+ * and delete data from the database. It also contains a {@code currentAdmin }
+ * attribute which stores the currrently signed {@code Admin}. This {@code Admin}
+ * is validated before any transaction occurs in the database. It also stores
+ * the {@code currentDate} in the database which is updated anytime a 
+ * connection is made. 
+ * @author Oguejiofor Chidiebere
+ *
+ */
 public final class DatabaseManager
 {
     private static Admin currentAdmin = null ;
@@ -38,9 +48,8 @@ public final class DatabaseManager
 		ResultSet.TYPE_FORWARD_ONLY,
 		ResultSet.CONCUR_READ_ONLY);
 
-
-	for( int i =  0 ; i < arguments.length ; i++ )
-	    statement.setObject( i+1 , arguments[ i ] );
+	for( int i =  1 ; i <= arguments.length ; i++ )
+	    statement.setObject( i , arguments[ i ] );
 	return statement;
     }
 
@@ -66,24 +75,29 @@ public final class DatabaseManager
 	return statement;
     }
 
-
-    public static Admin getCurrentAdmin()
-    {
-	return currentAdmin;
-    }
-
-
+    /**
+     * Sets the {@code currentAdmin} that is logged into the system.
+     * @param currentAdmin the Admin that is logged to the system
+     */
     public static void setCurrentAdmin(Admin currentAdmin)
     {
 	DatabaseManager.currentAdmin = currentAdmin;
     }
 
+    /**
+     * Connects to the database and checks if the Admin is in the database. 
+     * @return
+     */
     public static boolean  validateAdmin(){
 	if( currentAdmin != null && currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
-	    return AdminManager.validateAdmin( getCurrentAdmin());
+	    return AdminManager.validateAdmin( currentAdmin);
 	return false;
     }
 
+    /**
+     * Sets the currentDate in the database stored in this DatabaseManager 
+     * @param date
+     */
     protected static void setCurrentDate(Date date)
     {
 	currentDate = date;
@@ -98,14 +112,10 @@ public final class DatabaseManager
     public static Date getCurrentDate() 
     {
 	if( currentDate == null ) {
-	    ConnectionManager.openConnection();
-	    Date date = currentDate;
+	    ConnectionManager.openConnection(); //this updates the currentDate
 	    ConnectionManager.close();
-	    return date;
 	}
 	return currentDate;
     }
-
-
 
 }

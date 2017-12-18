@@ -17,6 +17,7 @@ import database.managers.ModuleManager;
 import database.managers.ModuleRegisterManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
+import utils.OrderBy;
 
 public class PagingTest
 {
@@ -25,7 +26,7 @@ public class PagingTest
     {
 	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred" ));
 	
-	Certificate[] certs = CertificateManager.getCertificates(0);
+	Certificate[] certs = CertificateManager.getCertificates(0, OrderBy.DATE_CREATED_DESC);
 	System.out.println("-------List of Certificates----------" );
 	for (int i = 0; i < certs.length; i++)
 	{

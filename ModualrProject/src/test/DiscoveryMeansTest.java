@@ -13,7 +13,7 @@ public class DiscoveryMeansTest
 
     public static void main(String[] args)
     {
-	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred") );
+	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred", "emial.com") );
 	String studentId = TestUtils.getStringInput("Input Student Id: ");
 	String means = TestUtils.getStringInput("How did you hear about IIT: ");
 	MeanOfDiscovery disc =  new MeanOfDiscovery(studentId, means);
