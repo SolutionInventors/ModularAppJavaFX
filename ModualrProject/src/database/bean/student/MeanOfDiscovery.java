@@ -74,7 +74,7 @@ public class MeanOfDiscovery implements Bean
      */
     public void setMeans(String means)
     {
-        this.means = Bean.removeExtraSpaces( means);
+        this.means = Bean.capitalizeWords( means);
     }
 
     /**

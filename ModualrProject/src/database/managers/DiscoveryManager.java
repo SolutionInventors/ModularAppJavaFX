@@ -21,7 +21,7 @@ public final class DiscoveryManager
     public static boolean insert( MeanOfDiscovery means) 
 	    throws SQLException, InvalidAdminException
     {
-	if( !means.isValid(ValidationType.NEW_BEAN )){
+	if( means.isValid(ValidationType.NEW_BEAN )){
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call addMeansOfDiscovery(?,?) }", means.getStudentId(), 
 			    means.getMeans()) ; )

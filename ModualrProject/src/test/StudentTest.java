@@ -34,7 +34,8 @@ public class StudentTest
 
     public static void main(String[] args) throws  SQLException, InvalidAdminException
     {
-	DatabaseManager.setCurrentAdmin(new Admin( "Chidiebere", "Fred" ) );
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
+	DatabaseManager.setCurrentAdmin(currentAdmin);
 	if( !DatabaseManager.validateAdmin())
 	    throw new InvalidAdminException("The current Admin is invalid");
 	System.out.println("--------REGISTERING A NEW STUDENT TEST---------");

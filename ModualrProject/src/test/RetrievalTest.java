@@ -26,7 +26,7 @@ public class RetrievalTest
 {
     public static void main(String[] args) throws  InvalidAdminException
     {
-	System.out.println( DatabaseManager.getCurrentDate());
+	System.out.println( ConnectionManager.getCurrentDate());
 	    
 	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred", "" ));
 	Student stud = new Student("ETY-C3") ;

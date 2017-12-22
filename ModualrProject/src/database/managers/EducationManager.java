@@ -18,7 +18,7 @@ public final class EducationManager
     public static boolean insert(EducationalBackground education) 
 	    throws SQLException, InvalidAdminException
     {
-	if( !education.isValid(ValidationType.NEW_BEAN )){
+	if( education.isValid(ValidationType.NEW_BEAN )){
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call addEducationRecord(?,?,?,?, ?,?) }", education.getStudentId(), 
 			    education.getBeginDate(), education.getEndDate(),

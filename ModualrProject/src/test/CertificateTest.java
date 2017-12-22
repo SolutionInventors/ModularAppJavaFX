@@ -14,12 +14,21 @@ import utils.ValidationType;
 public class CertificateTest
 {
 
+    /**
+     * @param args
+     */
+    /**
+     * @param args
+     */
+    /**
+     * @param args
+     */
     public static void main(String[] args)
     {
 	//	First and very important step is to specify the Admin that is 
 	//	making the change as follows
 
-	Admin currentAdmin = new Admin("Chidiebere", "Fred", "" );
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 
 	//	Rest of the code
@@ -60,8 +69,8 @@ public class CertificateTest
 
 	    System.out.println("---------------UPDATING AN EXISTING CERTIFICATE TEST--------------");
 
-	    name = TestUtils.getStringInput("Enter the existing class name: ");
-	    String newName = TestUtils.getStringInput("Enter the new class name: ");
+	    name = TestUtils.getStringInput("Enter the existing certificate name: ");
+	    String newName = TestUtils.getStringInput("Enter the new certificate name: ");
 
 	    certificate = new Certificate(name );
 	    Certificate newCert = new Certificate( newName);
@@ -71,8 +80,8 @@ public class CertificateTest
 		TestUtils.displayBean( BeanType.CERTIFICATE , 0);
 
 	    }
-	    else if( newCert.isValid(ValidationType.EXISTING_BEAN) && 
-		    certificate.isValid(ValidationType.NEW_BEAN) ){
+	    else if( !(newCert.isValid(ValidationType.EXISTING_BEAN) && 
+		    certificate.isValid(ValidationType.NEW_BEAN) )){
 		System.err.println("Object format is invalid" );
 	    }
 	    else

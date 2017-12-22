@@ -2,7 +2,6 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +23,6 @@ import utils.ValidationType;
 public final class DatabaseManager
 {
     private static Admin currentAdmin = null ;
-    private static Date currentDate;
 
 
     /** 
@@ -41,15 +39,17 @@ public final class DatabaseManager
     public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException, InvalidAdminException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
 
-	if( !validateAdmin() ) 
+	if(  !validateAdmin() ) 
 	    throw new InvalidAdminException("The Admin that wants to make the change is not in database");
 	CallableStatement statement =  conn.prepareCall(
 		sqlCall,
 		ResultSet.TYPE_FORWARD_ONLY,
 		ResultSet.CONCUR_READ_ONLY);
-
-	for( int i =  1 ; i <= arguments.length ; i++ )
-	    statement.setObject( i , arguments[ i ] );
+	
+	
+	
+	for( int i =  0 ; i < arguments.length ; i++ )
+	    statement.setObject( i +1, arguments[ i ] );
 	return statement;
     }
 
@@ -94,28 +94,7 @@ public final class DatabaseManager
 	return false;
     }
 
-    /**
-     * Sets the currentDate in the database stored in this DatabaseManager 
-     * @param date
-     */
-    protected static void setCurrentDate(Date date)
-    {
-	currentDate = date;
-
-    }
-
-    /**
-     * Returns a java.sql.Date object that contains the current date in the database 
-     * @return {@code java.sql.Date} object that contains the current date or {@code null } if
-     * an error occured while processing retrieving the information.
-     */
-    public static Date getCurrentDate() 
-    {
-	if( currentDate == null ) {
-	    ConnectionManager.openConnection(); //this updates the currentDate
-	    ConnectionManager.close();
-	}
-	return currentDate;
-    }
+ 
+    
 
 }

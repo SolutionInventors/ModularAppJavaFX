@@ -51,43 +51,74 @@ public final class AdminManager
 	return false;
     }
 
+   
     /**
-     *
-     * Updates an existing {@code Admin } to a new {@code Admin} 
-     * Note that the changes would not be commited if the connection object's 
-     * auto-commiting is set to {@code true} <br>
-     * This method also updates the {@code Admin } object that is passed as
-     * an argument if the update was successful<br>
-     * 
-     *  Method first validates the current Admin parameter and returns {@code false } 
-     *  if the {@code currentAdmin} is not in the database <br>
-     *  
-     *  @param currentAdmin the {@code Admin} that wants to make the change. This would be
-     *  validated first before the update would be made.
-     * @param admin the {@code Admin} object to be inserted
-     * @return {@code true } only when the {@code Admin} was added successfully
-     * @throws InvalidPrimaryKeyException  when the {@code Admin } is null or its username contians spaces
-     * @throws SQLException 
-     * @throws InvalidAdminException when the Admin that wants to make the change is
-     * invalid
-     * @throws InvalidBeanException 
+     * Changes an existing Admin password to the {@code newPassword}. It first hashes the
+     * new password before it is used to update a password.  
+     * @param existingAdmin the Admin that is to be updated. The password of this attribute
+     * is used to validate that the Admin exists before update proceeds.
+     * @param newPassword 
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
      */
-    public static boolean update(  Admin existingAdmin, Admin newAdmin) 
-	    throws  SQLException, InvalidAdminException
+    public static boolean updatePassword( Admin existingAdmin, String newPassword )
+	    throws SQLException, InvalidAdminException
     {
-	if( existingAdmin.isValid(ValidationType.EXISTING_BEAN) )
+	Admin newAdmin = new Admin(existingAdmin.getUsername(), newPassword);
+
+	if( validateAdmin(existingAdmin) && newAdmin.validatePassword())
 	{
-	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?, ?  ) } ", 
-		    existingAdmin.getUsername(),  existingAdmin.getPassword() , 
-		    newAdmin.getUsername() , newAdmin.getPassword());)
+	    HashClass.hashAdmin(newAdmin);
+	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?  ) } ", 
+		    existingAdmin.getUsername(), 
+		    existingAdmin.getUsername() , newAdmin.getPassword());)
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ){
+		    existingAdmin.setPassword(newAdmin.getPassword());
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
+    
+    
+    public static boolean updateMail( Admin existingAdmin, String email )
+	    throws SQLException, InvalidAdminException
+    {
+	
+	if( validateAdmin(existingAdmin))
+	{
+	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdminMail(?, ? ) } ", 
+		    existingAdmin.getUsername(), email);)
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
 	    }
 	}
 	return false;
-    }  
-
+    }
+    
+    
+    public static boolean changeUsername( Admin existingAdmin, String newUsername )
+	    throws SQLException, InvalidAdminException
+    {
+	
+	if( validateAdmin(existingAdmin))
+	{
+	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdminUsername(?, ? ) } ", 
+		    existingAdmin.getUsername(), newUsername);)
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+	    }
+	}
+	return false;
+    }
+    
+    
     /** 
      * Gets the total {@code Admin} objects in the table
      * @return an int containing the total Admin in the database.
@@ -127,23 +158,27 @@ public final class AdminManager
 	Connection conn = ConnectionManager.getInstance().getConnection();
 	//Does not used DatabaseManager.getPreparedStatement because that method may call
 	//validateAdmin
-	try(  PreparedStatement  statement = 
-		conn.prepareStatement("SELECT * FROM admin where username = ? ");)
-	{
-	    statement.setString(1, admin.getUsername());
-	    result = statement.executeQuery();
 
-	    if ( result.next() ){
-		String unHashedPass = admin.getPassword();
-		String hashedPass = result.getString( "password" );
-		admin.setEmailAddress(result.getString("Email"));
-		return HashClass.comparePassword(hashedPass, unHashedPass);
+	if( admin.isValid( ValidationType.EXISTING_BEAN)){
+	    try(  PreparedStatement  statement = 
+		    conn.prepareStatement("SELECT * FROM admin where username = ? ");)
+	    {
+		statement.setString(1, admin.getUsername());
+		result = statement.executeQuery();
+
+		if ( result.next() ){
+		    String unHashedPass = admin.getPassword();
+		    String hashedPass = result.getString( "password" );
+		    admin.setEmailAddress(result.getString("Email"));
+		    return HashClass.comparePassword(hashedPass, unHashedPass);
+		}
+	    }
+	    catch (SQLException e)
+	    {
+		e.printStackTrace();
 	    }
 	}
-	catch (SQLException e)
-	{
-	    e.printStackTrace();
-	}
+
 	return false;
     }
 

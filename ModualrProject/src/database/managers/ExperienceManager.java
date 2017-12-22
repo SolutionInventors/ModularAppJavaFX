@@ -37,21 +37,24 @@ public final class ExperienceManager
 	    Connection conn = ConnectionManager.getInstance().getConnection();
 	    try(
 		    CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call addExperienceRecord(?,?,?,?, ? ,?) }", experience.getStudentId(), 
+		    ("{call addExperienceRecord(?,?,?,?, ?, ? ) }", experience.getStudentId(), 
 			    experience.getStartDate(), experience.getEndDate(), 
 			    experience.getEmployer(), experience.getJobTitle() ) ; )
 	    {
 		conn.setAutoCommit(false);
+		
 		statement.registerOutParameter(6, Types.INTEGER);
 		int affected = statement.executeUpdate();
 		JobResponsibility res;
 		boolean successful = true;
+		
 		if( affected >0 ){
-		    final int expId =statement.getInt( 6 );
+		    final int expId = statement.getInt(6);
 		    final String[] duties = experience.getDuties();
 
 		    for( String duty : duties ){
 			res = new JobResponsibility(expId, duty );
+			
 			if( !ResponsibilityManager.insert( res ) ){
 			    successful = false;
 			    break;

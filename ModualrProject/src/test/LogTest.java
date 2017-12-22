@@ -17,7 +17,8 @@ public class LogTest
 {
     public static void main(String[] args) throws SQLException
     {
-	DatabaseManager.setCurrentAdmin( new Admin("Chidiebere", "Fred") );
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
+	DatabaseManager.setCurrentAdmin(currentAdmin);
 	
 	CertificateLog[] certLog =  LogManager.getLog(CertificateLog.class,
 		TransactionType.INSERT, 0);

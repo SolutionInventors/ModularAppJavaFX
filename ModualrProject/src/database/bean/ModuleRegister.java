@@ -2,6 +2,7 @@ package database.bean;
 
 import java.sql.Date;
 
+import database.bean.student.Student;
 import utils.ValidationType;
 
 /**
@@ -122,7 +123,7 @@ public class ModuleRegister  implements Bean
      *{@link database.managers.ModuleRegisterManager#getModRegById(int) } 
      * @return true when module has been paid for
      */
-    public boolean hasPaid()
+    public boolean paymentComplete()
     {
 	return paymentStatus;
     }
@@ -264,14 +265,12 @@ public class ModuleRegister  implements Bean
     }
 
     /**
-     * Checks that the studentId is valid by ensuring that it contains only
-     * letters and numbers.
-     * @return {@code true} if the studentId is valid
+     * Checks that the studentId is valid vial call to 
+     * {@link database.bean.student.Student#validateStudentID(String)}
      */
     public boolean validateStudentId()
     {
-	String name = getStudentId();
-	return name != null && Bean.containsEitherAlphaNum(name) ;
+	return Student.validateStudentID(getStudentId());
     }
 
     public double getTotalPriceForModule()

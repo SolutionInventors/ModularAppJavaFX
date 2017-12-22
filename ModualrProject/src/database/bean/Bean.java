@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import database.managers.DatabaseManager;
+import database.managers.ConnectionManager;
 import utils.ValidationType;
 
 /**This interface is used to mark all the classes  that represent a single row of a
@@ -154,7 +154,7 @@ public interface Bean extends Serializable
      * @return
      */
     public static boolean validateDate(Date earlier, Date later){
-	Date currentDate = DatabaseManager.getCurrentDate();
+	Date currentDate = ConnectionManager.getCurrentDate();
 	return  earlier !=null  && later != null && 
 		( earlier.before(later) || earlier.equals( later ) ) && 
 		( currentDate.after(earlier) || currentDate.equals(earlier)) && 

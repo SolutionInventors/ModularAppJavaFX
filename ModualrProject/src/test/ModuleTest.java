@@ -17,7 +17,7 @@ public class ModuleTest
 	//	First and very important step is to specify the Admin that is 
 	//	making the change as follows
 
-	Admin currentAdmin = new Admin("Chidiebere", "Fred" );
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 
 	//	Rest of the code
@@ -38,9 +38,6 @@ public class ModuleTest
 	    {
 		System.out.println("Was Unsuccessful for unknown reasons!!!");
 	    }
-
-
-
 
 	    System.out.println("---------------REMOVING AN EXISTING MODULE TEST--------------");
 	    String name = TestUtils.getStringInput("Enter the existing module name: ");

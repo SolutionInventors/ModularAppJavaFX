@@ -161,7 +161,7 @@ public final class StudentManager
 		if( affected > 0  && StudentDataManager.insert( studentData) )
 		{
 		    conn.commit();
-		    conn.setAutoCommit( true);
+		    conn.setAutoCommit( true );
 		    newStudent.setDateAdmitted( statement.getDate( 5 ) );
 		    return true;
 		}
@@ -173,8 +173,6 @@ public final class StudentManager
 		e.printStackTrace();
 	    }
 	}
-
-
 	return false;
     }
 
@@ -209,13 +207,13 @@ public final class StudentManager
     public static Student[] getStudents(boolean active , int startIndex ) throws SQLException, InvalidAdminException
     {
 	String sql = String.format("SELECT * FROM student "
-		+ "WHERE active = %d "
-		+ "LIMIT ?, 30" , active ? 1: 0);
-	
+		+ "WHERE active = ? "
+		+ "LIMIT ?, 30" );
+
 	ResultSet result  = null;
 	List<Student> list = new ArrayList<>(30);
 	try(  PreparedStatement  statement = DatabaseManager.getPreparedStatement
-		( sql, startIndex);)
+		( sql, active ? 1: 0 , startIndex);)
 	{
 	    result = statement.executeQuery();
 	    Student stud;
@@ -269,31 +267,6 @@ public final class StudentManager
 	return studentImage;
     }
 
-    /**
-     * This method deletes a {@code Student } from the database.
-     * it uses the {@code Student}'s id card number to identify the {@code Student } to
-     * be deleted.<br>
-     * 
-     * @param currentAdmin the {@code Admin }object that is logged in.
-     * @param AdminToDelete the existing {@code Module} to delete from the database
-     * @return {@code true} when delete was successful
-     * @throws InvalidAdminException when the {@code Admin } object is not in the database 
-     * @throws SQLException 
-     */
-    public static boolean delete( Student studentToDelete ) throws InvalidAdminException, SQLException{
-
-	try(CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		"{call deleteStudent(?)}" );)
-	{
-	    statement.setString( 1 , studentToDelete.getIdCardNumber() );
-	    int affected = statement.executeUpdate();
-	    if ( affected == 1 ) return true;
-	}
-
-	return false;
-    }
-
-
 
 
     private static final class StudentDataManager
@@ -303,6 +276,7 @@ public final class StudentManager
 	{
 	    if( !studData.isValid(ValidationType.NEW_BEAN) ) return false;
 
+	   
 	    boolean edu = Arrays.stream( studData.getEducation() )
 		    .allMatch( education-> {
 			try
@@ -345,19 +319,6 @@ public final class StudentManager
 			}
 		    } );
 
-	    boolean exp = Arrays.stream( studData.getExperiences() )
-		    .allMatch( experience-> {
-			try
-			{
-			    return ExperienceManager.insert( experience ) ;
-			}
-			catch (SQLException | InvalidAdminException e)
-			{
-			    e.printStackTrace();
-			    return false;
-			}
-		    } );
-
 	    boolean sponsor = Arrays.stream(studData.getSponsors()) 
 		    .allMatch(spons-> {
 			try
@@ -371,6 +332,20 @@ public final class StudentManager
 			return false;
 		    });
 
+	    boolean exp = Arrays.stream( studData.getExperiences() )
+		    .allMatch( experience-> {
+			try
+			{
+			    return ExperienceManager.insert( experience ) ;
+			}
+			catch (SQLException | InvalidAdminException e)
+			{
+			    e.printStackTrace();
+			    return false;
+			}
+		    } );
+
+
 	    if( edu && exp && bio && discovery && phone && sponsor){
 		return true;
 	    }
@@ -379,9 +354,6 @@ public final class StudentManager
 		return false;
 	    }
 	}
-
-
-
     }
 
 

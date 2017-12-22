@@ -19,7 +19,7 @@ import utils.ValidationType;
  */
 public class Payment implements Bean 
 {
-  
+
     private static final long serialVersionUID = 6495853015546110411L;
     private int id;
     private int regId;
@@ -27,8 +27,8 @@ public class Payment implements Bean
     private String bankName;
     private String tellerNumber;
     private Date paymentDate;
-    
-    
+
+
     public Payment( int id , int modRegId, double amount, String bank , 
 	    String tellerNum , Date payDate ){
 	setId(id);
@@ -38,15 +38,25 @@ public class Payment implements Bean
 	setTellerNumber(tellerNum);
 	setPaymentDate(payDate);
     }
+
+    public Payment(  int modRegId, double amount, String bank , 
+	    String tellerNum , Date payDate ){
+	setModuleRegisterId(modRegId);
+	setAmount(amount);
+	setBankName(bank);
+	setTellerNumber(tellerNum);
+	setPaymentDate(payDate);
+    }
+
     public Payment(){}
-    
+
     /**
      * Gets the id of this {@code Payment} object as an {@code int}
      * @return
      */
     public int getId()
     {
-        return id;
+	return id;
     }
 
     /**
@@ -56,7 +66,7 @@ public class Payment implements Bean
      */
     public void setId(int id)
     {
-        this.id = id;
+	this.id = id;
     }
 
     /**
@@ -65,7 +75,7 @@ public class Payment implements Bean
      */
     public int getRegId()
     {
-        return regId;
+	return regId;
     }
 
     /**
@@ -75,7 +85,7 @@ public class Payment implements Bean
      */
     public void setModuleRegisterId(int moduleRegisterId)
     {
-        this.regId = moduleRegisterId;
+	this.regId = moduleRegisterId;
     }
 
     /**
@@ -84,7 +94,7 @@ public class Payment implements Bean
      */
     public double getAmount()
     {
-        return amount;
+	return amount;
     }
 
     /**
@@ -93,7 +103,7 @@ public class Payment implements Bean
      */
     public void setAmount(double amount)
     {
-        this.amount = amount;
+	this.amount = amount;
     }
 
     /**
@@ -102,9 +112,9 @@ public class Payment implements Bean
      */
     public String getBankName()
     {
-        return bankName;
+	return bankName;
     }
-    
+
     /**
      * Capitalizes the first letter in each word in the {@code String} passed
      * as an argument and uses it to set the name of the bank in which this
@@ -113,7 +123,7 @@ public class Payment implements Bean
      */
     public void setBankName(String bankName)
     {
-        this.bankName = Bean.capitalizeWords( bankName);
+	this.bankName = Bean.capitalizeWords( bankName);
     }
 
     /**
@@ -122,7 +132,7 @@ public class Payment implements Bean
      */
     public String getTellerNumber()
     {
-        return tellerNumber;
+	return tellerNumber;
     }
 
     /**
@@ -131,7 +141,7 @@ public class Payment implements Bean
      */
     public void setTellerNumber(String tellerNumber)
     {
-        this.tellerNumber = tellerNumber.replaceAll("\\s{1,}", "");
+	this.tellerNumber = tellerNumber.replaceAll("\\s{1,}", "");
     }
 
     /**
@@ -140,7 +150,7 @@ public class Payment implements Bean
      */
     public Date getPaymentDate()
     {
-        return paymentDate;
+	return paymentDate;
     }
 
     /**
@@ -149,7 +159,7 @@ public class Payment implements Bean
      */
     public void setPaymentDate(Date paymentDate)
     {
-        this.paymentDate = paymentDate;
+	this.paymentDate = paymentDate;
     }
 
     /**
@@ -169,14 +179,13 @@ public class Payment implements Bean
 	switch( type){
 	    case NEW_BEAN:
 		return validateTellerNumber() && validateAmount() && 
-			validateModuleRegId() && validateBankName() &&
-			validateId(); 
+			validateModuleRegId() && validateBankName() ; 
 	    case EXISTING_BEAN:
 		return validateId();
 	}
 	return false;
     }
-    
+
     /**
      * Checks that the id attribute stored in this object is greater than 0
      * @return {@code true } if the id is greater than zero
@@ -194,7 +203,7 @@ public class Payment implements Bean
     public boolean validateTellerNumber(){
 	return Bean.hasOnlyNumbers( getTellerNumber());
     }
-    
+
     /**
      * Checks that the amount paid is greater than zero
      * @return {@code true} if the payment has been done
@@ -210,10 +219,10 @@ public class Payment implements Bean
     public boolean validateModuleRegId(){
 	return getRegId() > 0;
     }
-    
+
     public boolean validateBankName(){
 	String bankName = getBankName();
 	return bankName !=null && bankName.length()>0;
-	
+
     }
 }

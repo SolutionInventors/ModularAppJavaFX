@@ -24,7 +24,7 @@ public final class PaymentManager
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public boolean insert( Payment payment) 
+    public static boolean makePayment( Payment payment) 
 	    throws SQLException, InvalidAdminException
     {
 	double remainingPayment = getRemaingPayment(payment.getRegId());
@@ -51,7 +51,7 @@ public final class PaymentManager
      * @return
      * @throws SQLException
      */
-    public double getRemaingPayment(int regID) throws SQLException
+    public static double getRemaingPayment(int regID) throws SQLException
     {
 	double amountPaid = getAmountPaid( regID );
 	double totalPrice = ModuleRegisterManager.getTotalPriceForModule(regID);
@@ -59,7 +59,7 @@ public final class PaymentManager
 	return remainingPayment;
     }
 
-    public double getAmountPaid( int regId ) throws SQLException{
+    public static double getAmountPaid( int regId ) throws SQLException{
 	String sql = "SELECT if( SUM( pay.amount) is null , 0, SUM( pay.amount)) "+ 
 		" as 'Amount Paid' FROM payment as pay  " +
 		" WHERE pay.RegId = ?;"; 
@@ -76,6 +76,10 @@ public final class PaymentManager
 	return 0 ;
     }
 
+    
+    public static boolean isPaymentComplete( int regId ) throws SQLException{
+	return getRemaingPayment(regId) <= 0;
+    }
     /**
      * Gets an array of all the payments that has been made for the specified 
      * {@code regID}. 

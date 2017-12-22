@@ -53,7 +53,7 @@ public  class JobResponsibility
      */ 
     public void setRole(String role)
     {
-	this.role = Bean.removeExtraSpaces(role);
+	this.role = Bean.capitalizeWords(role);
     }
 
     /**

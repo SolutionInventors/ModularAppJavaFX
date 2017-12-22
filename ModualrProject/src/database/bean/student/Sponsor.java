@@ -127,7 +127,7 @@ public class Sponsor implements Bean
      */
     public void setEmail(String email)
     {
-        this.email = Bean.removeExtraSpaces( email );
+        this.email =email.replaceAll( "\\s", "");
     }
 
     /**

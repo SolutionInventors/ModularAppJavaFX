@@ -13,7 +13,7 @@ public class AdminTest
 {
     public static void main(String[] args) throws InvalidAdminException, SQLException
     {
-	Admin currentAdmin = new Admin("ChidiO", "ChidiIsSoGood" );
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
 	DatabaseManager.setCurrentAdmin(currentAdmin); 	
 	Scanner input = new Scanner( System.in);
 	

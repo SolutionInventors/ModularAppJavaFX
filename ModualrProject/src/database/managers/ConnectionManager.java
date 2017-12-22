@@ -2,6 +2,7 @@
 package database.managers;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,17 +18,16 @@ import java.sql.Statement;
  */
 public final class ConnectionManager
 {
-
-
     private static final String MYSQLURL = "jdbc:mysql://localhost/modularappdatabase";
     private static final String USERNAME = "iitModularAppAdmin";
     private static final String PASSWORD = "O97G9JN>G=F6O?DHLM86";
 
+    private static  Date currentDate = null ;
     private static ConnectionManager instance = null ;
     private ConnectionManager(){}
 
     private static Connection conn = null;
-    
+
     /**
      * Gets the only instance of the {@code ConnectionManager} or creates
      * it if none exists.
@@ -59,7 +59,7 @@ public final class ConnectionManager
 	    {
 		result = stmt.executeQuery("SELECT NOW();");
 		if( result.next()){
-		    DatabaseManager.setCurrentDate( result.getDate(1) );
+		    currentDate =  result.getDate(1);
 		    System.out.println( "Connected" );
 		    return true;
 		}
@@ -89,6 +89,18 @@ public final class ConnectionManager
 	return conn;
     }
 
+    /**
+     * Returns a java.sql.Date object that contains the current date in the database 
+     * @return {@code java.sql.Date} object that contains the current date or {@code null } if
+     * an error occured while processing retrieving the information.
+     */
+    public static Date getCurrentDate() {
+	if( currentDate  == null && conn == null ){
+	    openConnection();
+	    close();
+	}
+	return currentDate;
+    }
     /** This closes the Connection object and sets the static currentDate attribute
      * of the DatabaseManager class to null
      * 
@@ -101,7 +113,6 @@ public final class ConnectionManager
 		conn.close();
 	    System.out.println("Disconnected!!");
 	    conn = null;
-	    DatabaseManager.setCurrentDate(null);
 	}
 	catch (SQLException e)
 	{

@@ -1,5 +1,6 @@
 package database.managers;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -90,7 +91,7 @@ public final class ModularClassManager
 		" LIMIT ?, 30 ";
 	
 	ArrayList<ModularClass> list = new ArrayList<>(30);
-	try( CallableStatement statement = DatabaseManager.getCallableStatement
+	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
 		(sql, startIndex ))
 	{
 	    result = statement.executeQuery() ;

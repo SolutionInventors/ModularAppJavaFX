@@ -31,37 +31,32 @@ import utils.ValidationType;
 public class StudentRegisterTest
 {
 
-    public static void main(String[] args) throws  SQLException, InvalidAdminException
+    public static void main(String[] args) throws  SQLException, InvalidAdminException, ParseException
     {
-	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred"));
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
+	DatabaseManager.setCurrentAdmin(currentAdmin);
 	JFileChooser chooser = new JFileChooser();
 	chooser.setDialogTitle("Select the image of the student");
 	chooser.showOpenDialog(null);
 	File image = chooser.getSelectedFile();
 	final String studentId =TestUtils.getStringInput("Input Student id: ");
-	
+
 	Student student = new Student(studentId, "Stream 2", "email@email.com", image);
 
 	DateFormat df =  new SimpleDateFormat( "dd-mm-yyyy" );
 	Date birth = null;
 	Date begin = null;
 	Date end = null;
-	try
-	{
-	    birth = new Date( df.parse( "10-10-2012").getTime());
-	    begin = new Date( df.parse( "10-10-2010").getTime());
-	    end = new Date( df.parse( "10-10-2016").getTime());
-	}
-	catch (ParseException e)
-	{
-	    e.printStackTrace();
-	}
+	birth = new Date( df.parse( "10-10-2012").getTime());
+	begin = new Date( df.parse( "10-10-2010").getTime());
+	end = new Date( df.parse( "10-10-2016").getTime());
+
 
 	Biodata bio = new Biodata(studentId, "Ogu", "Chi", "Joe", "Anam",
 		"Nig", "Lagos", "Lagos", "M", birth, "Lagos", "Catholic", "Mr");
 
 	System.out.println("-------Creating Educational Background object------");
-	ArrayList<EducationalBackground> educationList = new ArrayList<>();
+	Set<EducationalBackground> educationSet = new HashSet<>();
 
 	System.out.println("Input first School you attended" );
 
@@ -69,7 +64,7 @@ public class StudentRegisterTest
 	String course = TestUtils.getStringInput("What did you study: " );
 	String cert = TestUtils.getStringInput("What certificate did you receive: ");
 	EducationalBackground eduBack= new EducationalBackground(studentId, begin, end, institution, course, cert);
-	educationList.add(eduBack);educationList.add( eduBack);
+	educationSet.add(eduBack);educationSet.add( eduBack);
 
 	System.out.println("Do you want to input information about the next school you attended");
 	String inputNext =  TestUtils.getStringInput("Input 1 if yes else quit");
@@ -79,19 +74,19 @@ public class StudentRegisterTest
 	    course = TestUtils.getStringInput("What did you study: " );
 	    cert = TestUtils.getStringInput("What certificate did you receive: ");
 	    eduBack= new EducationalBackground(studentId, begin, end, institution, course, cert);
-	    educationList.add(eduBack);
+	    educationSet.add(eduBack);
 	    System.out.println("Do you want to input information about the next school you attended");
 	    inputNext =  TestUtils.getStringInput("Input 1 if yes else quit");
 	}
 
 
-	if( educationList.stream().allMatch(e->e.isValid(ValidationType.NEW_BEAN)))
+	if( educationSet.stream().allMatch(e->e.isValid(ValidationType.NEW_BEAN)))
 	    System.out.println("EducationBacground object can be inputed into the database" );
 	else{
 	    System.err.println("The EducationBackground is not valid" );
 	    System.exit(0);
 	}
-	   
+
 
 	System.out.println("-----Creating MeansOfDiscovery objects------" );
 	ArrayList<MeanOfDiscovery> meanList = new ArrayList<>();
@@ -138,7 +133,7 @@ public class StudentRegisterTest
 	    System.err.println("At least one phone number was invalid");
 	    System.exit(0);
 	}
-	  
+
 	System.out.println("-------Creating ProfessionalExperience object------" );
 	System.out.println("Have you worked before? " );
 	inputNext = TestUtils.getStringInput("Input 1 if you have: ");
@@ -172,7 +167,7 @@ public class StudentRegisterTest
 	}
 	Sponsor[] sponsArray = list.toArray(new Sponsor[list.size()] );
 	EducationalBackground[] eduArray = 
-		educationList.toArray(new EducationalBackground[ educationList.size()] );
+		educationSet.toArray(new EducationalBackground[ educationSet.size()] );
 	Phone[] phoneArray = phoneSet.toArray(new Phone[phoneSet.size()] );
 	ProfessionalExperience[] expArray = expList.toArray( new ProfessionalExperience[ expList.size()] );
 	MeanOfDiscovery[] meanArr  = meanList.toArray(new MeanOfDiscovery[meanList.size()] );

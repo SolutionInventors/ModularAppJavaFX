@@ -17,7 +17,7 @@ public class SponsorManager
     public static boolean insert( Sponsor sponsor) 
 	    throws SQLException, InvalidAdminException
     {
-	if( !sponsor.isValid(ValidationType.NEW_BEAN)){
+	if( sponsor.isValid(ValidationType.NEW_BEAN)){
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call addSponsor(?,?, ?, ? , ?, ?) }", sponsor.getStudentId(), 
 			    sponsor.getFirstName() , sponsor.getLastName(), sponsor.getAddress(), 

@@ -23,6 +23,7 @@ import database.managers.CertificateRegisterManager;
 import database.managers.ModularClassManager;
 import database.managers.ModuleManager;
 import database.managers.ModuleRegisterManager;
+import database.managers.PaymentManager;
 import database.managers.PhoneManager;
 import exception.InvalidAdminException;
 import utils.BeanType;
@@ -175,9 +176,16 @@ public class TestUtils
 	    case MODULE_REGISTER:
 		ModuleRegister[] modRegs  =  ModuleRegisterManager.getRegisteredModules(0);
 		for ( int i = 0 ; i < modRegs.length ; i++ ){
+		    System.out.println("ModRegID: " + modRegs[i].getId());
 		    System.out.println("Module Name: " + modRegs[i].getModuleName()); 	
 		    System.out.println("StudentID: " + modRegs[i].getStudentId());
 		    System.out.println("Total Price: " + modRegs[i].getTotalPriceForModule());
+		    System.out.println("Amount Paid: "+ PaymentManager.getAmountPaid(modRegs[i].getId()));
+		    System.out.println("Has Paid: " + modRegs[i].paymentComplete());
+		    System.out.println("Booked: " + modRegs[i].hasBooked());
+		    System.out.println("Attended: " + modRegs[i].hasAttended());
+		    System.out.println("Result: " + modRegs[i].getResult());
+		    
 		    System.out.println("--->");
 		}
 		break;

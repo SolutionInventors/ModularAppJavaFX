@@ -52,7 +52,8 @@ public final class ModuleRegisterManager
      * @throws SQLException
      */
     public static ModuleRegister getModRegById( int id ) throws SQLException{
-	String sql = "SELECT * , isPaymentComplete( reg.id) as 'Paid' " + 
+	String sql = "SELECT * , isPaymentComplete( reg.id ) as 'Paid' "
+		+ "FROM module_register as reg " + 
 		"WHERE reg.id = ? ";
 	ResultSet result = null;
 	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
@@ -63,12 +64,13 @@ public final class ModuleRegisterManager
 	    if(result.next()){
 		modReg =  new ModuleRegister(result.getString("ModuleName"),
 			result.getString("StudentId"), 
-			result.getBoolean("Booked"),
+			result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"),
 			result.getDouble("totalPriceForModule" ), 
 			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
 		modReg.setPaymentStatus(result.getBoolean("Paid"));
+		return modReg;
 	    }
 
 	}
@@ -80,11 +82,12 @@ public final class ModuleRegisterManager
 
     }
 
-    public static boolean bookModule( int modRegId, String studId , String moduleName) throws SQLException, InvalidAdminException{
+    public static boolean bookModule( int modRegId, String studId , String moduleName) 
+	    throws SQLException, InvalidAdminException{
 
 	ModuleRegister modReg = getModRegById(modRegId);
-	if( modReg == null ) return false;
-	if( !modReg.hasAttended() && modReg.getResult() == null){
+
+	if( modReg!= null && !modReg.hasBooked() && modReg.paymentComplete() ){
 	    String sql  = "{call bookModule(?,?, ?) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
 		    (sql, modRegId, studId, moduleName))
@@ -96,10 +99,12 @@ public final class ModuleRegisterManager
     }
 
 
-    public static boolean setAttendanceForModule( int modRegId, String studId, String moduleName ) throws SQLException, InvalidAdminException{
+    public static boolean setAttendanceForModule( int modRegId, String studId, String moduleName ) 
+	    throws SQLException, InvalidAdminException
+    {
 
 	ModuleRegister modReg = getModRegById(modRegId);
-	if( modReg != null &&  !modReg.hasBooked() && modReg.getResult() == null){
+	if( modReg != null &&  modReg.hasBooked() && modReg.getResult() == null){
 	    String sql  = "{call attendModule(?,?,?) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
 		    (sql, modRegId, studId, moduleName))
@@ -114,13 +119,13 @@ public final class ModuleRegisterManager
     public static boolean setResultForModule( int modRegId, String studId, String moduleName, String result ) throws SQLException, InvalidAdminException{
 
 	ModuleRegister modReg = getModRegById(modRegId);
-	result = result.toUpperCase().equals("P") ? "Pass" : result;
-	result = result.toUpperCase().equals("F") ? "Fail" : result;
+	result = result.toUpperCase().matches("P|PASSED") ? "Pass" : result;
+	result = result.toUpperCase().matches("F|FAILED") ? "Fail" : result;
 	
 	if( modReg != null &&  modReg.hasAttended() && 
-		(result.toLowerCase().equals("pass") || result.toLowerCase().equals("Fail")))
+		(result.toLowerCase().equals("pass") || result.toLowerCase().equals("fail")))
 	{
-	    String sql  = "{call setAttendance(?,?,?, ?) }";
+	    String sql  = "{call setResult(?,?,?, ?) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
 		    (sql, modRegId, studId, moduleName, result))
 	    {

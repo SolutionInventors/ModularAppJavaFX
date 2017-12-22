@@ -19,17 +19,18 @@ public class ModuleRegisterTest
 	//	First and very important step is to specify the Admin that is 
 	//	making the change as follows
 
-	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred" )); 	
-
+	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat" );
+	DatabaseManager.setCurrentAdmin(currentAdmin);
+	
 	//	Rest of the code
 	try
 	{
 	    System.out.println("----AVAILABLE MODULES----");
 	    TestUtils.displayBean( BeanType.MODULE , 0);
+	    System.out.println("----AVAILABLE STUDENTS----");
+	    TestUtils.displayBean( BeanType.STUDENT , 0);
 
-//	    System.out.println("----AVAILABLE STUDENTS----");
-//	    TestUtils.displayBean( BeanType.STUDENT , 0);
-//	    
+	    
 	    System.out.println("---------------REGISTERING STUDENT FOR MODULE--------------");
 	    String studId = TestUtils.getStringInput
 		    ("Enter the existing Student ID: ");

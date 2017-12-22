@@ -14,6 +14,7 @@ public class DateTest
 	DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
 	Date end = new Date( df.parse("10-10-2018").getTime());
 	Calendar calendar = Calendar.getInstance();
+	
 	Date date  = new Date( df.parse("01-10-2017").getTime());
 	Date temp = new Date( df.parse("01-10-2017").getTime());
 	System.out.println( date.equals(temp));
