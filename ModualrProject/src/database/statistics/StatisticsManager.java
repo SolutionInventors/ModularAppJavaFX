@@ -84,7 +84,7 @@ public class StatisticsManager
 		"	ON reg.studentId = stud.id_card_number AND reg.moduleName = module.name "+
 		"LEFT JOIN certificate as cert" +
 		"	ON true \n"+
-		"LEFT JOIN certificatemodule csMod"+
+		"LEFT JOIN certificateregister csMod"+
 		"	ON csMod.moduleName = module.name AND cert.name = csMod.certificateName "+
 		"LEFT JOIN modular_class as  class" +
 		"	ON true;";
@@ -183,7 +183,7 @@ public class StatisticsManager
 		"SELECT  COUNT(DISTINCT csmod.moduleName) as 'Mod Reguired' , "+
 			"COUNT(DISTINCT  stud.id_card_number) as 'Num Issued' "+
 			"from certificate cs "+
-			"LEFT JOIN certificatemodule as csMod "+
+			"LEFT JOIN certificateregister as csMod "+
 			"	ON csMod.certificateName = cs.Name "+
 			"LEFT JOIN student as stud" +
 			"	ON stud.certificateIssued = cs.Name "

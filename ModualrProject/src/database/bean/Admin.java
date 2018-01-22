@@ -6,7 +6,7 @@ import utils.ValidationType;
  * An {@code Admin } object represents a single row in the Admin table in the 
  * database. The Admin table stores the Admin username and his password and 
  * contains getteers and setters to retrieve them.<br>
- * The password of this class is first hashed by the {@link AdminManager#insert} 
+ * The password of this class is first hashed by the {@link AdminJUnit#insert} 
  * method before it is inserted into the database.<br>
  * 
  * @author Oguejiofor Chidiebere
@@ -73,7 +73,7 @@ public class Admin implements Bean
      */
     public void setUsername(String username)
     {
-        this.username = Bean.removeExtraSpaces( username);
+        this.username = username.replaceAll( " ", "" );
     }
     
     /**
@@ -101,7 +101,7 @@ public class Admin implements Bean
      * be added to the database <br>
      * It checks that the {@code Admin } object is not {@code null } and 
      * the username does not contain a space<br>
-     * Note that this method performs thesame checks irrespective of 
+     * Note that this method performs the same checks irrespective of 
      * the {@code ValidationType} passed as its argument.
      * @param admin the {@code Admin } object
      * @return {@code true } when the {@code Admin } is valid
@@ -127,19 +127,19 @@ public class Admin implements Bean
     public boolean validateEmail()
     {
 	String mail = getEmailAddress();
-	return mail !=null && mail.length() > 0;
+	return mail !=null && mail.length() > 0 && mail.length() <= 256;
     }
 
 
     /**
      * Validates this {@code Admin}'s password by checking that it has at least
-     * 5 characters and that it is alphanumeric and not {@code null }. 
+     * 7 characters and that it is alphanumeric and not {@code null }. 
      * @return {@code true} if the password is valid
      */
     public boolean validatePassword()
     {
 	String pass = getPassword();
-	return  pass!= null && pass.length() >=8 ;
+	return  pass!= null && pass.length() >=7 ;
     }
 
     /**
@@ -162,6 +162,6 @@ public class Admin implements Bean
 
     public void setEmailAddress(String emailAddress)
     {
-	this.emailAddress = emailAddress;
+	this.emailAddress = Bean.removeExtraSpaces(emailAddress);
     }
 }

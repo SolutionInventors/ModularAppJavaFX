@@ -33,7 +33,7 @@ public class PagingTest
 	    System.out.println("Cert Name:" +certs[i].getName());
 	}
 	
-	CertificateRegister[] certsMods = CertificateRegisterManager.getCertificateModules(0);
+	CertificateRegister[] certsMods = CertificateRegisterManager.getCertificateRegisters(0);
 	System.out.println("-------List of Certificates Modules----------" );
 	for (int i = 0; i < certsMods.length; i++)
 	{

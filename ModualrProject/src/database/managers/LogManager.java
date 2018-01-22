@@ -45,7 +45,8 @@ public final class LogManager
 
     private static CertificateLog[] getCertificateLog(TransactionType transactionType, int startIndex) throws SQLException
     {
-	String sql = "SELECT * FROM CertificateLog \n"
+	String sql = "SELECT dateOfOperation,operationType, newCertificateName, oldCertificateName "
+		+ "  FROM CertificateLog \n"
 		+ "WHERE operationType LIKE ? \n"
 		+ "ORDER BY dateOfOperation DESC \n"
 		+ "LIMIT ?, 30 ;";

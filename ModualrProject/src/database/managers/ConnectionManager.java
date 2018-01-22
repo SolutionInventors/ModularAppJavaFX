@@ -1,12 +1,23 @@
 
 package database.managers;
 
+import java.security.Security;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import com.sun.net.ssl.internal.ssl.Provider;
 
 /**
  * This class contains static methods that would be used to establish 
@@ -42,6 +53,62 @@ public final class ConnectionManager
 	return instance;
     }
 
+
+    /**
+     * This method can be used to send a mail to a specified email address.
+     * If an error occurs, this method returns {@code false}.
+     * @param to the recipient that the email is being sent to
+     * @param body the subject of the mail
+     * @param subject the title of the email.
+     * @return {@code true } if the mail was sent successfully else false
+     */
+    public static boolean sendMail( String to, String body, String subject){
+	String host="smtp.gmail.com";  
+	final String user="iitmodular@gmail.com"; 
+	final String password="rN'QD'uduopowT'8W?R7";  
+
+	boolean sessionDebug = false;
+
+	try {
+
+	    //Get the session object  
+	    Properties props = new Properties();
+	    props.put( "mail.smtp.starttls.enable", "true");
+
+	    props.put("mail.smtp.host",host);  
+	    props.put("mail.smtp.port", "587");
+	    props.put("mail.smtp.auth", "true");  
+	    props.put( "mail.smtp.starttls.required", "true");
+	    Security.addProvider(new Provider() );
+
+	    Session mailSession = Session.getDefaultInstance(props, null ); 
+	    mailSession.setDebug(sessionDebug);
+
+	    //Compose the message  
+
+	    MimeMessage message = new MimeMessage(mailSession);  
+	    message.setFrom(new InternetAddress(user));  
+	    message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+	    message.setSubject(subject);  
+	    message.setSentDate( new  java.util.Date());
+	    message.setText( body);  
+	    
+	    //send the message  
+	    Transport transport = mailSession.getTransport("smtp");
+	    transport.connect(host, user, password);
+	    
+	    transport.sendMessage(message, message.getAllRecipients());
+	    
+	    transport.close();
+
+	} 
+	catch (MessagingException e) { 
+	    e.printStackTrace();
+	    return false;
+	}  
+	return true;
+
+    }
     /**
      * This creates a connection between the java application and the database. It
      * also sets the static currentDate attribute of the {@code DatabaseManager} to

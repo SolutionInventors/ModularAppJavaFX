@@ -84,12 +84,12 @@ public final class CertificateRegisterManager
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static CertificateRegister[] getCertificateModules( int  startIndex )
+    public static CertificateRegister[] getCertificateRegisters( int  startIndex )
 	    throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
 	ArrayList<CertificateRegister> list = new ArrayList<>(30);
-	String sql  = "SELECT * FROM certificateRegister" +  
+	String sql  = "SELECT certificateName, moduleName FROM certificateRegister" +  
 		  " ORDER BY certificateName ASC, moduleName DESC " +
 		" LIMIT ?, 30 ";
 	

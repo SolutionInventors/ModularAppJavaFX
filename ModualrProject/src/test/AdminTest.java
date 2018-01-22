@@ -23,7 +23,7 @@ public class AdminTest
 	String mail = TestUtils.getStringInput("Input Email: ");
 	Admin newAdmin = new Admin( name,pass, mail);
 	
-	if( AdminManager.insert(newAdmin) ){
+	if( AdminManager.insert(newAdmin, mail) ){
 	    System.out.println("Insertion Successful");
 	}
 	else

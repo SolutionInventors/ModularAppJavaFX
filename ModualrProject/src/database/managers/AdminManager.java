@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -22,6 +23,7 @@ import utils.ValidationType;
 public final class AdminManager 
 {
 
+    private static String  generatedString ;
     /**
      * This method inserts a new {@code Admin} into the database by first 
      * hashing the {@code Admin} password.<br>
@@ -34,9 +36,9 @@ public final class AdminManager
      * change is invalid
      * @throws SQLException when an SQLException is invalid
      */
-    public static boolean insert( Admin newAdmin) throws  InvalidAdminException, SQLException
+    public static boolean insert( Admin newAdmin, String sentNum ) throws  InvalidAdminException, SQLException
     {
-	if( newAdmin.isValid(ValidationType.NEW_BEAN) )
+	if( testNumber(sentNum) && newAdmin.isValid(ValidationType.NEW_BEAN) )
 	{
 	    HashClass.hashAdmin(newAdmin);
 	    try(CallableStatement  statement = 
@@ -51,7 +53,7 @@ public final class AdminManager
 	return false;
     }
 
-   
+
     /**
      * Changes an existing Admin password to the {@code newPassword}. It first hashes the
      * new password before it is used to update a password.  
@@ -83,12 +85,69 @@ public final class AdminManager
 	}
 	return false;
     }
+
+    public static boolean testNumber( String generatedNumber ){
+	return generatedNumber.equals(generatedString);
+    }
+
     
+    @SuppressWarnings("resource")
+    public static String getEmailAddress( String username){
+	ResultSet result = null;
+	Connection conn = ConnectionManager.getInstance().getConnection();
+	
+	  try(  PreparedStatement  statement = 
+		    conn.prepareStatement("SELECT Email FROM admin where username = ? ");)
+	    {
+		statement.setString(1, username);
+		result = statement.executeQuery();
+
+		if ( result.next() ) return result.getString(1);
+		
+	    }
+	    catch (SQLException e)
+	    {
+		e.printStackTrace();
+	    }
+	
+
+	return null ;
+    }
+
+    public static void generateNumber(){
+	char[] character = new char[6];
+	Random gen = new Random();
+	for( int i = 0 ; i < character.length ; i++ ){
+	    character[i] = ( char )  (49 + gen.nextInt(9)) ;
+	}
+
+	generatedString = new String( character);
+    }
     
+    /**
+     * This method sends an email to the specified email address. This messae
+     * is used to confirm the admin email in case he loses it. 
+     * @param emialAddress
+     * @return
+     */
+    public static boolean sendMail( String to ){
+	if( generatedString == null ) return false; 
+	String body = String.format("This is your confirmation number: %s", generatedString);
+	String title = "Confirmation Number no-reply ";
+	return ConnectionManager.sendMail(to, body, title);
+    }
+    /**
+     * 
+     * @param existingAdmin
+     * @param email
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
     public static boolean updateMail( Admin existingAdmin, String email )
 	    throws SQLException, InvalidAdminException
     {
-	
+
 	if( validateAdmin(existingAdmin))
 	{
 	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdminMail(?, ? ) } ", 
@@ -100,12 +159,55 @@ public final class AdminManager
 	}
 	return false;
     }
-    
+
+    /**
+     * This method is used to reset the confirmation number that is usually sent to when a 
+     * new Admin is about to be added to the database or when he forgets his passwword after
+     * performing the operation. 
+     * 
+     */
+    public static void resetNumber()
+    {
+	generatedString = null;
+    }
+
+
+    /**
+     * This method is used to reset the admin password when he forgets his password but can only
+     * remember his username. A mail is first sent to the admin containing a {@code confirmationNumer}
+     * that should then be inputed to this method. 
+     * The method tests the number before changing the Admin password
+     * @param username the existing username
+     * @param newPassword the existing password
+     * @param confirmationNumber the confirmation number that should be sent to the Admin via mail
+     * @return {@code true } if the password was reseted successfully
+     * 
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
+    public static boolean resetPassword(String username, String newPassword, String confirmationNumber) throws SQLException, InvalidAdminException
+    {
+	
+	Admin updateAdmin = new Admin(username, newPassword);
+
+	if( testNumber(confirmationNumber) && updateAdmin.validatePassword())
+	{
+	    HashClass.hashAdmin(updateAdmin);
+	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?  ) } ", 
+		    username, username , updateAdmin.getPassword());)
+	    {
+		int affected = statement.executeUpdate();
+		if( affected > 0 ) return true;
+		
+	    }
+	}
+	return false;
+    }
     
     public static boolean changeUsername( Admin existingAdmin, String newUsername )
 	    throws SQLException, InvalidAdminException
     {
-	
+
 	if( validateAdmin(existingAdmin))
 	{
 	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdminUsername(?, ? ) } ", 
@@ -117,8 +219,8 @@ public final class AdminManager
 	}
 	return false;
     }
-    
-    
+
+
     /** 
      * Gets the total {@code Admin} objects in the table
      * @return an int containing the total Admin in the database.
@@ -129,7 +231,7 @@ public final class AdminManager
     public static int getTotalAdmin() throws SQLException, InvalidAdminException
     {
 	ResultSet result =  null;
-	String sql = "SELECT COUNT(*) FROM admin";
+	String sql = "SELECT COUNT(username) FROM admin";
 	try(  PreparedStatement statement = DatabaseManager.getPreparedStatement(sql);)
 	{
 	    result = statement.executeQuery();
@@ -161,7 +263,7 @@ public final class AdminManager
 
 	if( admin.isValid( ValidationType.EXISTING_BEAN)){
 	    try(  PreparedStatement  statement = 
-		    conn.prepareStatement("SELECT * FROM admin where username = ? ");)
+		    conn.prepareStatement("SELECT  email, password FROM admin where username = ? ");)
 	    {
 		statement.setString(1, admin.getUsername());
 		result = statement.executeQuery();
@@ -169,7 +271,7 @@ public final class AdminManager
 		if ( result.next() ){
 		    String unHashedPass = admin.getPassword();
 		    String hashedPass = result.getString( "password" );
-		    admin.setEmailAddress(result.getString("Email"));
+		    admin.setEmailAddress(result.getString("email"));
 		    return HashClass.comparePassword(hashedPass, unHashedPass);
 		}
 	    }
@@ -249,4 +351,6 @@ public final class AdminManager
 	    return false;
 	}
     }
+
+   
 }

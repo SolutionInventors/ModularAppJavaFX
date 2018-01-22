@@ -128,7 +128,7 @@ public final class CertificateManager
     public static Certificate[] getCertificates(int startIndex, OrderBy order ) 
 	    throws SQLException, InvalidAdminException
     {
-	String sql  = "SELECT * FROM certificate "
+	String sql  = "SELECT name, dateCreated FROM certificate "
 		+ getOrderByString(  order ) + 
 		" LIMIT ?, 30 ";
 	
@@ -165,12 +165,10 @@ public final class CertificateManager
 		return "ORDER BY dateCreated ASC "; 
 	    case DATE_CREATED_DESC:
 		return "ORDER BY dateCreated DESC "; 
-	    case PRIMARY_KEY_ASC:
-		return "ORDER BY name ASC "; 
 	    case PRIMARY_KEY_DESC:
 		return "ORDER BY name DESC "; 
 	    default: 
-		return "";
+		return "ORDER BY name ASC "; 
 	}
     }
 
