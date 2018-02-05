@@ -32,9 +32,8 @@ public class BiodataManager
     {
 	if( data.isValid(ValidationType.NEW_BEAN )){
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			    data.getStudentID(),data.getTitle(), data.getSurname(),  
-			    data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+		    ("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?) }", 
+			    data.getStudentID(),data.getTitle(), data.getPermanentAddress(), 
 			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
 			    data.getCountry(), data.getGender(), data.getDateOfBirth(), 
 			    data.getPlaceOfBirth()); ) 
@@ -64,8 +63,7 @@ public class BiodataManager
 	{
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
 		    ("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			    data.getStudentID(),data.getTitle(), data.getSurname(),  
-			    data.getMiddleName(), data.getLastName(), data.getPermanentAddress(), 
+			    data.getStudentID(),data.getTitle(),data.getPermanentAddress(), 
 			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
 			    data.getCountry(), data.getGender(), data.getDateOfBirth(),
 			    data.getPlaceOfBirth()); ) 
@@ -97,8 +95,7 @@ public class BiodataManager
 	    if( statement.execute()){
 		result = statement.getResultSet();
 		if( result.next()) 
-		    return new Biodata(result.getString("studentId"),result.getString("surname"),
-			    result.getString("MiddleName"),result.getString("LastName"),
+		    return new Biodata(result.getString("studentId"),
 			    result.getString("stateOfOrigin"), result.getString("country"),
 			    result.getString("CurrentAddress"), result.getString("PermanentAddress"),
 			    result.getString("gender"), result.getDate("dateOfBirth"), 

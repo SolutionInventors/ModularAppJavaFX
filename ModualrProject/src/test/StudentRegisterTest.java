@@ -41,7 +41,9 @@ public class StudentRegisterTest
 	File image = chooser.getSelectedFile();
 	final String studentId =TestUtils.getStringInput("Input Student id: ");
 
-	Student student = new Student(studentId, "Stream 2", "email@email.com", image);
+	String firstName = TestUtils.getStringInput("Input First name: "); 
+	String lastName = TestUtils.getStringInput("Input Last name: " );
+	Student student = new Student(firstName , lastName,studentId, "Stream 2", "email@email.com", image);
 
 	DateFormat df =  new SimpleDateFormat( "dd-mm-yyyy" );
 	Date birth = null;
@@ -52,8 +54,8 @@ public class StudentRegisterTest
 	end = new Date( df.parse( "10-10-2016").getTime());
 
 
-	Biodata bio = new Biodata(studentId, "Ogu", "Chi", "Joe", "Anam",
-		"Nig", "Lagos", "Lagos", "M", birth, "Lagos", "Catholic", "Mr");
+	Biodata bio = new Biodata(studentId, "Anam","Nig", "Lagos", 
+		"Lagos", "M", birth, "Lagos", "Catholic", "Mr");
 
 	System.out.println("-------Creating Educational Background object------");
 	Set<EducationalBackground> educationSet = new HashSet<>();

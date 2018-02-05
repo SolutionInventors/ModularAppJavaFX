@@ -23,12 +23,17 @@ public class AdminManagerJUnitTest
     {
 
 	Scanner input = new Scanner( System.in );
-	Admin newAdmin = new Admin("Joseph", "RAtatuiew", "chidioguejiofor@gmail.com" );
-
+	System.out.println("Registering new Admin.. ");
+	String username = TestUtils.getStringInput("Eneter username: " ); 
+	String password = TestUtils.getStringInput("Enter password: " ); 
+	Admin newAdmin = new Admin(username, password, "chidioguejiofor@gmail.com" );
+	
+	
 	//returns false if the number has not been generated 
 	assertEquals(false,AdminManager.sendMail( newAdmin.getEmailAddress()) );
 	AdminManager.generateNumber(); //when this happens
 
+	System.out.println("Sending confirmation to mail... ");
 	assertEquals(true,AdminManager.sendMail( newAdmin.getEmailAddress()) ); // should return true
 	System.out.println("Input number: " );
 
@@ -58,23 +63,23 @@ public class AdminManagerJUnitTest
 
     }
 
-    @Test
-    public  void updatePassword(){
-	String username = TestUtils.getStringInput("Input existing username: ");
-	String password = TestUtils.getStringInput("Input existing password: "); 
-	String newPassword = TestUtils.getStringInput("Enter new password: ");
-
-	Admin existingAdmin= new Admin(username, password); 
-
-	try
-	{
-	    assertTrue( AdminManager.updatePassword(existingAdmin, newPassword)) ;
-	}
-	catch (SQLException | InvalidAdminException e)
-	{
-	    e.printStackTrace();
-	}
-    }
+//    @Test
+//    public  void updatePassword(){
+//	String username = TestUtils.getStringInput("Input existing username: ");
+//	String password = TestUtils.getStringInput("Input existing password: "); 
+//	String newPassword = TestUtils.getStringInput("Enter new password: ");
+//
+//	Admin existingAdmin= new Admin(username, password); 
+//
+//	try
+//	{
+//	    assertTrue( AdminManager.updatePassword(existingAdmin, newPassword)) ;
+//	}
+//	catch (SQLException | InvalidAdminException e)
+//	{
+//	    e.printStackTrace();
+//	}
+//    }
 
     
 }

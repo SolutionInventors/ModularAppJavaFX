@@ -24,7 +24,13 @@ public class Student  implements Bean
 
     /**Foreign key to Modular Class table*/
     private  String modClass;
-    private String idCardNumber;
+
+    private String idCardNumber; //primary key
+
+    private String firstName; //gotten from Biodata table for convenience
+    private String lastName; //gotten from Biodata table for convenience
+
+
     private boolean active;
     private String emailAddress;
     private String certificateIssued;
@@ -41,9 +47,13 @@ public class Student  implements Bean
      * @param className the {@code ModularClass} that the student would be inputed
      * into
      * @param mail the email address of this {@code Student}
+     * @param firstName the first name of this {@code Student} 
+     * @param lastName the last name of this {@code Student}
      */
-    public Student(String id, String className,  String mail, File image)
+    public Student(String firstName, String lastName, String id, String className,  String mail,  File image)
     {
+	setFirstName(firstName);
+	setLastName(lastName);
 	setModClass(className);
 	setIdCardNumber(id);
 	setEmailAddress(mail);
@@ -61,7 +71,7 @@ public class Student  implements Bean
     {
 	setIdCardNumber(idCardNumber);
     }
-  
+
     /**
      * Gets the {@code idCardNumber } of this student
      * @return a {@code String} representing the id card number of this student
@@ -70,7 +80,7 @@ public class Student  implements Bean
     {
 	return idCardNumber;
     }
-    
+
     /**
      * Sets the {@code idCardNumeber} of this student
      * @param idCardNumber
@@ -88,7 +98,7 @@ public class Student  implements Bean
     {
 	return active;
     }
-    
+
     /**
      * Sets {@code active} attribute contained in this {@code Student}
      * @param active
@@ -97,7 +107,7 @@ public class Student  implements Bean
     {
 	this.active = active;
     }
-    
+
     /**
      * Gets this {@code Student}'s email address 
      * @return {@code String} containing email
@@ -106,7 +116,7 @@ public class Student  implements Bean
     {
 	return emailAddress;
     }
-    
+
     /**
      * Sets the email address by first removing any spaces
      * @param emailAddress the email address
@@ -173,10 +183,10 @@ public class Student  implements Bean
 	return false;
     }
 
-    
+
     public boolean isEmailValid()
     {
-	 return getEmailAddress() != null && getEmailAddress().length() >0;
+	return getEmailAddress() != null && getEmailAddress().length() >0;
     }
     /**
      * @return
@@ -215,7 +225,7 @@ public class Student  implements Bean
     public File getImage(){
 	return this.image;
     }
-    
+
     /**
      * Sets the image of this {@code Student} as a {@code File}
      * @param image
@@ -235,4 +245,43 @@ public class Student  implements Bean
     public static boolean validateStudentID( String studentID ){
 	return studentID != null && studentID.length() > 0;
     }
+
+    /**
+     * Gets the first name of this {@code Student} as a {@code String}
+     * @return a {@code String} containing the student first naem;
+     */
+    public String getFirstName()
+    {
+	return firstName;
+    }
+
+    public void setFirstName(String firstName)
+    {
+	this.firstName = Bean.capitalizeWords(firstName);
+    }
+
+    public String getLastName()
+    {
+	return lastName;
+    }
+
+    public void setLastName(String lastName)
+    {
+	this.lastName = Bean.capitalizeWords(lastName);
+    }
+
+    /**
+     * Checks that all the names( Surname and lastName ) contain at most 50 characters
+     * and that they are only letters 
+     * 
+     * @return
+     */
+    public  boolean validateName()
+    {
+	return getFirstName().matches( "[A-Za-z]{1,50}") && 
+		getLastName().matches( "[A-Za-z]{1,50}" ); 
+
+    }
+
+
 }

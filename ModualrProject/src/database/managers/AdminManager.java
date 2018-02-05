@@ -38,13 +38,16 @@ public final class AdminManager
      */
     public static boolean insert( Admin newAdmin, String sentNum ) throws  InvalidAdminException, SQLException
     {
-	if( testNumber(sentNum) && newAdmin.isValid(ValidationType.NEW_BEAN) )
+	Admin currentAdmin = DatabaseManager.getCurrentAdmin();
+	if(   currentAdmin != null && currentAdmin.isSuper() && 
+		testNumber(sentNum) && 
+		newAdmin.isValid(ValidationType.NEW_BEAN) )
 	{
 	    HashClass.hashAdmin(newAdmin);
 	    try(CallableStatement  statement = 
-		    DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ?, ? ) } ", 
+		    DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ?, ?,? ) } ", 
 			    newAdmin.getUsername(),  newAdmin.getPassword() ,
-			    newAdmin.getEmailAddress()) ;)
+			    newAdmin.getEmailAddress(), newAdmin.getAccessType()) ;)
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
@@ -90,30 +93,64 @@ public final class AdminManager
 	return generatedNumber.equals(generatedString);
     }
 
-    
+
     @SuppressWarnings("resource")
     public static String getEmailAddress( String username){
 	ResultSet result = null;
 	Connection conn = ConnectionManager.getInstance().getConnection();
-	
-	  try(  PreparedStatement  statement = 
-		    conn.prepareStatement("SELECT Email FROM admin where username = ? ");)
-	    {
-		statement.setString(1, username);
-		result = statement.executeQuery();
 
-		if ( result.next() ) return result.getString(1);
-		
-	    }
-	    catch (SQLException e)
-	    {
-		e.printStackTrace();
-	    }
-	
+	try(  PreparedStatement  statement = 
+		conn.prepareStatement("SELECT Email FROM admin where username = ? ");)
+	{
+	    statement.setString(1, username);
+	    result = statement.executeQuery();
 
+	    if ( result.next() ) return result.getString(1);
+
+	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	}
 	return null ;
     }
+    
+    /**Returns true when the mail inputed as argument exists in the database
+     * @param mail a {@code String} representation of the {@code Admin} mail
+     * @return {@code true } when the mail is found in the admin table
+     */
+    public static boolean doesMailExist(String mail){
+	ResultSet result = null; 
+	
+	try(  PreparedStatement  statement = 
+		DatabaseManager.getPreparedStatement("SELECT Email FROM admin where email = ? ");)
+	{
+	    statement.setString(1, mail);
+	    result = statement.executeQuery();
 
+	   return result.next();
+	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	}finally{
+	    if( result!= null)
+		try
+		{
+		    result.close();
+		}
+		catch (SQLException e)
+		{
+		    e.printStackTrace();
+		}
+	}
+	return false;
+    }
+
+    /**
+     * Generates a random number that would be sent to an Admin mail when
+     * verifying email address
+     */
     public static void generateNumber(){
 	char[] character = new char[6];
 	Random gen = new Random();
@@ -123,7 +160,7 @@ public final class AdminManager
 
 	generatedString = new String( character);
     }
-    
+
     /**
      * This method sends an email to the specified email address. This messae
      * is used to confirm the admin email in case he loses it. 
@@ -134,7 +171,9 @@ public final class AdminManager
 	if( generatedString == null ) return false; 
 	String body = String.format("This is your confirmation number: %s", generatedString);
 	String title = "Confirmation Number no-reply ";
-	return ConnectionManager.sendMail(to, body, title);
+	String[] addr = {to}; 
+
+	return ConnectionManager.sendMail(addr, body, title);
     }
     /**
      * 
@@ -187,7 +226,7 @@ public final class AdminManager
      */
     public static boolean resetPassword(String username, String newPassword, String confirmationNumber) throws SQLException, InvalidAdminException
     {
-	
+
 	Admin updateAdmin = new Admin(username, newPassword);
 
 	if( testNumber(confirmationNumber) && updateAdmin.validatePassword())
@@ -198,12 +237,12 @@ public final class AdminManager
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
-		
+
 	    }
 	}
 	return false;
     }
-    
+
     public static boolean changeUsername( Admin existingAdmin, String newUsername )
 	    throws SQLException, InvalidAdminException
     {
@@ -245,42 +284,60 @@ public final class AdminManager
     }
 
 
-    /**
-     * Returns {@code true } if the {@code Admin } is in the database. Note that this
-     * validation is done using the username and password attribute stored in the Admin
-     * object. 
-     * @param admin the {@code Admin } to check for in the database
-     * @return {@code true } when the {@code Admin } exists
-     * @throws SQLException 
-     */
     @SuppressWarnings("resource")
-    protected static boolean validateAdmin( Admin admin )
-    {
+    protected static Admin getAdmin(String username) throws SQLException{
 	ResultSet result = null;
 	Connection conn = ConnectionManager.getInstance().getConnection();
 	//Does not used DatabaseManager.getPreparedStatement because that method may call
 	//validateAdmin
 
-	if( admin.isValid( ValidationType.EXISTING_BEAN)){
-	    try(  PreparedStatement  statement = 
-		    conn.prepareStatement("SELECT  email, password FROM admin where username = ? ");)
-	    {
-		statement.setString(1, admin.getUsername());
-		result = statement.executeQuery();
 
-		if ( result.next() ){
-		    String unHashedPass = admin.getPassword();
-		    String hashedPass = result.getString( "password" );
-		    admin.setEmailAddress(result.getString("email"));
-		    return HashClass.comparePassword(hashedPass, unHashedPass);
-		}
-	    }
-	    catch (SQLException e)
-	    {
-		e.printStackTrace();
+	try(  PreparedStatement  statement = 
+		conn.prepareStatement("SELECT  email, password, accessType FROM admin where username = ? ");)
+	{
+	    statement.setString(1, username);
+	    result = statement.executeQuery();
+
+	    if ( result.next() ){
+		Admin admin  = new Admin(username, result.getString( "password" ));
+		admin.setEmailAddress(result.getString("email"));
+		admin.setAccessType( result.getString("accessType"));
+		
+		return admin;
 	    }
 	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	}
+	finally{
+	    if( result!= null) result.close();
+	}
+	return null;
+    }
 
+    /**
+     * Returns {@code true } if the {@code Admin } is in the database. Note that this
+     * validation is done using the username and password attribute stored in the Admin
+     * object. 
+     * @param admin the {@code Admin } to check for in the database
+     * @param accessType 
+     * @return {@code true } when the {@code Admin } exists
+     * @throws SQLException 
+     */
+    protected static boolean validateAdmin( Admin admin) throws SQLException
+    {
+	Admin adminFromDb = getAdmin(admin.getUsername()); 
+	if( adminFromDb != null ){
+	    boolean isValid=  
+		    HashClass.comparePassword(
+			    adminFromDb.getPassword(),
+			    admin.getPassword());
+	    if(isValid){
+		admin = adminFromDb; 
+		return true;
+	    }
+	}
 	return false;
     }
 
@@ -352,5 +409,5 @@ public final class AdminManager
 	}
     }
 
-   
+
 }

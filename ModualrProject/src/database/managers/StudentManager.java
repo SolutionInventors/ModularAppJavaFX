@@ -34,7 +34,7 @@ public final class StudentManager
 		newStudent.isValid(ValidationType.NEW_BEAN)) ) 
 	{
 	    try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		    "{CALL updateStudent(?, ?,?,? ,?) } ", existingStudent.getIdCardNumber(), 
+		    "{CALL updateStudent(?, ?,?,? ,?,?,?) } ", existingStudent.getIdCardNumber(), 
 		    newStudent.getCertificateIssued(), newStudent.isActive(), 
 		    newStudent.getEmailAddress());)
 	    {
@@ -48,6 +48,8 @@ public final class StudentManager
 	return false;
     }
 
+    
+   
     public static boolean updateImage( Student existingStudent, File image) 
 	    throws SQLException, InvalidAdminException
     {
@@ -151,9 +153,11 @@ public final class StudentManager
 	{
 	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
 		    Connection conn =  ConnectionManager.getInstance().getConnection();
-		    CallableStatement statement = DatabaseManager.getCallableStatement("{call insertStudent(?,?,?, ?, ?) }",
+		    CallableStatement statement = 
+			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?, ?, ?) }",
 			    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
-			    newStudent.getModClassName()) ; )
+			    newStudent.getModClassName(), newStudent.getFirstName(), 
+			    newStudent.getLastName()) ; )
 	    {
 		conn.setAutoCommit( false);
 		statement.registerOutParameter(5,  Types.DATE);
@@ -219,7 +223,10 @@ public final class StudentManager
 	    Student stud;
 	    while( result.next() ){
 		String id = result.getString("id_card_number");
-		stud = new Student(id, result.getString("className"),
+		String fName = result.getString("FirstName"); 
+		String lName = result.getString("LastName"); 
+		
+		stud = new Student(fName, lName, id, result.getString("className"),
 			result.getString("emailAddress"), 
 			getImageFromStream(id, result.getBinaryStream("image")));
 		list.add(stud);

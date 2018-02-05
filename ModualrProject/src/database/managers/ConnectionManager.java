@@ -8,12 +8,16 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -57,12 +61,12 @@ public final class ConnectionManager
     /**
      * This method can be used to send a mail to a specified email address.
      * If an error occurs, this method returns {@code false}.
-     * @param to the recipient that the email is being sent to
+     * @param recipient the recipient that the email is being sent to
      * @param body the subject of the mail
      * @param subject the title of the email.
      * @return {@code true } if the mail was sent successfully else false
      */
-    public static boolean sendMail( String to, String body, String subject){
+    public static boolean sendMail( String[] recipient, String body, String subject){
 	String host="smtp.gmail.com";  
 	final String user="iitmodular@gmail.com"; 
 	final String password="rN'QD'uduopowT'8W?R7";  
@@ -85,10 +89,30 @@ public final class ConnectionManager
 	    mailSession.setDebug(sessionDebug);
 
 	    //Compose the message  
-
+	    List<InternetAddress>  addresses =
+		    Arrays.stream(recipient)
+		    	.map(elem -> {
+			    try
+			    {
+				return new InternetAddress(elem);
+			    }
+			    catch (AddressException e)
+			    {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			    }
+			    return null;
+			})
+		    	.filter(elem-> elem != null )
+		    	.collect(Collectors.toList()); 
+	    
+	    InternetAddress[] addrArray = 
+		    	addresses.toArray(new InternetAddress[addresses.size()]);
+		    
 	    MimeMessage message = new MimeMessage(mailSession);  
 	    message.setFrom(new InternetAddress(user));  
-	    message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+	    
+	    message.addRecipients(Message.RecipientType.TO,addrArray);  
 	    message.setSubject(subject);  
 	    message.setSentDate( new  java.util.Date());
 	    message.setText( body);  
@@ -121,6 +145,7 @@ public final class ConnectionManager
 	try
 	{
 	    conn = DriverManager.getConnection(MYSQLURL, USERNAME, PASSWORD );
+	
 	    ResultSet result = null;
 	    try( Statement stmt = conn.createStatement();)
 	    {

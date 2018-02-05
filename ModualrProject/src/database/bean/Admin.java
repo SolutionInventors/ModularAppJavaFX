@@ -1,5 +1,6 @@
 package database.bean;
 
+import junitTests.AdminTest.AdminJUnit;
 import utils.ValidationType;
 
 /**
@@ -19,6 +20,8 @@ public class Admin implements Bean
     private String username;
     private String password;
     private String emailAddress;
+    private String accessType; 
+    
     
     /**
      * This constructor initialises this object with the {@code username},
@@ -114,10 +117,16 @@ public class Admin implements Bean
 		return validateUsername() && validatePassword();
 	    case NEW_BEAN:
 		return validateEmail() && validateUsername() &&
-			validatePassword();
+			validatePassword() && validateAccessType();
 	}
 	return false;
     }
+
+    public  boolean validateAccessType()
+    {
+	return getAccessType().matches("READ|WRITE|SUPER|READ_AND_WRITE") ;
+    }
+
 
     /**
      * Checks that the email contained in this object is valid by checking that
@@ -153,15 +162,45 @@ public class Admin implements Bean
 	return username!= null && username.length() >=4;
     }
 
-
+    /**
+     * Gets the email address of this {@code Admin} object
+     * @return a {@code String} containing 
+     */
     public String getEmailAddress()
     {
 	return emailAddress;
     }
 
-
+    /**
+     * Sets the emial address of this {@code Admin}
+     * @param emailAddress
+     */
     public void setEmailAddress(String emailAddress)
     {
 	this.emailAddress = Bean.removeExtraSpaces(emailAddress);
     }
+
+    public boolean isSuper(){
+	return accessType != null && 
+		accessType.equals("SUPER");
+    }
+    
+    public boolean canRead(){
+	return accessType != null && 
+		accessType.matches("SUPER|READ|READ_AND_WRITE"); 
+    }
+    
+    public boolean canWrite(){
+	return accessType != null && 
+		accessType.matches("SUPER|WRITE|READ_AND_WRITE");
+    }
+    
+    public String getAccessType(){
+	return accessType;
+    }
+    public void setAccessType(String accessType)
+    {
+	this.accessType = accessType != null ? accessType.toUpperCase(): "";
+    }
+    
 }

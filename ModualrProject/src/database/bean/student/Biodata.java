@@ -21,9 +21,6 @@ public class Biodata implements Bean
     private static final long serialVersionUID = -6215729185466161547L;
 
     private String title;
-    private String middleName;
-    private String surname;
-    private String lastName;
     private String studentId;
     private String permanentAddress;
     private String currentAddress;
@@ -42,15 +39,13 @@ public class Biodata implements Bean
      * @param studentId the studentId  in the {@code Student} table
      */
     public Biodata( String studentId){
-	this(studentId, "", "", "", "", "", "", "", "", null, "", "", "");
+	this(studentId, "", "", "", "", "", null, "", "", "");
 
     }
 
     /**
      * This constructor initializes this object with all the required parameters
      * for it to be inserted into database.
-     * @param fName the first name of the {@code Student}
-     * @param lName the last name of the {@code Student}
      * @param sutdentId the student id card number
      * @param address the address of the {@code Student}
      * @param state the state of origin of the {@code Student}
@@ -60,14 +55,10 @@ public class Biodata implements Bean
      * @param placeOfBirth the place the {@code Student} was born
      * @param image a {@link java.io.File } containing the image of the {@code Student}
      */
-    public Biodata( String studID ,String surname,  String midName, String lName, 
-	    String state, String country, String currAddr, String permanentAddr, 
-	    String gender, Date birth, String placeOfBirth, String religion, String title)
+    public Biodata( String studID, String state, String country, String currAddr, 
+	    String permanentAddr, String gender, Date birth, String placeOfBirth, String religion, String title)
     {
 	setStudentId( studID);
-	setSurname(surname);
-	setMiddleName(midName);
-	setLastName(lName);
 	setStudentId(studID);
 	setPermanentAddress(permanentAddr);
 	setCurrentAddress(currAddr);
@@ -80,50 +71,7 @@ public class Biodata implements Bean
 	setTitle(title);
     }
 
-    /**
-     * Gets the middleName stored in this object. 
-     * @author Oguejiofor Chidiebere 
-     * @return a {@code String} object containing the first name of the {@code Student}
-     */
-    public String getMiddleName()
-    {
-	return middleName;
-    }
-
-    /**
-     * Sets the name of this object by removing any extra spaces that
-     * may exist anywhere in the {@code String} an capitalizes the first word in the
-     * {@code String}. If the {@code String } is {@code null}
-     * then an empty {@code String } is used to set the value
-     * @param midName the middleName of the {@code Student}
-     */
-    public void setMiddleName(String midName)
-    {
-	this.middleName =Bean.capitalizeWords(midName ) ;
-    }
-
-    /**
-     * Gets the lastName stored in this object. 
-     * @author Oguejiofor Chidiebere 
-     * @return a {@code String} object containing the last name of the {@code Student}
-     */
-    public String getLastName()
-    {
-	return lastName;
-    }
-
-    /**
-     * Sets the last name of this object by removing any extra spaces that
-     * may exist anywhere in the {@code String} an capitalizes the first word in the
-     * {@code String}. If the {@code String } is {@code null}
-     * then an empty {@code String } is used to set the value
-     * @param lName the lastName of the {@code Student}
-     */
-    public void setLastName(String lName)
-    {
-	this.lastName = Bean.capitalizeWords( lName);
-    }
-
+   
 
     /**
      * Gets the student id that is linked to this {@code Biodata} object
@@ -289,26 +237,12 @@ public class Biodata implements Bean
 	return getGender().toLowerCase().matches("male|female");
     }
 
-    /**
-     * Checks that all the names( Surname and lastName ) contain at most 50 characters
-     * and that they are only letters 
-     * 
-     * @return
-     */
-    public  boolean validateName()
-    {
-	return getSurname().matches( "[A-Za-z]{1,50}") && 
-		getLastName().matches( "[A-Za-z]{1,50}" ); 
-
-    }
-
+    
     /**
      * If the {@link ValidationType } passed as argument equals 
      * {@code ValidationType.NEW_BEAN} then this method checks if  
      * ensures that none of the arguments
-     * are {@code null},  that the gender is either male or female and
-     *  that the {@code middleName}  and {@code lastName} length are less than 51
-     *  and that they contain only letters.<br><br>
+     * are {@code null},  that the gender is either male or.<br><br>
      *  
      *  If the {@link ValidationType } is set to {@code ValidationType.EXISTING_BEAN}
      *  then this method checks that the stuendentId is not {@code null}.
@@ -325,10 +259,9 @@ public class Biodata implements Bean
 	    case EXISTING_BEAN:
 		return getStudentID()!= null && getStudentID().length() > 0;
 	    case NEW_BEAN:
-		return getDateOfBirth() != null && validateName() && 
-		getCountry().length() > 0  && getStudentID().length() > 0 &&
-		getLastName().length() >0 && getMiddleName().length() >0 && 
-		getSurname().length() >0 && getPermanentAddress().length() >0 &&
+		return getDateOfBirth() != null && 
+		getCountry().length() > 0  && getStudentID().length() > 0 && 
+		getPermanentAddress().length() >0 &&
 		getCurrentAddress().length() >0 && getTitle().length() >0 &&
 		validateGender() ;
 	}
@@ -356,23 +289,8 @@ public class Biodata implements Bean
 	this.title = Bean.truncateString(temp, 15);
     }
 
-    /**
-     * Gets the surname stored in this {@code Biodata } object 
-     * @return a {@code String} containing the surname of the {@code Student}
-     */
-    public String getSurname()
-    {
-	return surname;
-    }
+   
 
-    /**
-     * Sets the surname of {@code Student} that this {@code Biodata} references
-     * @param surname a {@code String} containing the surname of the student
-     */
-    public void setSurname(String surname)
-    {
-	this.surname = Bean.removeExtraSpaces( surname);
-    }
 
     /**
      * Gets the current address of the {@code Student}

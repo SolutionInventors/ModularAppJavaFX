@@ -8,7 +8,6 @@ import java.sql.SQLException;
 
 import database.bean.Admin;
 import exception.InvalidAdminException;
-import utils.ValidationType;
 
 /**
  * This contains common methods that retrieve are used to retrieve, insert, update
@@ -39,18 +38,17 @@ public final class DatabaseManager
     public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException, InvalidAdminException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
 
-	if(  !validateAdmin() ) 
-	    throw new InvalidAdminException("The Admin that wants to make the change is not in database");
-	CallableStatement statement =  conn.prepareCall(
-		sqlCall,
-		ResultSet.TYPE_FORWARD_ONLY,
-		ResultSet.CONCUR_READ_ONLY);
-	
-	
-	
-	for( int i =  0 ; i < arguments.length ; i++ )
-	    statement.setObject( i +1, arguments[ i ] );
-	return statement;
+	if( currentAdmin != null && currentAdmin.canWrite()){
+	    CallableStatement statement =  conn.prepareCall(
+		    sqlCall,
+		    ResultSet.TYPE_FORWARD_ONLY,
+		    ResultSet.CONCUR_READ_ONLY);
+
+	    for( int i =  0 ; i < arguments.length ; i++ )
+		statement.setObject( i +1, arguments[ i ] );
+	    return statement;
+	}
+	throw new InvalidAdminException("The Admin that wants to make the change is not in database");
     }
 
     /**
@@ -76,25 +74,42 @@ public final class DatabaseManager
     }
 
     /**
-     * Sets the {@code currentAdmin} that is logged into the system.
-     * @param currentAdmin the Admin that is logged to the system
+     * Sets the {@code currentAdmin} that is logged into the system. It does
+     * this by first cpnnecting to the database to check if the admin is exists. 
+     * If the admin is in the database it uses it to set the currently logged 
+     * admin. If not it sets it to null.
+     * @param admin the Admin that is logged to the system
      */
-    public static void setCurrentAdmin(Admin currentAdmin)
+    public static void setCurrentAdmin(Admin admin)
     {
-	DatabaseManager.currentAdmin = currentAdmin;
+	try
+	{
+	    DatabaseManager.currentAdmin = 
+		    AdminManager.validateAdmin(admin) ? admin : null ; 
+
+	}
+	catch (SQLException e)
+	{
+	    DatabaseManager.currentAdmin = null;
+	    e.printStackTrace();
+	}
+    }
+
+    /**Gets the currently logged in admin. Returns {@code null} if the admin has
+     * not yet been set or if an invalid admin  was used to set the database
+     * @return the currently logged in admin
+     */
+    public static Admin getCurrentAdmin(){
+	return currentAdmin;
     }
 
     /**
-     * Connects to the database and checks if the Admin is in the database. 
-     * @return
+     * Checks if the current {@code Admin} is in the database. 
+     * This method does not connect to the database. The  {@code Admin} object has already 
+     * been verified when {@link #setCurrentAdmin(Admin)} was called.
+     * @return true if the currently logged {@code Admin} is valid
      */
     public static boolean  validateAdmin(){
-	if( currentAdmin != null && currentAdmin.isValid( ValidationType.EXISTING_BEAN) )
-	    return AdminManager.validateAdmin( currentAdmin);
-	return false;
+	return currentAdmin != null; 
     }
-
- 
-    
-
 }

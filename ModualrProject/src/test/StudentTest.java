@@ -54,7 +54,10 @@ public class StudentTest
 
 	File image = chooser.getSelectedFile();
 
-	Student student = new Student(studentId, className, mail, image);
+	String firstName = TestUtils.getStringInput("Input Student Surname:" );
+	String lName= TestUtils.getStringInput("Input Student last name: ");
+	
+	Student student = new Student(firstName, lName, studentId, className, mail, image);
 
 	if( student.isValid(ValidationType.NEW_BEAN)) 
 	    System.out.println("The Student object is valid" );
@@ -64,9 +67,6 @@ public class StudentTest
 	}
 
 	System.out.println("\n----Creating Biodata object------");
-	String surname = TestUtils.getStringInput("Input Student Surname:" );
-	String midName = TestUtils.getStringInput("Input Student MiddleName: ");
-	String lName= TestUtils.getStringInput("Input Student last name: ");
 	String state = TestUtils.getStringInput("Input the student state of origin: ");
 	String country = TestUtils.getStringInput("Input Country of origin: ") ;
 	String currAddr = TestUtils.getStringInput("Input current address: ");
@@ -87,8 +87,8 @@ public class StudentTest
 	    e.printStackTrace();
 	}
 
-	Biodata bio = new Biodata(studentId, surname, midName, lName, state, country, 
-		currAddr, permAddr, gender, birth, birthPlace, religion, title);
+	Biodata bio = new Biodata(studentId, state, country, currAddr,
+		permAddr, gender, birth, birthPlace, religion, title);
 
 	if( bio.isValid(ValidationType.NEW_BEAN)) 	
 	    System.out.println("The bio data is valid" );

@@ -70,8 +70,7 @@ public class UpdateTest
 	chooser.showOpenDialog(null );
 	File file = chooser.getSelectedFile();
 
-	Biodata newBio = new Biodata(studId, "Oguejiofor", "Chi", "Fred",
-		"New York", "USA", "LA", "New Jersey", "M", 
+	Biodata newBio = new Biodata(studId,"New York", "USA", "LA", "New Jersey", "M", 
 		birth, "Manchester", "Jew", "Prof");
 
 	Sponsor oldSpon = new Sponsor(studId, "Lo", "Lasds", "email.com");
