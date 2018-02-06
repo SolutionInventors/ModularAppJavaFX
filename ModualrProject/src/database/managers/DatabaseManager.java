@@ -84,8 +84,11 @@ public final class DatabaseManager
     {
 	try
 	{
-	    DatabaseManager.currentAdmin = 
-		    AdminManager.validateAdmin(admin) ? admin : null ; 
+	    if(AdminManager.validateAdmin(admin)) {
+		DatabaseManager.currentAdmin = AdminManager.getAdmin(admin.getUsername()); 
+		
+	    }
+	    
 
 	}
 	catch (SQLException e)

@@ -165,8 +165,9 @@ public final class StudentManager
 		if( affected > 0  && StudentDataManager.insert( studentData) )
 		{
 		    newStudent.setDateAdmitted( statement.getDate( 7 ) );
-		    conn.setAutoCommit( true );
+		    
 		    conn.commit();
+		    conn.setAutoCommit( true );
 		    return true;
 		}
 		else

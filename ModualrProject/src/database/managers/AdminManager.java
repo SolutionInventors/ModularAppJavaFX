@@ -114,21 +114,21 @@ public final class AdminManager
 	}
 	return null ;
     }
-    
+
     /**Returns true when the mail inputed as argument exists in the database
      * @param mail a {@code String} representation of the {@code Admin} mail
      * @return {@code true } when the mail is found in the admin table
      */
     public static boolean doesMailExist(String mail){
 	ResultSet result = null; 
-	
+
 	try(  PreparedStatement  statement = 
 		DatabaseManager.getPreparedStatement("SELECT Email FROM admin where email = ? ");)
 	{
 	    statement.setString(1, mail);
 	    result = statement.executeQuery();
 
-	   return result.next();
+	    return result.next();
 	}
 	catch (SQLException e)
 	{
@@ -136,13 +136,13 @@ public final class AdminManager
 	}finally{
 	    if( result!= null)
 		try
-		{
+	    {
 		    result.close();
-		}
-		catch (SQLException e)
-		{
-		    e.printStackTrace();
-		}
+	    }
+	    catch (SQLException e)
+	    {
+		e.printStackTrace();
+	    }
 	}
 	return false;
     }
@@ -232,12 +232,19 @@ public final class AdminManager
 	if( testNumber(confirmationNumber) && updateAdmin.validatePassword())
 	{
 	    HashClass.hashAdmin(updateAdmin);
-	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?  ) } ", 
-		    username, username , updateAdmin.getPassword());)
+	    Connection conn =  ConnectionManager.getInstance().getConnection(); 
+	    CallableStatement statement = null;
+	    try
 	    {
+		statement = conn.prepareCall("{CALL updateAdmin(?, ?, ?  ) } ");
+		statement.setString(1, username);
+		statement.setString(2, username);
+		statement.setString(3, updateAdmin.getPassword());
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
 
+	    }finally {
+		if( statement !=null ) statement.close();
 	    }
 	}
 	return false;
@@ -302,7 +309,7 @@ public final class AdminManager
 		Admin admin  = new Admin(username, result.getString( "password" ));
 		admin.setEmailAddress(result.getString("email"));
 		admin.setAccessType( result.getString("accessType"));
-		
+
 		return admin;
 	    }
 	}
