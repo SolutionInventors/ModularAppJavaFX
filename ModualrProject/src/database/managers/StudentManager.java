@@ -154,19 +154,19 @@ public final class StudentManager
 	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
 		    Connection conn =  ConnectionManager.getInstance().getConnection();
 		    CallableStatement statement = 
-			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?, ?, ?) }",
+			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?,?,?, ?, ?) }",
 			    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
 			    newStudent.getModClassName(), newStudent.getFirstName(), 
 			    newStudent.getLastName()) ; )
 	    {
 		conn.setAutoCommit( false);
-		statement.registerOutParameter(5,  Types.DATE);
+		statement.registerOutParameter(7,  Types.DATE);
 		int affected = statement.executeUpdate();
 		if( affected > 0  && StudentDataManager.insert( studentData) )
 		{
-		    conn.commit();
+		    newStudent.setDateAdmitted( statement.getDate( 7 ) );
 		    conn.setAutoCommit( true );
-		    newStudent.setDateAdmitted( statement.getDate( 5 ) );
+		    conn.commit();
 		    return true;
 		}
 		else
