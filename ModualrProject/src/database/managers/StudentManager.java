@@ -48,8 +48,8 @@ public final class StudentManager
 	return false;
     }
 
-    
-   
+
+
     public static boolean updateImage( Student existingStudent, File image) 
 	    throws SQLException, InvalidAdminException
     {
@@ -155,9 +155,9 @@ public final class StudentManager
 		    Connection conn =  ConnectionManager.getInstance().getConnection();
 		    CallableStatement statement = 
 			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?,?,?, ?, ?) }",
-			    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
-			    newStudent.getModClassName(), newStudent.getFirstName(), 
-			    newStudent.getLastName()) ; )
+				    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
+				    newStudent.getModClassName(), newStudent.getFirstName(), 
+				    newStudent.getLastName()) ; )
 	    {
 		conn.setAutoCommit( false);
 		statement.registerOutParameter(7,  Types.DATE);
@@ -165,13 +165,13 @@ public final class StudentManager
 		if( affected > 0  && StudentDataManager.insert( studentData) )
 		{
 		    newStudent.setDateAdmitted( statement.getDate( 7 ) );
-		    
+
 		    conn.commit();
 		    conn.setAutoCommit( true );
 		    return true;
 		}
-		else
-		    conn.rollback();
+		conn.rollback();
+		conn.setAutoCommit(true);
 	    }
 	    catch (IOException e)
 	    {
@@ -226,7 +226,7 @@ public final class StudentManager
 		String id = result.getString("id_card_number");
 		String fName = result.getString("FirstName"); 
 		String lName = result.getString("LastName"); 
-		
+
 		stud = new Student(fName, lName, id, result.getString("className"),
 			result.getString("emailAddress"), 
 			getImageFromStream(id, result.getBinaryStream("image")));
@@ -284,7 +284,7 @@ public final class StudentManager
 	{
 	    if( !studData.isValid(ValidationType.NEW_BEAN) ) return false;
 
-	   
+
 	    boolean edu = Arrays.stream( studData.getEducation() )
 		    .allMatch( education-> {
 			try
