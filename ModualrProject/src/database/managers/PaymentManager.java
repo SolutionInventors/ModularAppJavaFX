@@ -53,9 +53,10 @@ public final class PaymentManager
      */
     public static double getRemaingPayment(int regID) throws SQLException
     {
+	int factor = 10000; 
 	double amountPaid = getAmountPaid( regID );
 	double totalPrice = ModuleRegisterManager.getTotalPriceForModule(regID);
-	double remainingPayment = totalPrice - amountPaid;
+	double remainingPayment = ((totalPrice*factor) - (amountPaid*factor))/factor;
 	return remainingPayment;
     }
 
