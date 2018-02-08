@@ -23,11 +23,8 @@ public class StatsTest
     {
 	DatabaseManager.setCurrentAdmin( new Admin("Chidiebere", "Fred"));
 	Student student = new Student("EMY-C32");
-<<<<<<< HEAD
 	Module mod = new Module("Electrical Installation");
-=======
-	Module mod = new Module("Motor Studies");
->>>>>>> refs/remotes/origin/master
+
 	Certificate cert = new Certificate("Electrotechnics");
 	StudentStats studStats = null ;
 	ModuleStats modStats =null;
