@@ -232,19 +232,17 @@ public final class AdminManager
 	if( testNumber(confirmationNumber) && updateAdmin.validatePassword())
 	{
 	    HashClass.hashAdmin(updateAdmin);
+	    @SuppressWarnings("resource")
 	    Connection conn =  ConnectionManager.getInstance().getConnection(); 
-	    CallableStatement statement = null;
-	    try
+	   
+	    try( CallableStatement statement =  conn.prepareCall("{CALL updateAdmin(?, ?, ?  ) } ");)
 	    {
-		statement = conn.prepareCall("{CALL updateAdmin(?, ?, ?  ) } ");
 		statement.setString(1, username);
 		statement.setString(2, username);
 		statement.setString(3, updateAdmin.getPassword());
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
 
-	    }finally {
-		if( statement !=null ) statement.close();
 	    }
 	}
 	return false;

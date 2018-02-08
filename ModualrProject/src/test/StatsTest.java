@@ -1,6 +1,7 @@
 package test;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import database.bean.Admin;
 import database.bean.Certificate;
@@ -11,6 +12,7 @@ import database.managers.DatabaseManager;
 import database.statistics.CertificateStats;
 import database.statistics.ModuleStats;
 import database.statistics.StatisticsManager;
+import database.statistics.StudentModuleStats;
 import database.statistics.StudentStats;
 import database.statistics.TableStats;
 
@@ -21,11 +23,16 @@ public class StatsTest
     {
 	DatabaseManager.setCurrentAdmin( new Admin("Chidiebere", "Fred"));
 	Student student = new Student("EMY-C32");
+<<<<<<< HEAD
 	Module mod = new Module("Electrical Installation");
+=======
+	Module mod = new Module("Motor Studies");
+>>>>>>> refs/remotes/origin/master
 	Certificate cert = new Certificate("Electrotechnics");
 	StudentStats studStats = null ;
 	ModuleStats modStats =null;
 	CertificateStats certStats = null;
+	StudentModuleStats[]  studMods= null ; 
 	TableStats stat = null ;
 	try
 	{
@@ -33,6 +40,8 @@ public class StatsTest
 	    modStats = StatisticsManager.retrieveStats(mod);
 	    certStats = StatisticsManager.retrieveStats(cert);
 	    stat = StatisticsManager.retrieveStats();
+	    studMods = StatisticsManager.retrieveStudentModuleStats(
+		    student.getIdCardNumber()); 
 	}
 	catch (SQLException e)
 	{
@@ -48,6 +57,18 @@ public class StatsTest
 	System.out.println( certStats);
 	System.out.println("--------Database Stats--------");
 	System.out.println(stat);
+	System.out.println(Arrays.toString(studMods)); 
+	
+	System.out.println("--------StudentModule Stats--------");
+	for( StudentModuleStats studMod : studMods){
+	    System.out.printf("Date Regisetered: %s%nModule Name: %s%nAmount Paid : %.2f%n"
+	    	+ "Booked: %s%nResult: %s%nPayment Status: %s%n->%n", 
+	    	studMod.getDateRegistered(), studMod.getModuleName(), 
+	    	studMod.getAmountPaid(), studMod.hasBooked(), studMod.getResult(), 
+	    	studMod.isPaymentComplete()) ; 
+	    
+	    
+	}
 	ConnectionManager.close();
     }
 
