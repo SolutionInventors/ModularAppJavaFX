@@ -20,8 +20,8 @@ public class StatsTest
     public static void main(String[] args)
     {
 	DatabaseManager.setCurrentAdmin( new Admin("Chidiebere", "Fred"));
-	Student student = new Student("EYY-C232");
-	Module mod = new Module("Motor Studies");
+	Student student = new Student("EMY-C32");
+	Module mod = new Module("Electrical Installation");
 	Certificate cert = new Certificate("Electrotechnics");
 	StudentStats studStats = null ;
 	ModuleStats modStats =null;

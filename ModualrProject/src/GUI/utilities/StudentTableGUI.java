@@ -1,20 +1,21 @@
 package GUI.utilities;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Student {
-	private final SimpleIntegerProperty id;
+public class StudentTableGUI {
+	private final SimpleStringProperty id;
 	private final SimpleStringProperty firstName;
 	private final SimpleStringProperty lastName;
+	private final SimpleStringProperty className;
 	
-	public Student(Integer id, String firstname, String lastname) {
+	public StudentTableGUI(String id, String firstname, String lastname,String className) {
 		super();
-		this.id = new SimpleIntegerProperty(id);
+		this.id = new SimpleStringProperty(id);
 		this.firstName =new SimpleStringProperty(firstname);
 		this.lastName = new SimpleStringProperty(lastname);
+		this.className = new SimpleStringProperty(className);
 	}
-	public Integer getId() {
+	public String getId() {
 		return id.get();
 	}
 	public String getFirstName() {
@@ -22,6 +23,9 @@ public class Student {
 	}
 	public String getLastName() {
 		return lastName.get();
+	}
+	public String getClassName() {
+		return className.get();
 	}
 	
 }//end class

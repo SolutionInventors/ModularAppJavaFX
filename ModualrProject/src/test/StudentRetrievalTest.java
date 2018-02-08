@@ -30,6 +30,7 @@ public class StudentRetrievalTest
 		System.out.println(student.isActive());
 		System.out.println(student.getFirstName());
 		System.out.println(student.getLastName());
+		//student.get
 		System.out.println("->");
 		
 	    }
@@ -44,6 +45,6 @@ public class StudentRetrievalTest
 	}
 	
 	
-    }
+    }//end main
 
 }
