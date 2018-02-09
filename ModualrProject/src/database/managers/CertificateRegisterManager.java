@@ -13,7 +13,7 @@ import utils.ValidationType;
 /**
  * This class contains static methods that are used to perform operations 
  * on the {@code CertificateRegister} table in the database. This table is
- * used to add {@code Module}s to a {@code Certificate} requirement.
+ * used to add {@code ModuleTabTable}s to a {@code Certificate} requirement.
  * @author Oguejiofor Chidiebere
  * @see database.bean.CertificateRegister
  *
@@ -21,9 +21,9 @@ import utils.ValidationType;
 public final class CertificateRegisterManager
 {
     /**
-     * Adds a {@code Module} to a certificate requirement. 
+     * Adds a {@code ModuleTabTable} to a certificate requirement. 
      * @param certModule the {@code CertificateRegister} object that encapsulate
-     * contains the Certificate name and the {@code Module } name. 
+     * contains the Certificate name and the {@code ModuleTabTable } name. 
      * @return {@code true } if the operation was successful.
      * @throws SQLException
      * @throws InvalidAdminException if the {@code Admin } that wants to make the 
@@ -46,9 +46,9 @@ public final class CertificateRegisterManager
     }
 
     /**
-     * Removes a {@code Module } from a Cerificate requirement
+     * Removes a {@code ModuleTabTable } from a Cerificate requirement
      * @param certModule the certificateRegister object that encapsulates the 
-     * name of the {@code Certificate} and {@code Module}
+     * name of the {@code Certificate} and {@code ModuleTabTable}
      * @return {@code true } if removal was successful. If nothing was removed
      * returns {@code false}.
      * @throws SQLException

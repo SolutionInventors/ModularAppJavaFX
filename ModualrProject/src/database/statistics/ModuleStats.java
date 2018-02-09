@@ -1,7 +1,7 @@
 package database.statistics;
 
 /**
- * This object contains information about  a particular {@code Module }. It contains
+ * This object contains information about  a particular {@code ModuleTabTable }. It contains
  * one constructor
  * @author Chidiebere
  *

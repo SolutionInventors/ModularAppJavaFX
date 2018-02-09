@@ -20,7 +20,7 @@ public class StatisticsManager
      * This method retrieves statistics of the argument inputed into it or {@code null} 
      * if the specified {@code Bean } does not exists in the database.
      * It does returns the Statistics based on the type of its argument.<br>
-     * For example, if a {@code Module} is inputed as its argument then a
+     * For example, if a {@code ModuleTabTable} is inputed as its argument then a
      * {@code ModuleStats} object would be returned etc.
      * 
      * @param bean a subclass of {@code Bean} to be retrieved.
@@ -57,7 +57,7 @@ public class StatisticsManager
     /**
      * Retrieves statistics about the tables in the database.
      * The retrieved {@link TableStats} object contains statistics about the
-     * all the {@code Module}s, {@code Student}s, {@code ModularClass} and
+     * all the {@code ModuleTabTable}s, {@code Student}s, {@code ModularClass} and
      * so on.<br>
      * 
      * @return
@@ -67,7 +67,7 @@ public class StatisticsManager
     {
 	String sql = 
 		"SELECT COUNT( DISTINCT module.name) as 'Num of Modules', "+
-			"	COUNT(DISTINCT reg.id) as 'Reg Module', " +
+			"	COUNT(DISTINCT reg.id) as 'Reg ModuleTabTable', " +
 			"	COUNT(DISTINCT reg.id, if(reg.AttendanceStatus = 1 ,true , null)) as 'Total Mod Attended', "+
 			"	COUNT(DISTINCT if(UPPER(reg.Result) = 'PASS',true , null)) as 'Total Mod Passed', "+
 			"	COUNT(DISTINCT if(UPPER(reg.Result) = 'FAIL',true , null)) as 'Total Mod Failed', "+
@@ -97,7 +97,7 @@ public class StatisticsManager
 	    result =  stmt.executeQuery();
 	    if( result.next() ){
 		return new TableStats(result.getInt("Num of Modules"),
-			result.getInt("Reg Module"), result.getInt("Total Mod Attended"),
+			result.getInt("Reg ModuleTabTable"), result.getInt("Total Mod Attended"),
 			result.getInt("Total Mod Passed"),result.getInt("Total Mod Failed"),
 			result.getInt("Num of Students"), result.getInt("Active Stud"),
 			result.getInt("Inactive Stud"), result.getInt("Certified Stud"),

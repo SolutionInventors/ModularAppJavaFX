@@ -37,8 +37,8 @@ public class LogTest
 	System.out.println("-----ModuleLogs--------" );
 	Arrays.stream(modLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("Old Module Name: " + log.getOldModuleName());
-	    System.out.println("New Module Name: " + log.getNewModuleName());
+	    System.out.println("Old ModuleTabTable Name: " + log.getOldModuleName());
+	    System.out.println("New ModuleTabTable Name: " + log.getNewModuleName());
 	    
 	    System.out.println("Operation Type: " + log.getOperationType());
 	    System.out.println( ">>");
@@ -50,7 +50,7 @@ public class LogTest
 	System.out.println("-----PaymentLogs--------" );
 	Arrays.stream(payLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("Module Name: " + log.getModuleName());
+	    System.out.println("ModuleTabTable Name: " + log.getModuleName());
 	    System.out.println("Operation Type: " + log.getOperationType());
 	});
 	
@@ -72,8 +72,8 @@ public class LogTest
 	Arrays.stream(certRegLog).forEach( log ->{
 	    System.out.println("New CertName: " + log.getNewCertificateName());
 	    System.out.println("Old CertName: " + log.getOldCertificateName());
-	    System.out.println("New Module Name: " + log.getNewModuleName());
-	    System.out.println("Old Module Name:: " + log.getOldModuleName());
+	    System.out.println("New ModuleTabTable Name: " + log.getNewModuleName());
+	    System.out.println("Old ModuleTabTable Name:: " + log.getOldModuleName());
 	});
 	
     }

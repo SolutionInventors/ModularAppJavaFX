@@ -177,7 +177,7 @@ public class TestUtils
 		ModuleRegister[] modRegs  =  ModuleRegisterManager.getRegisteredModules(0);
 		for ( int i = 0 ; i < modRegs.length ; i++ ){
 		    System.out.println("ModRegID: " + modRegs[i].getId());
-		    System.out.println("Module Name: " + modRegs[i].getModuleName()); 	
+		    System.out.println("ModuleTabTable Name: " + modRegs[i].getModuleName()); 	
 		    System.out.println("StudentID: " + modRegs[i].getStudentId());
 		    System.out.println("Total Price: " + modRegs[i].getTotalPriceForModule());
 		    System.out.println("Amount Paid: "+ PaymentManager.getAmountPaid(modRegs[i].getId()));

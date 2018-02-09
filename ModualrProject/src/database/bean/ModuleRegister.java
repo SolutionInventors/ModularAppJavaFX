@@ -21,7 +21,7 @@ import utils.ValidationType;
  * This class contains three constructors
  * 
  * @author Oguejiofor Chidiebere
- *@see Module 
+ *@see ModuleTabTable 
  *@see Payment 
  */
 
@@ -33,7 +33,7 @@ public class ModuleRegister  implements Bean
     /**This is an auto-incrementing primary key of this object*/
     private int id;
 
-    /**Foreign key from the Module table*/
+    /**Foreign key from the ModuleTabTable table*/
     private String moduleName;
 
     /**Foreign key from the Student table*/
@@ -53,7 +53,7 @@ public class ModuleRegister  implements Bean
      * Initializes this object with the moduleId and studentId. {@code ModuleRegister}s 
      * created with this
      * constructor can be added to the database. 
-     * @param moduleId the foreign key from the {@code Module } table
+     * @param moduleId the foreign key from the {@code ModuleTabTable } table
      * @param studentId the foreing key from the {@code Student} table
      */
     public ModuleRegister(  String moduleId, String studentId){
@@ -130,7 +130,7 @@ public class ModuleRegister  implements Bean
 
     /**
      * Sets the payment status of this ModuleRegister. This should only be used 
-     * by the Module
+     * by the ModuleTabTable
      * @param paymentStatus
      */
     public void setPaymentStatus(boolean paymentStatus)
@@ -139,7 +139,7 @@ public class ModuleRegister  implements Bean
     }
 
     /**
-     * Returns true when the student has booked for the {@code Module} representend
+     * Returns true when the student has booked for the {@code ModuleTabTable} representend
      * by this object's moduleId
      * @return boolean
      */

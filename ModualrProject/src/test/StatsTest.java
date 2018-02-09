@@ -26,10 +26,10 @@ public class StatsTest
 	Module mod = new Module("Electrical Installation");
 
 	Certificate cert = new Certificate("Electrotechnics");
-	StudentStats studStats = null ;
+	StudentStats studStats = null ;//use for graph
 	ModuleStats modStats =null;
 	CertificateStats certStats = null;
-	StudentModuleStats[]  studMods= null ; 
+	StudentModuleStats[]  studMods= null ; //use for the table
 	TableStats stat = null ;
 	try
 	{
@@ -48,7 +48,7 @@ public class StatsTest
 	
 	System.out.println("---Student Stats------");
 	System.out.println(studStats);
-	System.out.println("------Module Stats---------");
+	System.out.println("------ModuleTabTable Stats---------");
 	System.out.println(modStats);
 	System.out.println("-------Certificate Stats-----" );
 	System.out.println( certStats);

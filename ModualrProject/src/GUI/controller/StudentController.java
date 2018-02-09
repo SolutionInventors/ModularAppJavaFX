@@ -12,10 +12,12 @@ import database.bean.student.Student;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
 import database.managers.StudentManager;
+import database.statistics.StatisticsManager;
+import database.statistics.StudentModuleStats;
+import database.statistics.StudentStats;
 import exception.InvalidAdminException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
@@ -56,15 +58,15 @@ public class StudentController implements Initializable
     @FXML private TableColumn<ModuleTableGUI, String>module;
     @FXML private TableColumn<ModuleTableGUI, String>paid;
     @FXML private TableColumn<ModuleTableGUI, String>booked;
-    @FXML private TableColumn<ModuleTableGUI, String>unitAttended;
-    @FXML private TableColumn<ModuleTableGUI, String>completed;
-    @FXML private TableColumn<ModuleTableGUI, String>pass;
-    @FXML private TableColumn<ModuleTableGUI, String>fail;
+    @FXML private TableColumn<ModuleTableGUI, String>result;
     
     //private ObservableList<Student> list;
 
     // for class mainpulation
     private Student[] students;
+   // private Student student;
+    StudentStats studStats;
+    private URL url2 = getClass().getResource("/GUI/resources/images/no image.png");
 
 
 
@@ -81,13 +83,10 @@ public class StudentController implements Initializable
 	module.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("module"));
 	paid.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("paid"));
 	booked.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("booked"));
-	unitAttended.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("unitAttended"));
-	completed.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("completed"));
-	pass.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("pass"));
-	fail.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("fail"));
+	result.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("result"));
     }
 
-    public void getuser() throws MalformedURLException
+    public void getuser() 
     {
 	int selection = studentTable.getSelectionModel().getSelectedIndex();
 	lblisActive.setText(students[selection].isActive() ? "Yes" : "No");
@@ -96,12 +95,20 @@ public class StudentController implements Initializable
 	lblemail.setText(students[selection].getEmailAddress());
 	// imgStudentImage.setImage(new Image(students[selection].getImage()));
 
-	String localUrl = students[selection].getImage().toURI().toURL().toString();
+	String localUrl = null;
+	try
+	{
+	    localUrl = students[selection].getImage().toURI().toURL().toString();
+	}
+	catch (MalformedURLException e){
+	   /* File noImage= new File(url2.toURI());
+	    localUrl = noImage.toURI().toURL().toString();*/
+	}
 	Image localImage1 = new Image(localUrl, false);
 	imgStudentImage.setImage(localImage1);
 	
-	moduleTable.setItems(getModuleforStudent());
-	createChart();
+	moduleTable.setItems(getModuleforStudent(students[selection].getIdCardNumber()));
+	createChart(students[selection].getIdCardNumber());
 
     }// end method get user
     
@@ -137,24 +144,77 @@ public class StudentController implements Initializable
 
     }// end method get student
     
-    private ObservableList<ModuleTableGUI> getModuleforStudent(){
-	ObservableList<ModuleTableGUI> moduleList = FXCollections.observableArrayList();
-	moduleList.add(new ModuleTableGUI("mech fittings", "Yes", "Yes", "4", "No", "Yes", ""));
+    private ObservableList<ModuleTableGUI> getModuleforStudent(String id){
+	StudentModuleStats[]  studMods = null ; 
+	 Student student = new Student(id);
+	 try
+	{
+	    studMods = StatisticsManager.retrieveStudentModuleStats(
+	    	    student.getIdCardNumber());
+	    System.out.println("success");
+	    System.out.println(student.getIdCardNumber());
+	    System.out.println(studMods);
+	}
+	catch (SQLException e)
+	{
+	    // FIXME Auto-generated catch block
+	    e.printStackTrace();
+	} 
+	 
+	 ObservableList<ModuleTableGUI> moduleList = FXCollections.observableArrayList();
+		
+	  for (int i = 0; i < studMods.length; i++) {
+	      moduleList.add(new ModuleTableGUI(studMods[i].getModuleName(), String.valueOf(studMods[i].getAmountPaid()), String.valueOf(studMods[i].hasBooked()), studMods[i].getResult()));
+	  }
+	/* for( StudentModuleStats studMod : studMods){
+		    moduleList.add(new ModuleTableGUI(studMod.getModuleName(), String.valueOf(studMod.getAmountPaid()), String.valueOf(studMod.hasBooked()), studMod.getResult()));
+		}*/
+	/* 
+	 moduleList.add(new ModuleTableGUI("mech fittings", "Yes", "Yes", "4", "No", "Yes", ""));
 	moduleList.add(new ModuleTableGUI("Digital Tech", "Yes", "No", "4", "Yes", "", "Yes"));
 	moduleList.add(new ModuleTableGUI("CAC", "No", "Yes", "3", "No", "Yes", ""));
-	
+	*/
+		for( StudentModuleStats studMod : studMods){
+		    System.out.printf("Date Regisetered: %s%nModule Name: %s%nAmount Paid : %.2f%n"
+		    	+ "Booked: %s%nResult: %s%nPayment Status: %s%n->%n", 
+		    	studMod.getDateRegistered(), studMod.getModuleName(), 
+		    	studMod.getAmountPaid(), studMod.hasBooked(), studMod.getResult(), 
+		    	studMod.isPaymentComplete()) ; 
+		    
+		    
+		}
 	return moduleList;
 	
     }
 
-	private void createChart() {
+	private void createChart(String id) {
+	    StudentStats studStats = null; 
+	    Student student = new Student(id);
+	    try
+	    {
+		studStats = StatisticsManager.retrieveStats(student);
+	    }
+	    catch (SQLException e)
+	    {
+		// FIXME Auto-generated catch block
+		e.printStackTrace();
+	    }
+	    /*
+	     * Modules Registered: 3
+                Modules Paid: 3
+                Modules Booked: 1
+                 Modules Attended: 1
+                Modules Passed: 0
+                Modules Failded: 0
+	     * */
 		//import piechart data
 		ObservableList<Data> list = FXCollections.observableArrayList(
-				new PieChart.Data("basic elect", Math.round(Math.random()*10)),
-				new PieChart.Data("MMF", Math.round(Math.random()*10)),
-				new PieChart.Data("electronic", Math.round(Math.random()*10)),
-				new PieChart.Data("ethics", Math.round(Math.random()*10)),
-				new PieChart.Data("others", Math.round(Math.random()*10))
+				new PieChart.Data("Modules Registered", studStats.getModuleRegistered()),
+				new PieChart.Data("Modules Paid", studStats.getModulePaid()),
+				new PieChart.Data("Modules Booked", studStats.getModuleBooked()),
+				new PieChart.Data("Modules Attended", studStats.getModuleAttended()),
+				new PieChart.Data("Modules Passed", studStats.getModulePassed()),
+				new PieChart.Data(" Modules Failed:", studStats.getModuleFailed())
 				);
 		pieChart.setData(list);
 	}

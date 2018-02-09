@@ -42,10 +42,10 @@ public class ModuleTest
 	    System.out.println("---------------REMOVING AN EXISTING MODULE TEST--------------");
 	    String name = TestUtils.getStringInput("Enter the existing module name: ");
 
-	    /*This should be used when we want to remove an existing Module*/
+	    /*This should be used when we want to remove an existing ModuleTabTable*/
 	    Module existingModule = new Module(name);
 	    if( ModuleManager.removeModule(existingModule)){
-		System.out.println( "Module was removed succcessfullly!!!");
+		System.out.println( "ModuleTabTable was removed succcessfullly!!!");
 		TestUtils.displayBean(BeanType.MODULE , 0 );
 	    }
 	    else
@@ -64,7 +64,7 @@ public class ModuleTest
 	    newModule = getNewModule();// name, numberOfUnits and amount are all required for units
 
 	    if( ModuleManager.updateModule(newModule, existingModule) ){
-		System.out.println( "The Module was updated succcessfullly!!!");
+		System.out.println( "The ModuleTabTable was updated succcessfullly!!!");
 		TestUtils.displayBean(BeanType.MODULE, 0 );
 
 	    }
@@ -108,7 +108,7 @@ public class ModuleTest
 	double amount  = Double.parseDouble(
 		TestUtils.getStringInput("Enter the amount per unit for this module: "));
 
-	/*This constructor should be used when adding a new  Module*/
+	/*This constructor should be used when adding a new  ModuleTabTable*/
 	Module newModule = new Module(name, numberOfUnits, amount);
 	return newModule;
     }

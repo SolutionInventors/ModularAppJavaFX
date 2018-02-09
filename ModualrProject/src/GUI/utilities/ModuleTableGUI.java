@@ -7,22 +7,16 @@ public class ModuleTableGUI
     private final SimpleStringProperty module;
     private final SimpleStringProperty paid;
     private final SimpleStringProperty booked;
-    private final SimpleStringProperty unitAttended;
-    private final SimpleStringProperty completed;
-    private final SimpleStringProperty pass;
-    private final SimpleStringProperty fail;
+    private final SimpleStringProperty result;
 
-    public ModuleTableGUI(String module, String paid, String booked, String unitAttended, String completed, String pass,
-	    String fail)
+    public ModuleTableGUI(String module, String paid, String booked, String result
+	   )
     {
 	super();
 	this.module = new SimpleStringProperty(module);
 	this.paid = new SimpleStringProperty(paid);
 	this.booked = new SimpleStringProperty(booked);
-	this.unitAttended = new SimpleStringProperty(unitAttended);
-	this.completed = new SimpleStringProperty(completed);
-	this.pass = new SimpleStringProperty(pass);
-	this.fail = new SimpleStringProperty(fail);
+	this.result = new SimpleStringProperty(result);
     }
 
     public String getModule()
@@ -40,25 +34,13 @@ public class ModuleTableGUI
 	return booked.get();
     }
 
-    public String getUnitAttended()
-    {
-	return unitAttended.get();
+  
 
+    public String getResult()
+    {
+	return result.get();
     }
 
-    public String getCompleted()
-    {
-	return completed.get();
-    }
-
-    public String getPass()
-    {
-	return pass.get();
-    }
-
-    public String getFail()
-    {
-	return fail.get();
-    }
+   
 
 }// end class

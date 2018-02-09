@@ -4,12 +4,12 @@ import java.sql.Date;
 
 /**
  * The {@code ModuleLog} keeps track of the transactions that occur in the 
- * {@code Module} table in the database. These informations are updated via 
- * triggers assigned to the {@code Module} table.<br>
+ * {@code ModuleTabTable} table in the database. These informations are updated via 
+ * triggers assigned to the {@code ModuleTabTable} table.<br>
  * Once initialized a {@code ModuleLog } cannot data cannot be changed thus it 
  * is immutable
  * @author Oguejiofor Chidiebere
- * @see Module
+ * @see ModuleTabTable
  *
  */
 public class ModuleLog extends Log
