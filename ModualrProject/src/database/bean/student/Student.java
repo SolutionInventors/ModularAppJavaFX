@@ -1,6 +1,9 @@
 package database.bean.student;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 
 import database.bean.Bean;
@@ -21,6 +24,8 @@ public class Student  implements Bean
 {
 
     private static final long serialVersionUID = 1L;
+
+    private static File defaultImage;
 
     /**Foreign key to Modular Class table*/
     private  String modClass;
@@ -57,7 +62,12 @@ public class Student  implements Bean
 	setModClass(className);
 	setIdCardNumber(id);
 	setEmailAddress(mail);
-	setImage( image);
+	setImage( getDefaultImage());
+    }
+
+    private static File getDefaultImage()
+    {
+	return new File("res/defaultImage.jpg");
     }
 
     /**
@@ -232,7 +242,7 @@ public class Student  implements Bean
      */
     public void setImage(File image) 
     {
-	this.image = image;
+	this.image = image != null ?image : defaultImage;
     }
 
     /**
@@ -282,6 +292,59 @@ public class Student  implements Bean
 		getLastName().matches( "[A-Za-z]{1,50}" ); 
 
     }
+
+    public static void setDefaultImage(InputStream inStream)
+    {
+	defaultImage = getImageFromStream("default-image", inStream);
+    }
+
+    /**
+     * Converts an {@code InputStream} to a file
+     * @param fileName output file name 
+     * @param inputStream
+     * @return
+     */
+    public static File getImageFromStream( String fileName , InputStream inputStream)
+    {
+	File studentImage = null;
+	FileOutputStream output = null;
+	try{
+	    if( inputStream.available() <=0 ) return null;
+	    studentImage = new File( "res\\" + fileName + ".jpg" );
+	    output = new FileOutputStream( studentImage );
+	    studentImage.deleteOnExit();
+	    byte[] buffer = new byte[1024];
+	    while( inputStream.read( buffer) >0 ){
+		output.write( buffer );
+	    }
+	}
+
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	    return null;
+	}
+	finally
+	{
+	    try
+	    {
+		if( output !=null ) output.close();
+		if( inputStream != null ) inputStream.close();
+	    }
+	    catch (IOException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	return studentImage;
+    }
+
+    public static File getdefaultImage()
+    {
+	return defaultImage;
+    }
+
+
 
 
 }

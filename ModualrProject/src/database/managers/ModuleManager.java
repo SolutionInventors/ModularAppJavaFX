@@ -108,4 +108,26 @@ public final class ModuleManager
 	return list.toArray( new Module[ list.size() ] );
 
     }
+
+    /**
+     * Checks if a MOdule is in the database by checking the moduleName attribute
+     * @param moduleName the module name to be checked
+     * @return {@code true } if the module is in the database
+     * @throws SQLException
+     */
+    public static boolean exists(String moduleName) throws SQLException
+    {
+	String sql = "SELECT name FROM module WHERE name = ? ";
+	ResultSet result = null ; 
+	try( PreparedStatement  stmt = DatabaseManager.getPreparedStatement( 
+		sql,moduleName);)
+	{
+	   
+	   result = stmt.executeQuery(); 
+	   return result.next() ;
+	    
+	}finally{
+	    if( result!=null) result.close();
+	}
+    }
 }

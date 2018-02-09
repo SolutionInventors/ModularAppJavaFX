@@ -24,7 +24,12 @@ public final class ModuleRegisterManager
     public static boolean registerForModule(ModuleRegister modReg ) 
 	    throws  SQLException, InvalidAdminException
     {
-	if( modReg.isValid( ValidationType.NEW_BEAN )){
+	boolean modAndStudentExists = 
+		StudentManager.exists(modReg.getStudentId()) && 
+		ModuleManager.exists(modReg.getModuleName());
+		
+	if(modAndStudentExists && modReg.isValid( ValidationType.NEW_BEAN ) && 
+		canRegister(modReg) ){
 	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
 		    ("{call registerForModule(?,?,?)}", modReg.getStudentId(), modReg.getModuleName());)
 	    {
@@ -38,13 +43,46 @@ public final class ModuleRegisterManager
 	return false;
     }
 
+
+
+    /**
+     * This checks if a {@code ModuleRegister} can be inputed into the database. 
+     * A {@code ModuleRegister} can be inserted if it does not exists in the database
+     * or if the {@code Student} failed it the first time.  
+     * @param modReg the {@code ModuleRegister } to be tested
+     * @return {@code true } if the module Register can be inserted into the database.
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
+    public static boolean canRegister(ModuleRegister modReg) throws SQLException, InvalidAdminException{
+	String sql = 
+		"Select COUNT(IF(UCASE(result) ='PASS', 1, NULL)) AS numPassed,  " + 
+			"	COUNT(IF(result,NULL, 1)) AS registeredButNoResult FROM module_Register as reg " +  
+			"WHERE reg.studentId = ? AND	 reg.moduleName = ? ";
+
+		
+	ResultSet result = null;
+	if( modReg.isValid( ValidationType.NEW_BEAN )){
+	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
+		    (sql, modReg.getStudentId(), modReg.getModuleName());)
+	    {
+		result = stmt.executeQuery();
+
+		if(result.next()) return result.getInt(1) == 0 && result.getInt(2) == 0 ;
+
+	    }finally{
+		if(result!=null) result.close();
+	    }
+	}
+	return false;
+    }
     public static double getTotalPriceForModule(int regID) throws SQLException
     {
 	ModuleRegister modReg = ModuleRegisterManager.getModRegById(regID);
 	double totalPrice = modReg.getTotalPriceForModule();
 	return totalPrice;
     }
-    
+
     /**
      * 
      * @param id
@@ -121,7 +159,7 @@ public final class ModuleRegisterManager
 	ModuleRegister modReg = getModRegById(modRegId);
 	result = result.toUpperCase().matches("P|PASSED") ? "Pass" : result;
 	result = result.toUpperCase().matches("F|FAILED") ? "Fail" : result;
-	
+
 	if( modReg != null &&  modReg.hasAttended() && 
 		(result.toLowerCase().equals("pass") || result.toLowerCase().equals("fail")))
 	{
@@ -136,7 +174,7 @@ public final class ModuleRegisterManager
     }
 
 
-   
+
     public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
 	String sql = "SELECT *,isPaymentComplete(id) as Paid FROM module_register " + 
 		"ORDER BY dateRegistered " +

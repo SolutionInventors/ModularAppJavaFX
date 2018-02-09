@@ -5,6 +5,7 @@ import java.security.Security;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,6 +23,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.sun.net.ssl.internal.ssl.Provider;
+
+import database.bean.student.Student;
 
 /**
  * This class contains static methods that would be used to establish 
@@ -91,38 +94,38 @@ public final class ConnectionManager
 	    //Compose the message  
 	    List<InternetAddress>  addresses =
 		    Arrays.stream(recipient)
-		    	.map(elem -> {
-			    try
-			    {
-				return new InternetAddress(elem);
-			    }
-			    catch (AddressException e)
-			    {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			    }
-			    return null;
-			})
-		    	.filter(elem-> elem != null )
-		    	.collect(Collectors.toList()); 
-	    
+		    .map(elem -> {
+			try
+			{
+			    return new InternetAddress(elem);
+			}
+			catch (AddressException e)
+			{
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			}
+			return null;
+		    })
+		    .filter(elem-> elem != null )
+		    .collect(Collectors.toList()); 
+
 	    InternetAddress[] addrArray = 
-		    	addresses.toArray(new InternetAddress[addresses.size()]);
-		    
+		    addresses.toArray(new InternetAddress[addresses.size()]);
+
 	    MimeMessage message = new MimeMessage(mailSession);  
 	    message.setFrom(new InternetAddress(user));  
-	    
+
 	    message.addRecipients(Message.RecipientType.TO,addrArray);  
 	    message.setSubject(subject);  
 	    message.setSentDate( new  java.util.Date());
 	    message.setText( body);  
-	    
+
 	    //send the message  
 	    Transport transport = mailSession.getTransport("smtp");
 	    transport.connect(host, user, password);
-	    
+
 	    transport.sendMessage(message, message.getAllRecipients());
-	    
+
 	    transport.close();
 
 	} 
@@ -145,13 +148,14 @@ public final class ConnectionManager
 	try
 	{
 	    conn = DriverManager.getConnection(MYSQLURL, USERNAME, PASSWORD );
-	
+
 	    ResultSet result = null;
 	    try( Statement stmt = conn.createStatement();)
 	    {
 		result = stmt.executeQuery("SELECT NOW();");
 		if( result.next()){
 		    currentDate =  result.getDate(1);
+		    initialiseStudentFile(); 
 		    System.out.println( "Connected" );
 		    return true;
 		}
@@ -167,6 +171,40 @@ public final class ConnectionManager
 	return false;
     }
 
+
+
+    private static void initialiseStudentFile()
+    {
+	String sql = "SELECT DefaultImage FROM resources "; 
+
+	ResultSet result = null;
+	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql);){
+	    result = stmt.executeQuery(); 
+	    if(result.next()){
+		Student.setDefaultImage(result.getBinaryStream(1));
+	    }
+	   
+	}
+	catch (SQLException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}finally{
+	    if( result!=null)
+		try
+		{
+		    result.close();
+		}
+		catch (SQLException e)
+		{
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+	}
+
+
+
+    }
 
 
     /**THis gets the only {@code Connection } object in this project*/

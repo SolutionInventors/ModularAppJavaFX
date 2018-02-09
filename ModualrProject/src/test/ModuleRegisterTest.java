@@ -46,7 +46,11 @@ public class ModuleRegisterTest
 	    }
 	    else if( !modReg.isValid(ValidationType.NEW_BEAN))
 		System.err.println( "The format of the ModuleRegister was invalid" );
-	    else
+	    else if(!ModuleRegisterManager.canRegister(modReg)){
+		System.err.println("Unsuccesful ! It possible the module has already been passed");
+		System.err.println("Or it's result is not out yet");
+	    }
+	    else 
 	    {
 		System.out.println("Was Unsuccessful for unknown reasons!!!");
 	    }

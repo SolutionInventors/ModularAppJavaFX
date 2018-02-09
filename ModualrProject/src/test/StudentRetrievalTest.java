@@ -44,6 +44,7 @@ public class StudentRetrievalTest
 	    ConnectionManager.close();
 	}
 	
+	System.out.println(Student.getdefaultImage());
 	
     }//end main
 

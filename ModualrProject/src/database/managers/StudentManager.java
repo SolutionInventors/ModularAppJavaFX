@@ -2,9 +2,7 @@ package database.managers;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,6 +46,21 @@ public final class StudentManager
 	return false;
     }
 
+    public static boolean exists(String studentId) throws SQLException
+    {
+	String sql = "SELECT id_card_number FROM student WHERE id_card_number = ? ";
+	ResultSet result = null ; 
+	try( PreparedStatement  stmt = DatabaseManager.getPreparedStatement( 
+		sql,studentId);)
+	{
+	   
+	   result = stmt.executeQuery(); 
+	   return result.next() ;
+	    
+	}finally{
+	    if( result!=null) result.close();
+	}
+    }
 
 
     public static boolean updateImage( Student existingStudent, File image) 
@@ -226,10 +239,11 @@ public final class StudentManager
 		String id = result.getString("id_card_number");
 		String fName = result.getString("FirstName"); 
 		String lName = result.getString("LastName"); 
-
+		File file = Student.getImageFromStream(id, result.getBinaryStream("image"));
+		
 		stud = new Student(fName, lName, id, result.getString("className"),
 			result.getString("emailAddress"), 
-			getImageFromStream(id, result.getBinaryStream("image")));
+			file);
 		list.add(stud);
 	    }
 	}
@@ -240,41 +254,7 @@ public final class StudentManager
 	return list.toArray( new Student[list.size()] );
     }
 
-    private static File getImageFromStream( String id , InputStream inputStream) throws SQLException
-    {
-	File studentImage = null;
-	FileOutputStream output = null;
-	try{
-	    if( inputStream.available() <=0 ) return null;
-	    studentImage = new File( "res\\" + id + ".jpg" );
-	    output = new FileOutputStream( studentImage );
-	    studentImage.deleteOnExit();
-	    byte[] buffer = new byte[1024];
-	    while( inputStream.read( buffer) >0 ){
-		output.write( buffer );
-	    }
-	}
-
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	    return null;
-	}
-	finally
-	{
-	    try
-	    {
-		if( output !=null ) output.close();
-		if( inputStream != null ) inputStream.close();
-	    }
-	    catch (IOException e)
-	    {
-		e.printStackTrace();
-	    }
-	}
-	return studentImage;
-    }
-
+    
 
 
     private static final class StudentDataManager

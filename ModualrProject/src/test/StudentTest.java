@@ -46,13 +46,13 @@ public class StudentTest
 	JFileChooser chooser = new JFileChooser();
 	chooser.setDialogTitle("Select the image of the student");
 	chooser.showOpenDialog(null);
-
-	final String studentId = TestUtils.getStringInput("Input Student Id card number: ");
-	String mail =  TestUtils.getStringInput("Input the student emial address: ");
-	String className = TestUtils.getStringInput("Input the student class: ");
 	System.out.println("Select File" );
 
 	File image = chooser.getSelectedFile();
+	final String studentId = TestUtils.getStringInput("Input Student Id card number: ");
+	String mail =  TestUtils.getStringInput("Input the student emial address: ");
+	String className = TestUtils.getStringInput("Input the student class: ");
+	
 
 	String firstName = TestUtils.getStringInput("Input Student Surname:" );
 	String lName= TestUtils.getStringInput("Input Student last name: ");

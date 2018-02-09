@@ -248,6 +248,32 @@ public final class AdminManager
 	return false;
     }
 
+    /**
+     * Deletes an admin from the database. This operation can only be performed if
+     * the currently logged in admin has super access else InvalidAdminException is 
+     * thrown. 
+     * 
+     * @param oldAdmin the admin to be removed
+     * @return true if the operation was successful
+     * @throws SQLException when a db errror occurs
+     * @throws InvalidAdminException when the admin that wants to make the change is invalid
+     */
+    public static boolean deleteAdmin(String existingAdminUsername) throws SQLException, InvalidAdminException{
+	Admin currentAdmin = DatabaseManager.getCurrentAdmin() ;
+	
+	if(currentAdmin != null && 
+		!currentAdmin.getUsername().matches(existingAdminUsername ) &&
+		currentAdmin.isSuper()){
+	    try( CallableStatement stmt =
+		    DatabaseManager.getCallableStatement("removeAdmin(?)", existingAdminUsername); ){
+		int affected = stmt.executeUpdate(); 
+		if(affected > 0 ) return true; 
+		else return false;
+	    } 
+	}
+	throw new InvalidAdminException("This admin does not havve permission to do this!");
+	
+    }
     public static boolean changeUsername( Admin existingAdmin, String newUsername )
 	    throws SQLException, InvalidAdminException
     {
