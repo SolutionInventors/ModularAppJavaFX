@@ -1,5 +1,7 @@
 package database.statistics;
 
+import java.sql.Date;
+
 /**
  * This object contains statistics about the objects in the database. 
  * It contains informations like total Modules in database, total
@@ -8,57 +10,88 @@ package database.statistics;
  */
 public class TableStats
 {
-    private final int TOTAL_NUMBER_OF_MODULES;
-    private final int NUMBER_OF_MOD_REGISTERED;
-    private final int NUMBER_OF_MOD_ATTENDED;
-    private final int NUMBER_OF_MOD_PASSED;
-    private final int NUMBER_OF_MOD_FAILED;
+    private final int totalNumberOfModules;
+    private final int numberOfModulesRegistered;
+    private final int numberOfModulesAttended;
+    private final int numberOfModulesPassed;
+    private final int numberOfModulesFailed;
     
-    private final int TOTAL_NUMBER_OF_STUDENTS;
-    private final int NUMBER_OF_ACTIVE_STUDENTS;
-    private final int NUMBER_OF_INACTIVE_STUDENTS;
-    private final int NUMBER_OF_CERTIFIED_STUDENTS;
+   
+    private final int totalNumberOfStudents;
+    private final int numberOfActiveStudents;
+    private final int numberOfInactiveStudents;
+    private final int numberOfCertifiedStudents;
+    private final int totalStudentRegisteredThisYear;
+    private final Date firstStudentRegistration; 
+    private final Date lastStudentRegistration; 
     
-    private final int TOTAL_CERTIFICATES;
-    private final String HIGHEST_AWARED_CERTIFICATE;
+    private final int totalNumberOfCertificates;
+    private final String highestCertificateAwarded;
+    private final String leastCertificateAwarded; 
     
-    private final int TOTAL_NUMBER_OF_CLASS;
+    private final double averageStudentPerClass; 
+    private final int totalNumberOfClass;
 
+    
+    
+    
     /**
-     * Creates this object with data containing statistics of the database tables
-     * @param totalMods the total number of modules in the database
-     * @param totalModRegistered the total modules that students have registered for
-     * @param modAttended total modules that have been attended
-     * @param modPassed total modules that students have passed
-     * @param modFailed total modules that students have failed
+     * Initialises this {@code TableStats} object with the required data
+     * @param totalMods total modules in the database
+     * @param totalModRegistered total modules registered
+     * @param modAttended total modules attended
+     * @param modPassed total modules passed
+     * @param modFailed total modules failed
      * @param totalStudents total students in the database
-     * @param totalActiveStud total active students in the database
-     * @param totalInactiveStud total inactive students in the database
-     * @param totalCertifiedStudents total certified students in the datbase
-     * @param totalCertificates total certificates in the database
-     * @param higestAwardedCertificate the highest certificate that has been issued 
-     * @param totalClass the total number of classes that are in the database
+     * @param totalActiveStud total active students
+     * @param totalInactiveStud total inactive students
+     * @param totalCertifiedStudents total certified students
+     * @param totalStudentRegisteredThisYear total students that wrere registered this year
+     * @param firstStudentReg the {@code Date } in which the first student was registered
+     * @param lastStudentRegistration the {@code Date} in which the last student was registered
+     * @param totalCertificates the total {@code Certificate}s in th database
+     * @param higestAwardedCertificate the highest Certificates awarded
+     * @param leastCertAwarded the least {@code Certificate } awarded
+     * @param aveStudentPerClass a {@code double} containing the average student per class
+     * @param totalClass the total number of classes in the database
      */
-    protected TableStats( int totalMods, int totalModRegistered, int modAttended, 
-	    int modPassed, int modFailed, int totalStudents, int totalActiveStud,
-	    int totalInactiveStud, int totalCertifiedStudents, int totalCertificates, 
-	    String higestAwardedCertificate, int totalClass)
+    protected TableStats( //mod stats
+	    int totalMods, int totalModRegistered, int modAttended, 
+	    int modPassed, int modFailed, 
+	    //student stats
+	    int totalStudents, int totalActiveStud,int totalInactiveStud, 
+	    int totalCertifiedStudents,int totalStudentRegisteredThisYear, Date firstStudentReg, 
+	    Date lastStudentRegistration, 
+	    //cert stats
+	    int totalCertificates, String higestAwardedCertificate,String leastCertAwarded, 
+	    //class stats
+	    double aveStudentPerClass, int totalClass)
     {
-	TOTAL_NUMBER_OF_MODULES = totalMods;
-	NUMBER_OF_MOD_REGISTERED = totalModRegistered;
-	NUMBER_OF_MOD_ATTENDED = modAttended;
-	NUMBER_OF_MOD_PASSED  =  modPassed;
-	NUMBER_OF_MOD_FAILED = modFailed;
+	//setting Module stats
+	totalNumberOfModules = totalMods;
+	numberOfModulesRegistered = totalModRegistered;
+	numberOfModulesAttended = modAttended;
+	numberOfModulesPassed  =  modPassed;
+	numberOfModulesFailed = modFailed;
 	
-	TOTAL_NUMBER_OF_STUDENTS = totalStudents;
-	NUMBER_OF_ACTIVE_STUDENTS = totalActiveStud;
-	NUMBER_OF_INACTIVE_STUDENTS = totalInactiveStud;
-	NUMBER_OF_CERTIFIED_STUDENTS = totalCertifiedStudents;
+	//setting student datas
+	totalNumberOfStudents = totalStudents;
+	numberOfActiveStudents = totalActiveStud;
+	numberOfInactiveStudents = totalInactiveStud;
+	numberOfCertifiedStudents = totalCertifiedStudents;
+	this.totalStudentRegisteredThisYear = totalStudentRegisteredThisYear; 
+	firstStudentRegistration =  firstStudentReg;
+	this.lastStudentRegistration = lastStudentRegistration; 
 	
-	TOTAL_CERTIFICATES = totalCertificates;
-	HIGHEST_AWARED_CERTIFICATE = higestAwardedCertificate;
+		
+	//setting cert stats; 
+	totalNumberOfCertificates = totalCertificates;
+	highestCertificateAwarded = higestAwardedCertificate;
+	leastCertificateAwarded = leastCertAwarded; 
 	
-	TOTAL_NUMBER_OF_CLASS = totalClass;
+	//setting class stats
+	averageStudentPerClass = aveStudentPerClass; 
+	totalNumberOfClass = totalClass;
     }
 
 
@@ -68,7 +101,7 @@ public class TableStats
      */
     public int getTotalNumberOfModules()
     {
-        return TOTAL_NUMBER_OF_MODULES;
+        return totalNumberOfModules;
     }
 
     /**
@@ -78,7 +111,7 @@ public class TableStats
      */
     public int getNumberOfModulesRegistered()
     {
-        return NUMBER_OF_MOD_REGISTERED;
+        return numberOfModulesRegistered;
     }
 
     
@@ -88,7 +121,7 @@ public class TableStats
      */
     public int getnumberOfModulesAttended()
     {
-        return NUMBER_OF_MOD_ATTENDED;
+        return numberOfModulesAttended;
     }
 
 
@@ -98,7 +131,7 @@ public class TableStats
      */
     public int getNumberOfModulesPassed()
     {
-        return NUMBER_OF_MOD_PASSED;
+        return numberOfModulesPassed;
     }
 
 
@@ -109,7 +142,7 @@ public class TableStats
      */
     public int getNumberOfModulesFailed()
     {
-        return NUMBER_OF_MOD_FAILED;
+        return numberOfModulesFailed;
     }
 
     /**
@@ -118,7 +151,7 @@ public class TableStats
      */
     public int getTotalNumberOfStudents()
     {
-        return TOTAL_NUMBER_OF_STUDENTS;
+        return totalNumberOfStudents;
     }
 
     /**
@@ -127,7 +160,7 @@ public class TableStats
      */
     public int getNumberOfActiveStudents()
     {
-        return NUMBER_OF_ACTIVE_STUDENTS;
+        return numberOfActiveStudents;
     }
 
     /**
@@ -136,7 +169,7 @@ public class TableStats
      */
     public int getNumberOfInactiveStudents()
     {
-        return NUMBER_OF_INACTIVE_STUDENTS;
+        return numberOfInactiveStudents;
     }
 
     /**
@@ -145,7 +178,7 @@ public class TableStats
      */
     public int getNumberOfCertifiedStudents()
     {
-        return NUMBER_OF_CERTIFIED_STUDENTS;
+        return numberOfCertifiedStudents;
     }
 
     /**
@@ -154,7 +187,7 @@ public class TableStats
      */
     public int getTotalNumberOfCertificates()
     {
-        return TOTAL_CERTIFICATES;
+        return totalNumberOfCertificates;
     }
     
     /**
@@ -164,13 +197,13 @@ public class TableStats
      */
     public String getHighestAwardedCertificate()
     {
-        return HIGHEST_AWARED_CERTIFICATE;
+        return highestCertificateAwarded;
     }
 
 
     public int getNumberOfClasses()
     {
-	return TOTAL_NUMBER_OF_CLASS;
+	return totalNumberOfClass;
     }
     
     
@@ -179,8 +212,10 @@ public class TableStats
 		+ "Number of active students: %s\n"
 		+ "Number of student certified: %s\nNumber of classes: %s\n"
 		+ "Number of inactive students: %s\nNumber of modules attended: %s\n"
-		+ "NUmber of Modules Failed: %s\nNumber of Modules Passed: %s\n"
-		+ "Nunmber of Modules Registered: %s\nNumber of Certificates: %s\n", 
+		+ "Number of Modules Failed: %s\nNumber of Modules Passed: %s\n"
+		+ "Nunmber of Modules Registered: %s\nNumber of Certificates: %s\n" + 
+		"Total Student Registered this Year: %s\n " +
+		"Least Certificate Awareded: %s ", 
 		getHighestAwardedCertificate() ,
 		getTotalNumberOfStudents(), 
 		getNumberOfActiveStudents(), 
@@ -191,6 +226,38 @@ public class TableStats
 		getNumberOfModulesFailed(), 
 		getNumberOfModulesPassed(), 
 		getNumberOfModulesRegistered(), 
-		getTotalNumberOfCertificates());
+		getTotalNumberOfCertificates(), 
+		getTotalStudentRegisteredThisYear(), 
+		getLeastCertificateAwarded());
+    }
+
+
+    public int getTotalStudentRegisteredThisYear()
+    {
+	return totalStudentRegisteredThisYear;
+    }
+
+
+    public Date getFirstStudentRegistration()
+    {
+	return firstStudentRegistration;
+    }
+
+
+    public Date getLastStudentRegistration()
+    {
+	return lastStudentRegistration;
+    }
+
+
+    public String getLeastCertificateAwarded()
+    {
+	return leastCertificateAwarded;
+    }
+
+
+    public double getAverageStudentPerClass()
+    {
+	return averageStudentPerClass;
     }
 }

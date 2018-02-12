@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import database.bean.Bean;
 import database.bean.Certificate;
@@ -76,10 +77,16 @@ public class StatisticsManager
 			"	COUNT(DISTINCT stud.id_card_number, IF(stud.active = false,1, null)) as 'Inactive Stud',  "+
 			"	COUNT(DISTINCT stud.id_card_number, stud.certificateIssued) as 'Certified Stud', "+
 			"	COUNT(DISTINCT cert.Name) as 'Total Certs', "+
-			"	MAX(  stud.certificateIssued) AS 'Max certificate', "+
+			"	MAX(DISTINCT  stud.certificateIssued) AS 'Max certificate Awarded', "+
+			"	MIN(DISTINCT  stud.certificateIssued) AS 'Min certificate Awarded', "+
+			"	MIN( DISTINCT stud.dateAdmitted) as dateOfFirstAdmission, " + 
+			"	MAX(stud.dateAdmitted) as dateOfLastAdmission, \n " +
+
+			"	COUNT(DISTINCT stud.id_card_number) / COUNT(DISTINCT class.name) AS 'Average Student Per Class', " +
+
 			"	COUNT(DISTINCT class.name) as 'Num of Class' "+
 
-		"FROM student as stud \n"+
+		"FROM student as stud \n "+
 
 		"LEFT JOIN module  ON true "+
 		"LEFT JOIN module_register as reg "+
@@ -90,29 +97,111 @@ public class StatisticsManager
 		"	ON csMod.moduleName = module.name AND cert.name = csMod.certificateName "+
 		"LEFT JOIN modular_class as  class" +
 		"	ON true;";
+
+	String regStudentThisYearSql = 
+		"SELECT count(dateAdmitted) as dateCount " +
+			"	from student as stud " + 
+			" WHERE dateAdmitted > date_sub(now(), INTERVAL 1 YEAR); "; 
+	ResultSet regStudThisYearResult = null ; 
+
 	ResultSet result = null;
-	try( PreparedStatement stmt = DatabaseManager.getPreparedStatement
-		(sql );)
+	try( 	
+		PreparedStatement stmt = DatabaseManager.getPreparedStatement
+		(sql );
+		PreparedStatement stmt2 = 
+			DatabaseManager.getPreparedStatement(regStudentThisYearSql))
 	{
+
 	    result =  stmt.executeQuery();
+	    regStudThisYearResult = stmt2.executeQuery(); 
+	    regStudThisYearResult.next(); 
 	    if( result.next() ){
-		return new TableStats(result.getInt("Num of Modules"),
-			result.getInt("Reg ModuleTabTable"), result.getInt("Total Mod Attended"),
-			result.getInt("Total Mod Passed"),result.getInt("Total Mod Failed"),
-			result.getInt("Num of Students"), result.getInt("Active Stud"),
+
+
+		return new TableStats(
+			result.getInt("Num of Modules"),
+			result.getInt("Reg ModuleTabTable"), 
+			result.getInt("Total Mod Attended"), 
+			result.getInt("Total Mod Passed"), result.getInt("Total Mod Failed"), 
+			result.getInt("Num of Students"), result.getInt("Active Stud"), 
 			result.getInt("Inactive Stud"), result.getInt("Certified Stud"),
-			result.getInt("Total Certs"), result.getString("Max certificate") , 
-			result.getInt("Num of Class"));
+			regStudThisYearResult.getInt(1), 
+			result.getDate("dateOfFirstAdmission"), result.getDate("dateOfLastAdmission"), 
+			result.getInt("Total Certs"), result.getString("Max certificate Awarded"),
+			result.getString("Min certificate Awarded"),
+			result.getDouble("Average Student Per Class"), result.getInt("Num of Class")); 
 	    }
 
 	}
 	finally{
 	    if( result != null ) result.close();
+	    if(regStudThisYearResult != null ) regStudThisYearResult.close();
 	}
 
-	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0);
+	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "NONE", 0, 0);
     }
 
+
+    /**
+     * Gets the number of students that have been registered into the database 
+     * over a certain period of time. The first argument taks a value which can be
+     * any valid integer while the second takes a constant from class Calendar. 
+     * @param period the amount of time 
+     * @param type  a constant from the {@link Calendar } class. It takes either fo 
+     * {@code Calendar.MONTH, Calendar.YEAR, Calendar.WEEK, Calendar.HOUR, Calendar.SECOND, 
+     * Calendar.DAY_OF_YEAR} 
+     * @return
+     */
+    public static int getNumOfStudRegisteredByDate(int period, int type){
+
+	String sql  =getSqlForDateInterval(period, type);
+
+	sql = String.format("SELECT dateAdmitted from student "
+		+ " where dateAdmitted > date_sub(now(),  %s)" , sql); 
+
+	ResultSet result  = null ;
+	try{
+	    try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql)){
+		result = stmt.executeQuery(); 
+		if(result.next()) return result.getInt(1); 
+	    }finally{
+		if( result != null ) result.close(); 
+	    }
+	}catch(SQLException e ){
+	    e.printStackTrace(); 
+	}
+	return 0; 
+    }
+
+    /**
+     * @param value
+     * @param type
+     */
+    public static String getSqlForDateInterval(int value, int type)
+    {
+	String dateString ; 
+	switch(type){
+
+	    case Calendar.MONTH: 
+		dateString = "MONTH"; 
+	    case Calendar.DAY_OF_YEAR: 
+		dateString = "DAY"; 
+	    case Calendar.WEEK_OF_MONTH: 
+		dateString = "WEEK";
+	    case Calendar.MINUTE: 
+		dateString = "MINUTE"; 
+	    case Calendar.SECOND: 
+		dateString = "SECOND"; 
+	    case Calendar.HOUR: 	
+		dateString = "HOUR"; 
+
+	    default: 
+		dateString = "YEAR"; 
+
+	}
+
+	return  String.format("INTERVAL %s %s ", value, dateString);
+    }
     private static StudentStats getStudentStats(ResultSet result, Student student) throws SQLException
     {
 	String sql = 
@@ -144,6 +233,14 @@ public class StatisticsManager
 	}
     }
 
+
+    /**
+     * Retrives the module stats from the database
+     * @param result
+     * @param existinModule
+     * @return
+     * @throws SQLException
+     */
     private static ModuleStats getModuleStats(ResultSet result , Module existinModule) 
 	    throws SQLException
     {
@@ -238,7 +335,7 @@ public class StatisticsManager
 		double amount = resultSet.getDouble("amountPaid"); 
 		Date date = resultSet.getDate("DateRegistered"); 
 		int regId = resultSet.getInt("regID");
-		
+
 		StudentModuleStats stat= new StudentModuleStats(regId, date, modName, result, 
 			booked, paymentStatus , attended, amount); 
 		list.add(stat); 

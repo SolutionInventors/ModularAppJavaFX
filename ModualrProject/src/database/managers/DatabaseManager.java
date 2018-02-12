@@ -82,6 +82,9 @@ public final class DatabaseManager
      */
     public static void setCurrentAdmin(Admin admin)
     {
+	String email = admin.getEmailAddress();
+	if(admin.getUsername() == null  && email != null )
+	    admin.setUsername(AdminManager.getUsernameFromMail(email ));
 	try
 	{
 	    if(AdminManager.validateAdmin(admin)) {

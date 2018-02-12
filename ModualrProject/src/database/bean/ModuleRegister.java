@@ -1,7 +1,9 @@
 package database.bean;
 
+import java.io.File;
 import java.sql.Date;
 
+import GUI.utilities.ModuleTabTable;
 import database.bean.student.Student;
 import utils.ValidationType;
 
@@ -35,10 +37,12 @@ public class ModuleRegister  implements Bean
 
     /**Foreign key from the ModuleTabTable table*/
     private String moduleName;
-
+    
     /**Foreign key from the Student table*/
     private String studentId;
 
+    private File studentImage;//stored in Student table but used here
+    
     private boolean paymentStatus;
     private boolean bookingStatus;
     private boolean attended;
@@ -70,10 +74,11 @@ public class ModuleRegister  implements Bean
      * @param attended
      * @param result
      */
-    public ModuleRegister( String moduleName , String studentId,
+    public ModuleRegister(File image,  String moduleName , String studentId,
 	    boolean booked, boolean attended, double totalPrice, String result )
     {
 	this(  moduleName, studentId);
+	setStudentImage(image);
 	setBookingStatus(booked);
 	setAttended(attended);
 	setResult(result);
@@ -281,6 +286,16 @@ public class ModuleRegister  implements Bean
     public void setTotalPriceForModule(double totalPriceForModule)
     {
         this.totalPriceForModule = totalPriceForModule;
+    }
+
+    public File getStudentImage()
+    {
+	return studentImage;
+    }
+
+    public void setStudentImage(File studentImage)
+    {
+	this.studentImage = studentImage;
     }
 
 }

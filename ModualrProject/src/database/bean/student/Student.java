@@ -299,9 +299,9 @@ public class Student  implements Bean
     }
 
     /**
-     * Converts an {@code InputStream} to a file
+     * Converts an {@code InputStream} to a {@code File} object
      * @param fileName output file name 
-     * @param inputStream
+     * @param inputStream the input stream that contains the image
      * @return
      */
     public static File getImageFromStream( String fileName , InputStream inputStream)
@@ -309,7 +309,7 @@ public class Student  implements Bean
 	File studentImage = null;
 	FileOutputStream output = null;
 	try{
-	    if( inputStream.available() <=0 ) return null;
+	    if( inputStream.available() <=0 ) return defaultImage;
 	    studentImage = new File( "res\\" + fileName + ".jpg" );
 	    output = new FileOutputStream( studentImage );
 	    studentImage.deleteOnExit();

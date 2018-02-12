@@ -234,7 +234,7 @@ public final class AdminManager
 	    HashClass.hashAdmin(updateAdmin);
 	    @SuppressWarnings("resource")
 	    Connection conn =  ConnectionManager.getInstance().getConnection(); 
-	   
+
 	    try( CallableStatement statement =  conn.prepareCall("{CALL updateAdmin(?, ?, ?  ) } ");)
 	    {
 		statement.setString(1, username);
@@ -260,7 +260,7 @@ public final class AdminManager
      */
     public static boolean deleteAdmin(String existingAdminUsername) throws SQLException, InvalidAdminException{
 	Admin currentAdmin = DatabaseManager.getCurrentAdmin() ;
-	
+
 	if(currentAdmin != null && 
 		!currentAdmin.getUsername().matches(existingAdminUsername ) &&
 		currentAdmin.isSuper()){
@@ -272,7 +272,7 @@ public final class AdminManager
 	    } 
 	}
 	throw new InvalidAdminException("This admin does not havve permission to do this!");
-	
+
     }
     public static boolean changeUsername( Admin existingAdmin, String newUsername )
 	    throws SQLException, InvalidAdminException
@@ -314,6 +314,27 @@ public final class AdminManager
 	}
     }
 
+    @SuppressWarnings("resource")
+    protected static String getUsernameFromMail(String email) {
+	String sql = "SELECT username FROM admin where email = ? "; 
+
+	Connection conn = ConnectionManager.getInstance().getConnection(); 
+
+	ResultSet result = null; 
+	try{
+	    try( PreparedStatement stmt = conn.prepareStatement(sql) ){
+		stmt.setString(1, email);
+		result = stmt.executeQuery(); 
+		if( result.next()) return result.getString(1); 
+	    }finally{
+		if(result != null ) result.close();
+	    }
+	}catch(SQLException e ){
+	    e.printStackTrace(); 
+	}
+
+	return null ; 
+    }
 
     @SuppressWarnings("resource")
     protected static Admin getAdmin(String username) throws SQLException{

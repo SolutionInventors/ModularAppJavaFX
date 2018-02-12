@@ -1,5 +1,6 @@
 package database.managers;
 
+import java.io.File;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.ModuleRegister;
+import database.bean.student.Student;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
@@ -27,7 +29,7 @@ public final class ModuleRegisterManager
 	boolean modAndStudentExists = 
 		StudentManager.exists(modReg.getStudentId()) && 
 		ModuleManager.exists(modReg.getModuleName());
-		
+
 	if(modAndStudentExists && modReg.isValid( ValidationType.NEW_BEAN ) && 
 		canRegister(modReg) ){
 	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
@@ -60,7 +62,7 @@ public final class ModuleRegisterManager
 			"	COUNT(IF(result,NULL, 1)) AS registeredButNoResult FROM module_Register as reg " +  
 			"WHERE reg.studentId = ? AND	 reg.moduleName = ? ";
 
-		
+
 	ResultSet result = null;
 	if( modReg.isValid( ValidationType.NEW_BEAN )){
 	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
@@ -85,22 +87,30 @@ public final class ModuleRegisterManager
 
     /**
      * 
-     * @param id
+     * @param regID
      * @return
      * @throws SQLException
      */
-    public static ModuleRegister getModRegById( int id ) throws SQLException{
-	String sql = "SELECT * , isPaymentComplete( reg.id ) as 'Paid' "
-		+ "FROM module_register as reg " + 
-		"WHERE reg.id = ? ";
+    public static ModuleRegister getModRegById( int regID ) throws SQLException{
+	String sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId " +
+			"WHERE reg.id = ? " ;
 	ResultSet result = null;
 	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
-		(sql, id))
+		(sql, regID))
 	{
 	    ModuleRegister modReg = null;
 	    result = statement.executeQuery();
 	    if(result.next()){
-		modReg =  new ModuleRegister(result.getString("ModuleName"),
+		String studentID = result.getString("StudentId");
+		File image = 
+			Student.getImageFromStream(studentID, result.getBinaryStream("image"));
+		modReg =  new ModuleRegister(image, 
+			result.getString("ModuleName"),
 			result.getString("StudentId"), 
 			result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"),
@@ -176,9 +186,14 @@ public final class ModuleRegisterManager
 
 
     public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
-	String sql = "SELECT *,isPaymentComplete(id) as Paid FROM module_register " + 
-		"ORDER BY dateRegistered " +
-		"LIMIT ? , 30";
+	String sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId " +
+			"ORDER BY dateRegistered "+ 
+			"LIMIT ? , 30" ;
 	ResultSet result = null;
 
 	ArrayList<ModuleRegister> list = new ArrayList<>(30);
@@ -187,9 +202,13 @@ public final class ModuleRegisterManager
 	{
 	    result = stmt.executeQuery();
 	    ModuleRegister modReg = null;
-
+	    File image = null ;
 	    while( result.next()){
-		modReg = new ModuleRegister(result.getString("ModuleName"),
+		String studentID = result.getString("StudentID"); 
+		image = Student.getImageFromStream(studentID, result.getBinaryStream("image"));
+		
+		modReg = new ModuleRegister(image, 
+			result.getString("ModuleName"),
 			result.getString("StudentId"), result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"), 
 			result.getDouble("totalPriceForModule"), 

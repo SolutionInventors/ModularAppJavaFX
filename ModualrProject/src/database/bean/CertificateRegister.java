@@ -23,6 +23,7 @@ public class CertificateRegister implements Bean
 {
 
     private static final long serialVersionUID = -4064819087006901787L;
+    
     private String certificateName;
     private  String moduleName;
 

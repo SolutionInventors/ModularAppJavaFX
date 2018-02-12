@@ -1,6 +1,8 @@
 package test;
 
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 
 import database.bean.Admin;
 import database.bean.Certificate;
@@ -26,6 +28,7 @@ public class PagingTest
     {
 	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred" ));
 	
+	Instant begin = Instant.now();
 	Certificate[] certs = CertificateManager.getCertificates(0, OrderBy.DATE_CREATED_DESC);
 	System.out.println("-------List of Certificates----------" );
 	for (int i = 0; i < certs.length; i++)
@@ -45,48 +48,54 @@ public class PagingTest
 	
 	Module[] mods = ModuleManager.getModules(0); 
 	System.out.println("-------List of  Modules----------" );
-	for (int i = 0; i < mods.length; i++)
+	for (Module mod : mods)
 	{
-	    System.out.println("Date Created: " + mods[i].getDateCreated());
-	    System.out.println("Name: " +mods[i].getName());
-	    System.out.println("AmountPerUnit: " +mods[i].getAmountPerUnit());
-	    System.out.println("Number of units " + mods[i].getNumberOfUnits());
+	    System.out.println("Date Created: " + mod.getDateCreated());
+	    System.out.println("Name: " +mod.getName());
+	    System.out.println("AmountPerUnit: " +mod.getAmountPerUnit());
+	    System.out.println("Number of units " + mod.getNumberOfUnits());
 	    System.out.println("->");
 	}
 	
-	ModularClass[] modClass =  ModularClassManager.getClasses(0); 
+	ModularClass[] modClasses =  ModularClassManager.getClasses(0); 
 	System.out.println("-------List of  Classes----------" );
-	for (int i = 0; i < modClass.length; i++)
+	for (ModularClass modClass:  modClasses)
 	{
-	   System.out.println("Class Name: " + modClass[i].getName());
-	   System.out.println("Date Created: " + modClass[i].getDateCreated()); 
+	   System.out.println("Class Name: " +modClass.getName());
+	   System.out.println("Date Created: " +modClass.getDateCreated()); 
 	    System.out.println("->");
 	}
 	
 	
 	ModuleRegister[] modRegs = ModuleRegisterManager.getRegisteredModules(0);
 	System.out.println("-------List of  Mod Registers----------" );
-	for (int i = 0; i < modRegs.length; i++)
+	for (ModuleRegister modReg : modRegs)
 	{
-	    System.out.println("Date Registered: " + modRegs[i].getDateRegistered());
-	    System.out.println("Mod Name: "+ modRegs[i].getModuleName());
+	    System.out.println("Date Registered: " + modReg.getDateRegistered());
+	    System.out.println("Mod Name: "+ modReg.getModuleName());
+	    System.out.println(modReg.getStudentImage());
+	    System.out.println(modReg.getStudentId());
+	    System.out.println("--->");
 	}
 	
 	Student[] studs = StudentManager.getStudents(true, 0);
 	System.out.println("-------List of  Active Students----------" );
-	for (int i = 0; i < studs.length; i++)
+	for (Student stud  : studs)
 	{
-	   System.out.println( "ID: " + studs[i].getIdCardNumber());
-	   System.out.println("Image Exists: " + studs[i].getImage());
+	   System.out.println( "ID: " + stud.getIdCardNumber());
+	   System.out.println("Image Exists: " + stud.getImage());
 	}
 	
 	studs = StudentManager.getStudents(false, 0);
 	System.out.println("-------List of  inactive Students----------" );
-	for (int i = 0; i < studs.length; i++)
+	for (Student stud  : studs)
 	{
-	   System.out.println( "ID: " + studs[i].getIdCardNumber());
+	   System.out.println( "ID: " + stud.getIdCardNumber());
 	}
+	Instant end = Instant.now(); 
 	
+	Duration diff = Duration.between(begin, end); 
+	System.out.println(diff.toMillis());
 	
     }
 
