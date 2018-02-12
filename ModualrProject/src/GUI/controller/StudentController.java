@@ -66,7 +66,7 @@ public class StudentController implements Initializable
     private Student[] students;
    // private Student student;
     StudentStats studStats;
-    private URL url2 = getClass().getResource("/GUI/resources/images/no image.png");
+   // private URL url2 = getClass().getResource("/GUI/resources/images/no image.png");
 
 
 
@@ -162,27 +162,11 @@ public class StudentController implements Initializable
 	} 
 	 
 	 ObservableList<ModuleTableGUI> moduleList = FXCollections.observableArrayList();
-		
+	if (studMods != null) {
 	  for (int i = 0; i < studMods.length; i++) {
 	      moduleList.add(new ModuleTableGUI(studMods[i].getModuleName(), String.valueOf(studMods[i].getAmountPaid()), String.valueOf(studMods[i].hasBooked()), studMods[i].getResult()));
-	  }
-	/* for( StudentModuleStats studMod : studMods){
-		    moduleList.add(new ModuleTableGUI(studMod.getModuleName(), String.valueOf(studMod.getAmountPaid()), String.valueOf(studMod.hasBooked()), studMod.getResult()));
-		}*/
-	/* 
-	 moduleList.add(new ModuleTableGUI("mech fittings", "Yes", "Yes", "4", "No", "Yes", ""));
-	moduleList.add(new ModuleTableGUI("Digital Tech", "Yes", "No", "4", "Yes", "", "Yes"));
-	moduleList.add(new ModuleTableGUI("CAC", "No", "Yes", "3", "No", "Yes", ""));
-	*/
-		for( StudentModuleStats studMod : studMods){
-		    System.out.printf("Date Regisetered: %s%nModule Name: %s%nAmount Paid : %.2f%n"
-		    	+ "Booked: %s%nResult: %s%nPayment Status: %s%n->%n", 
-		    	studMod.getDateRegistered(), studMod.getModuleName(), 
-		    	studMod.getAmountPaid(), studMod.hasBooked(), studMod.getResult(), 
-		    	studMod.isPaymentComplete()) ; 
-		    
-		    
-		}
+	  }}
+		
 	return moduleList;
 	
     }
@@ -199,14 +183,6 @@ public class StudentController implements Initializable
 		// FIXME Auto-generated catch block
 		e.printStackTrace();
 	    }
-	    /*
-	     * Modules Registered: 3
-                Modules Paid: 3
-                Modules Booked: 1
-                 Modules Attended: 1
-                Modules Passed: 0
-                Modules Failded: 0
-	     * */
 		//import piechart data
 		ObservableList<Data> list = FXCollections.observableArrayList(
 				new PieChart.Data("Modules Registered", studStats.getModuleRegistered()),
@@ -217,6 +193,6 @@ public class StudentController implements Initializable
 				new PieChart.Data(" Modules Failed:", studStats.getModuleFailed())
 				);
 		pieChart.setData(list);
-	}
+	}//end method create chart
 
 }//end class
