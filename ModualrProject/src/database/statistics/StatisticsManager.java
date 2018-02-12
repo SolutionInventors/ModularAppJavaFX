@@ -313,7 +313,7 @@ public class StatisticsManager
     public static StudentModuleStats[] retrieveStudentModuleStats(String studentId) throws SQLException{
 
 	final String sql =
-		"SELECT reg.id as id, DateRegistered, ModuleName as modName, isPaymentComplete(reg.id) as paymentStatus , "
+		"SELECT reg.id as regId, DateRegistered, ModuleName as modName, isPaymentComplete(reg.id) as paymentStatus , "
 			+ 		"bookingStatus as booked, Result, AttendanceStatus as attended, "
 			+ 		"amount as AmountPaid "
 			+ "	    FROM Module_Register as reg " + 
