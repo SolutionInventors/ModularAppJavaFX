@@ -14,9 +14,9 @@ import utils.ValidationType;
 public final class ModuleRegisterManager
 {
     /**
-     * This registers a Student for a {@code Module}. The {@code ModuleRegister} 
+     * This registers a Student for a {@code ModuleTabTable}. The {@code ModuleRegister} 
      * object passed as an argument must contain a studentId and moduleName
-     * before it can be used to register a {@code Student} for a {@code Module}.<br> 
+     * before it can be used to register a {@code Student} for a {@code ModuleTabTable}.<br> 
      * @return {@code true } if the insertion was successful.
      * @throws SQLException
      * @throws InvalidAdminException

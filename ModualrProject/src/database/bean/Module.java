@@ -6,9 +6,9 @@ import database.managers.ModuleManager;
 import utils.ValidationType;
 
 /**
- * An {@code Module} object represents a single row of the {@code Module} table
- *  in the database. A  {@code Module} contains the module name, number of units, 
- *  amount per unit and the date it was created. The date a {@code Module } was
+ * An {@code ModuleTabTable} object represents a single row of the {@code ModuleTabTable} table
+ *  in the database. A  {@code ModuleTabTable} contains the module name, number of units, 
+ *  amount per unit and the date it was created. The date a {@code ModuleTabTable } was
  *  created is generated automatically in the database. Thus it must be gotten via
  *   {@link ModuleManager} for it to be accurate
  * @author Oguejiofor Chidiebere
@@ -24,13 +24,13 @@ public class Module  implements Bean
     private Date dateCreated;
 
     /**
-     * Initializes this {@code Module } by specifying the name, units and amount.
-     * This constructor contains the major requirements for inserting s{@code Module} 
-     * in the database. These values must be present before this {@code Module} 
+     * Initializes this {@code ModuleTabTable } by specifying the name, units and amount.
+     * This constructor contains the major requirements for inserting s{@code ModuleTabTable} 
+     * in the database. These values must be present before this {@code ModuleTabTable} 
      * can be added successfully
-     * @param name this {@code Module } name as {@code String}
-     * @param units the number of units in this {@code Module} 
-     * @param amountPerUnit  the price of one unit in this {@code Module}
+     * @param name this {@code ModuleTabTable } name as {@code String}
+     * @param units the number of units in this {@code ModuleTabTable} 
+     * @param amountPerUnit  the price of one unit in this {@code ModuleTabTable}
      */
     public Module( String name , int units, double amountPerUnit ){
 	setName( name );
@@ -41,17 +41,17 @@ public class Module  implements Bean
     public Module(){}
 
     /**
-     * Initializes this {@code Module } with only this {@code Module} name
-     * This constructor can be used when we want to remove/ delete a {@code Module}
+     * Initializes this {@code ModuleTabTable } with only this {@code ModuleTabTable} name
+     * This constructor can be used when we want to remove/ delete a {@code ModuleTabTable}
      *  from the database
-     * @param name the name of this {@code Module} object
+     * @param name the name of this {@code ModuleTabTable} object
      */
     public Module( String name){
 	setName( name );
     }
     
     /**
-     * Gets the name of this {@code Module}
+     * Gets the name of this {@code ModuleTabTable}
      * @return {@code String}
      */
     public String getName()
@@ -59,7 +59,7 @@ public class Module  implements Bean
 	return name;
     }
     /** 
-     * Sets the name of this {@code Module}
+     * Sets the name of this {@code ModuleTabTable}
      * @param name
      */
     public void setName(String name)
@@ -68,7 +68,7 @@ public class Module  implements Bean
     }
 
     /**
-     * Gets the number of units in this {@code Module}
+     * Gets the number of units in this {@code ModuleTabTable}
      * @return {@code int}
      */
     public int getNumberOfUnits()
@@ -77,7 +77,7 @@ public class Module  implements Bean
     }
 
     /**
-     * Sets the number of units in this {@code Module}
+     * Sets the number of units in this {@code ModuleTabTable}
      * @param numberOfUnits
      */
     public void setNumberOfUnits(int numberOfUnits)
@@ -86,7 +86,7 @@ public class Module  implements Bean
     }
 
     /**
-     * Gets the amount per unit of this {@code Module} as a {@code double} value 
+     * Gets the amount per unit of this {@code ModuleTabTable} as a {@code double} value 
      * @return a {@code double} containing the amount per unit
      */
     public double getAmountPerUnit()
@@ -95,7 +95,7 @@ public class Module  implements Bean
     }
     
     /**
-     * Sets the amount per unit for this {@code Module} 
+     * Sets the amount per unit for this {@code ModuleTabTable} 
      * @param amountPerUnit a {@code double} containing the amount per unit
      */
     public void setAmountPerUnit(double amountPerUnit)
@@ -103,13 +103,13 @@ public class Module  implements Bean
 	this.amountPerUnit = amountPerUnit;
     }
     /** 
-     * Checks that a {@code Module } object by ensuring that the object is not null,
+     * Checks that a {@code ModuleTabTable } object by ensuring that the object is not null,
      * its name attribute is not {@code null} and its units is greater than 0.
-     * Note that it does not connect to the database but ensures that the {@code Module} 
+     * Note that it does not connect to the database but ensures that the {@code ModuleTabTable} 
      * object can be put perform transactions on the database
      * 
-     * @param module the {@code Module} object to be validated
-     * @return true when the {@code Module } is valid
+     * @param module the {@code ModuleTabTable} object to be validated
+     * @return true when the {@code ModuleTabTable } is valid
      */
     public  boolean isValid( ValidationType validation )
     {
@@ -124,7 +124,7 @@ public class Module  implements Bean
     }
 
     /**
-     * Checks if the amountPerUnit stored in this {@code Module} is greater
+     * Checks if the amountPerUnit stored in this {@code ModuleTabTable} is greater
      * than 0 
      * @return {@code true} if amount is greater than 0
      */
@@ -146,7 +146,7 @@ public class Module  implements Bean
     }
     
     /**
-     * Gets the date in which this {@code Module } was created. Note that this must be
+     * Gets the date in which this {@code ModuleTabTable } was created. Note that this must be
      * retrieved from the database before it can be accurate.
      * @return a {@link java.sql.Date} containing the date this module was inserted 
      * into the database

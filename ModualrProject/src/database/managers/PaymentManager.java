@@ -14,7 +14,7 @@ import utils.ValidationType;
 public final class PaymentManager
 {
     /**
-     * Makes a payment for a registered {@code Module}. The amount to be paid is 
+     * Makes a payment for a registered {@code ModuleTabTable}. The amount to be paid is 
      * validated by first checking that the amount remaining amount is not
      * more than zero. Also checks that the amount about to be paid is not 
      * greater than the remaining amount.

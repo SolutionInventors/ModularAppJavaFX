@@ -111,10 +111,7 @@
                             <TableColumn fx:id="module" prefWidth="111.0" text="Module" />
                             <TableColumn fx:id="paid" prefWidth="39.0" text="Paid" />
                               <TableColumn fx:id="booked" prefWidth="55.0" text="Booked" />
-                              <TableColumn fx:id="unitAttended" prefWidth="89.0" text="Unit Attened" />
-                              <TableColumn fx:id="completed" prefWidth="70.0" text="Completed" />
-                              <TableColumn fx:id="pass" prefWidth="58.0" text="Pass" />
-                              <TableColumn fx:id="fail" prefWidth="64.0" text="Fail" />
+                              <TableColumn fx:id="result" prefWidth="58.0" text="Result" />
                           </columns>
                         </TableView>
                      </children>

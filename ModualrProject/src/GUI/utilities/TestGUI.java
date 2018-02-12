@@ -12,7 +12,7 @@ public class TestGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			//Parent root = FXMLLoader.load(getClass().getResource("/GUI/views/Module.fxml"));
+			//Parent root = FXMLLoader.load(getClass().getResource("/GUI/views/ModuleTabTable.fxml"));
 			Parent root = FXMLLoader.load(getClass().getResource("/GUI/views/CombineTabs.fxml"));
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);

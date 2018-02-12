@@ -4,10 +4,10 @@ import utils.ValidationType;
 
 /**
  * This object represents a single entity of a {@code CertificateRegister} in 
- * the database and can be used to add a {@code Module } as a requirement
+ * the database and can be used to add a {@code ModuleTabTable } as a requirement
  * for getting a  {@code Certificate}. Deletes and Inserts represent removing
- * a {@code Module} from the list of {@code Certificate } requirements and
- * adding a {@code Module} to the list respectively.<br><br>
+ * a {@code ModuleTabTable} from the list of {@code Certificate } requirements and
+ * adding a {@code ModuleTabTable} to the list respectively.<br><br>
  * 
  * <b>Constructors:</b><br>
  * This class contains two constructors: one with no parameters and another that
@@ -16,7 +16,7 @@ import utils.ValidationType;
  * added to the database.
  * @author Oguejiofor Chidiebere
  * @see Certificate
- * @see Module
+ * @see ModuleTabTable
  *
  */
 public class CertificateRegister implements Bean
@@ -31,7 +31,7 @@ public class CertificateRegister implements Bean
      * module name. This {@code CertificateRegister} can be inserted into the
      * database once this constructor is used with valid data.
      * @param certName the name of the {@code Certificate}
-     * @param modName the name of the {@code Module}
+     * @param modName the name of the {@code ModuleTabTable}
      */
     public CertificateRegister(String certName , String modName){
 	setCertificateName( certName);
@@ -83,7 +83,7 @@ public class CertificateRegister implements Bean
     }
 
     /**
-     *Checks if the {@code Module} name and {@code Certificate} name of this object
+     *Checks if the {@code ModuleTabTable} name and {@code Certificate} name of this object
      *is valid. <br>
      *The module name is valid if it contains only letters or is alphanumeric with
      *a letter(s) coming first. For example<br>

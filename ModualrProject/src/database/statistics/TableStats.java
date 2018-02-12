@@ -93,7 +93,7 @@ public class TableStats
 
 
     /**
-     * Gets the number of registered {@code Module}s that the {@code Student}s have passed
+     * Gets the number of registered {@code ModuleTabTable}s that the {@code Student}s have passed
      * @return an {@code int} representing the total modules passed
      */
     public int getNumberOfModulesPassed()
@@ -103,7 +103,7 @@ public class TableStats
 
 
     /**
-     * Gets the total number of registered {@code Module}s that the {@code Student}s 
+     * Gets the total number of registered {@code ModuleTabTable}s that the {@code Student}s 
      * have failed
      * @return an{@code int}
      */

@@ -38,7 +38,7 @@ public class PagingTest
 	for (int i = 0; i < certsMods.length; i++)
 	{
 	    System.out.println("Cert Name: " +certsMods[i].getCertificateName());
-	    System.out.println("Required Module Name: " +certsMods[i].getModuleName());
+	    System.out.println("Required ModuleTabTable Name: " +certsMods[i].getModuleName());
 	    System.out.println("->");
 	}
 	

@@ -23,8 +23,8 @@ public class StudentStats implements Statistics
      * @param modReg the number of modules the {@code Student} has registered for
      * @param modPaid the number of modules the {@code Student}  paid for
      * @param modAttended the number of modules the {@code Student} has attended
-     * @param modPassed the number of {@code Module}s the {@code Student} has passed
-     * @param modFailed the number of {@code Module}s the {@code Student} has failed
+     * @param modPassed the number of {@code ModuleTabTable}s the {@code Student} has passed
+     * @param modFailed the number of {@code ModuleTabTable}s the {@code Student} has failed
      */
     public StudentStats(int modReg, int modPaid, int modBooked,  int modAttended, 
 	    int modPassed, int modFailed)
