@@ -216,18 +216,18 @@ public class StatisticsManager
     public static StudentModuleStats[] retrieveStudentModuleStats(String studentId) throws SQLException{
 
 	final String sql =
-		"SELECT DateRegistered, ModuleName as modName, isPaymentComplete(reg.id) as paymentStatus , "
-		+ 		"bookingStatus as booked, Result, AttendanceStatus as attended, "
-		+ 		"amount as AmountPaid "
-		+ "	    FROM Module_Register as reg " + 
-            		    "JOIN payment  " + 
-            		    "	ON payment.RegId = reg.id " +
-            		"    WHERE reg.studentId = ? " ; 
-	
+		"SELECT reg.id as id, DateRegistered, ModuleName as modName, isPaymentComplete(reg.id) as paymentStatus , "
+			+ 		"bookingStatus as booked, Result, AttendanceStatus as attended, "
+			+ 		"amount as AmountPaid "
+			+ "	    FROM Module_Register as reg " + 
+			"JOIN payment  " + 
+			"	ON payment.RegId = reg.id " +
+			"    WHERE reg.studentId = ? " ; 
+
 	ResultSet resultSet = null ; 
 	try(PreparedStatement stmt =  DatabaseManager.getPreparedStatement(sql, studentId ); ){
 	    resultSet = stmt.executeQuery(); 
-	    
+
 	    ArrayList<StudentModuleStats> list = new ArrayList<>(); 
 	    while ( resultSet.next()){
 		String modName = resultSet.getString("ModName"); 
@@ -237,11 +237,12 @@ public class StatisticsManager
 		boolean attended = resultSet.getBoolean("attended"); 
 		double amount = resultSet.getDouble("amountPaid"); 
 		Date date = resultSet.getDate("DateRegistered"); 
+		int regId = resultSet.getInt("regID");
 		
-		StudentModuleStats stat= new StudentModuleStats(date, modName, result, 
+		StudentModuleStats stat= new StudentModuleStats(regId, date, modName, result, 
 			booked, paymentStatus , attended, amount); 
 		list.add(stat); 
-		
+
 	    }
 	    if( list.size() > 0 ) return list.toArray( new StudentModuleStats[list.size() ]); 
 	}finally{

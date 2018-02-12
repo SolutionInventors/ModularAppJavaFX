@@ -22,7 +22,7 @@ public class StatsTest
     public static void main(String[] args)
     {
 	DatabaseManager.setCurrentAdmin( new Admin("Chidiebere", "Fred"));
-	Student student = new Student("EMY-C32");
+	Student student = new Student("EMY-C4340");
 	Module mod = new Module("Electrical Installation");
 
 	Certificate cert = new Certificate("Electrotechnics");
@@ -45,7 +45,7 @@ public class StatsTest
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	
+
 	System.out.println("---Student Stats------");
 	System.out.println(studStats);
 	System.out.println("------Module Stats---------");
@@ -55,17 +55,22 @@ public class StatsTest
 	System.out.println("--------Database Stats--------");
 	System.out.println(stat);
 	System.out.println(Arrays.toString(studMods)); 
-	
+
 	System.out.println("--------StudentModule Stats--------");
-	for( StudentModuleStats studMod : studMods){
-	    System.out.printf("Date Regisetered: %s%nModule Name: %s%nAmount Paid : %.2f%n"
-	    	+ "Booked: %s%nResult: %s%nPayment Status: %s%n->%n", 
-	    	studMod.getDateRegistered(), studMod.getModuleName(), 
-	    	studMod.getAmountPaid(), studMod.hasBooked(), studMod.getResult(), 
-	    	studMod.isPaymentComplete()) ; 
-	    
-	    
+	if(studMods != null ){
+	    for( StudentModuleStats studMod : studMods){
+		System.out.printf("Date Regisetered: %s%nModule Name: %s%nAmount Paid : %.2f%n"
+			+ "Booked: %s%nResult: %s%nPayment Status: %s%n->%n", 
+			studMod.getDateRegistered(), studMod.getModuleName(), 
+			studMod.getAmountPaid(), studMod.hasBooked(), studMod.getResult(), 
+			studMod.isPaymentComplete()) ; 
+
+
+	    }
+	}else{
+	    System.out.println("The student has not registered for any moduel");
 	}
+
 	ConnectionManager.close();
     }
 

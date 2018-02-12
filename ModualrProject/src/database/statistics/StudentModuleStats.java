@@ -4,6 +4,8 @@ import java.sql.Date;
 
 public class StudentModuleStats
 {
+    
+    private final int regID; 
     //string data
     private final String moduleName; 
     private final String result; 
@@ -17,7 +19,7 @@ public class StudentModuleStats
     private final boolean paymentComplete; 
     private final Date dateRegistered; 
     
-    public StudentModuleStats(Date regDate, String modName, String result, boolean booked, boolean payment, 
+    public StudentModuleStats(int regID, Date regDate, String modName, String result, boolean booked, boolean payment, 
 	    boolean attended, double amount){
 	this.result = result; 
 	this.moduleName = modName; 
@@ -25,7 +27,8 @@ public class StudentModuleStats
 	this.booked = booked; 
 	this.paymentComplete = payment;
 	this.attended = attended; 
-	this.dateRegistered =regDate; 
+	this.dateRegistered =regDate;
+	this.regID = regID; 
     }
 
     public String getModuleName()
@@ -61,6 +64,11 @@ public class StudentModuleStats
     public Date getDateRegistered()
     {
 	return dateRegistered;
+    }
+
+    public int getRegID()
+    {
+	return regID;
     }
 
 
