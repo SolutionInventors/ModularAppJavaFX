@@ -7,14 +7,24 @@ import java.util.ResourceBundle;
 import GUI.utilities.ModuleTabTable;
 import database.bean.Module;
 import database.managers.ModuleManager;
+import database.statistics.ModuleStats;
+import database.statistics.StatisticsManager;
 import exception.InvalidAdminException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -33,42 +43,52 @@ public class ModuleController implements Initializable{
 	@FXML private TableColumn<ModuleTabTable, String>dateCreated;
 	
 	
-	@FXML private ComboBox cmbDateRegistered;
-	@FXML private ComboBox cmbCategory;
+	@FXML private ComboBox<?> cmbDateRegistered;
+	@FXML private ComboBox<?> cmbCategory;
 	@FXML private Label lblStudentName;
 	@FXML private ImageView imgStudentImage;
 	@FXML private TextField txtCost;
-	@FXML
-	private TextField txtPaid;
-	@FXML
-	private TextField txtDateCreated;
-	@FXML
-	private Label lblBooked;
-	@FXML
-	private Label lblRegistered;
-	@FXML
-	private Label lblAttended;
-	@FXML
-	private Label lblPassed;
-	@FXML
-	private Label lblFailed;
 	
-	@FXML private Label  lbldateCreated;
-	@FXML private Label lblAmount;
+	@FXML private Label lblBooked;
+	@FXML private Label lblRegistered;
+	@FXML private Label lblPaid;
+	@FXML private Label lblAttended;
+	@FXML private Label lblPassed;
+	@FXML private Label lblFailed;
+	
+	@FXML private RadioButton rbPie	;
+	@FXML private RadioButton rbBar;
+	
+	@FXML PieChart pieChart;
+	@FXML BarChart<?, ?> barChart;
+	@FXML private CategoryAxis x;
+	@FXML private NumberAxis y;
+	
 	//@FXML private Label 
 
-	  Module[] modules = null;
+	  private Module[] modules = null;
+	  private ModuleStats modStats =null;
 	
 	// Event Listener on TableView[#studentTable].onMouseClicked
 	@FXML
 	public void getDetails(MouseEvent event) {
 	    int selection = moduleTable.getSelectionModel().getSelectedIndex();
-	    ModuleTabTable mod = (ModuleTabTable)moduleTable.getSelectionModel().getSelectedItem();
-	    lbldateCreated.setText(modules[selection].getDateCreated().toString());
-	    lblBooked.setText(String.valueOf(Math.round(Math.random()*100)));
-	    lblAmount.setText(String.valueOf(modules[selection].getAmountPerUnit()));
-	    lblRegistered.setText(String.valueOf(Math.round(Math.random()*100)));
-	    lblAttended.setText(String.valueOf(Math.round(Math.random()*100)));
+	   
+	    try{
+		modStats = StatisticsManager.retrieveStats(new Module(modules[selection].getName()));
+	    }
+	    catch (SQLException e)
+	    {
+		e.printStackTrace();
+	    }
+	    lblRegistered.setText(String.valueOf(modStats.getNumRegistered()));
+	    lblPaid.setText(String.valueOf(modStats.getNumPaid()));
+	    lblBooked.setText(String.valueOf(modStats.getNumBooked()));
+	    lblAttended.setText(String.valueOf(modStats.getNumAttended()));
+	    lblPassed.setText(String.valueOf(modStats.getNumPassed()));
+	    lblFailed.setText(String.valueOf(modStats.getNumFailed()));
+	    
+	    createChart(modStats);
 	}
 
 	@Override
@@ -96,5 +116,42 @@ public class ModuleController implements Initializable{
 		}
 		return list;
 		
+	}//end get Modules
+	@FXML public void radioSelected(ActionEvent event) {
+	    if (rbPie.isSelected()) {
+		barChart.setVisible(false);
+		pieChart.setVisible(true);
+	    }else {
+		pieChart.setVisible(false);
+		barChart.setVisible(true);
+	    }
 	}
+	
+	
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
+	private void createChart(ModuleStats modStats) {
+		//import pie chart data
+		ObservableList<Data> list = FXCollections.observableArrayList(
+				new PieChart.Data("Registered", modStats.getNumRegistered()),
+				new PieChart.Data("Paid", modStats.getNumPaid()),
+				new PieChart.Data("Booked", modStats.getNumBooked()),
+				new PieChart.Data("Attended", modStats.getNumAttended()),
+				new PieChart.Data("Passed", modStats.getNumPassed()),
+				new PieChart.Data("Failed", modStats.getNumFailed())
+				);
+		
+		barChart.getData().clear();
+		XYChart.Series set1 =new XYChart.Series<>();
+		set1.getData().add(new XYChart.Data("Registered", modStats.getNumRegistered()));
+		set1.getData().add(new XYChart.Data("Paid", modStats.getNumPaid()));
+		set1.getData().add(new XYChart.Data("Booked", modStats.getNumBooked()));
+		set1.getData().add(new XYChart.Data("Attended", modStats.getNumAttended()));
+		set1.getData().add(new XYChart.Data("Passed", modStats.getNumPassed()));
+		set1.getData().add(new XYChart.Data("Failed", modStats.getNumFailed()));
+		barChart.getData().addAll(set1);
+		
+		pieChart.setData(list);
+	}//end method create chart
 }
