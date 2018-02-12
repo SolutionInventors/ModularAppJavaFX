@@ -62,13 +62,10 @@ public class Student  implements Bean
 	setModClass(className);
 	setIdCardNumber(id);
 	setEmailAddress(mail);
-	setImage( getDefaultImage());
+	setImage( image);
     }
 
-    private static File getDefaultImage()
-    {
-	return new File("res/defaultImage.jpg");
-    }
+   
 
     /**
      * Initializes this {@code Student } by specifying only the id card number
@@ -312,11 +309,12 @@ public class Student  implements Bean
 	    if( inputStream.available() <=0 ) return defaultImage;
 	    studentImage = new File( "res\\" + fileName + ".jpg" );
 	    output = new FileOutputStream( studentImage );
-	    studentImage.deleteOnExit();
+	    
 	    byte[] buffer = new byte[1024];
 	    while( inputStream.read( buffer) >0 ){
 		output.write( buffer );
 	    }
+	    studentImage.deleteOnExit();
 	}
 
 	catch (IOException e)

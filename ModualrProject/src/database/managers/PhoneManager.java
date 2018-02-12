@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import database.bean.student.AspiringStudent;
 import database.bean.student.Phone;
 import exception.InvalidAdminException;
 import utils.ValidationType;
@@ -158,6 +159,12 @@ public final class PhoneManager
 
 	return list.toArray( new Phone[ list.size() ] );
 
+    }
+
+    public static Phone[] getPhoneNumber(AspiringStudent aspStudent)
+    {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }

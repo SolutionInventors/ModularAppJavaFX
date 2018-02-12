@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import database.bean.student.AspiringStudent;
+import database.bean.student.AspiringStudentData;
 import database.bean.student.Biodata;
 import database.bean.student.EducationalBackground;
 import database.bean.student.MeanOfDiscovery;
@@ -158,33 +160,53 @@ public final class StudentManager
      * @throws InvalidBeanException when any {@code StudentData} attribute isValid
      * @throws InvalidAdminException when the current {@code Admin} that wants to make the change is invalid
      */
+    
+    @SuppressWarnings("resource")
     public static boolean registerStudent( Student newStudent, StudentData studentData) 
 	    throws SQLException, InvalidAdminException
     {
+	Connection conn = ConnectionManager.getInstance().getConnection(); 
+	conn.setAutoCommit(false);
+	
+	boolean success =  registrationHelper(newStudent, studentData);
+	
+	if(  success ){
+	    conn.commit();  
+	}else{
+	    conn.rollback();
+	}
+	conn.setAutoCommit(true);
+	
+	return success;
+    }
 
+    /**
+     * @param newStudent
+     * @param studentData
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
+    private static boolean registrationHelper(Student newStudent, StudentData studentData)
+	    throws SQLException, InvalidAdminException
+    {
 	if( newStudent.isValid(ValidationType.NEW_BEAN))
 	{
 	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
-		    Connection conn =  ConnectionManager.getInstance().getConnection();
-		    CallableStatement statement = 
+		   CallableStatement statement = 
 			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?,?,?, ?, ?) }",
 				    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
 				    newStudent.getModClassName(), newStudent.getFirstName(), 
 				    newStudent.getLastName()) ; )
 	    {
-		conn.setAutoCommit( false);
 		statement.registerOutParameter(7,  Types.DATE);
 		int affected = statement.executeUpdate();
 		if( affected > 0  && StudentDataManager.insert( studentData) )
 		{
 		    newStudent.setDateAdmitted( statement.getDate( 7 ) );
-
-		    conn.commit();
-		    conn.setAutoCommit( true );
 		    return true;
 		}
-		conn.rollback();
-		conn.setAutoCommit(true);
+		return false; 
 	    }
 	    catch (IOException e)
 	    {
@@ -222,6 +244,36 @@ public final class StudentManager
 
     }
 
+    @SuppressWarnings("resource")
+    public static boolean registerAspiringStudent(String studID, String className, AspiringStudent aspStudent) throws SQLException, InvalidAdminException{
+	AspiringStudentData aspData = AspiringStudentManager.getData(aspStudent); 
+	
+	Biodata bio = new Biodata(studID, aspStudent.getStateOfOrigin(), 
+		aspStudent.getCountry(), aspStudent.getCurrentAddress(), 
+		aspStudent.getPermanentAddress(), aspStudent.getGender(),
+		aspStudent.getDateOfBirth(), aspStudent.getPlaceOfBirth(),
+		aspStudent.getReligion(), aspStudent.getTitle()); 
+	
+	Student newStudent = new Student(aspStudent.getFirstName(), aspStudent.getLastName(),
+		studID, className, aspStudent.getEmail(), aspStudent.getImage()); 
+	
+	StudentData studData = new StudentData(bio,aspData.getEducation(), 
+		aspData.getPhoneNumbers(), aspData.getExperiences(), 
+		aspData.getMeansOfDiscovery(),aspData.getSponsors()); 
+	
+	Connection conn = ConnectionManager.getInstance().getConnection(); 
+	conn.setAutoCommit(false);
+	boolean success = registrationHelper(newStudent, studData) && 
+		AspiringStudentManager.delete(aspStudent.getId()); 
+	
+	if(success) conn.commit();
+	else conn.rollback();
+	conn.setAutoCommit(true);
+	
+	return success; 
+    }
+    
+    
     public static Student[] getStudents(boolean active , int startIndex ) throws SQLException, InvalidAdminException
     {
 	String sql = String.format("SELECT * FROM student "
@@ -242,8 +294,10 @@ public final class StudentManager
 		File file = Student.getImageFromStream(id, result.getBinaryStream("image"));
 		
 		stud = new Student(fName, lName, id, result.getString("className"),
-			result.getString("emailAddress"), 
-			file);
+			result.getString("emailAddress"), file);
+		stud.setDateAdmitted(result.getDate("dateAdmitted"));
+		
+		
 		list.add(stud);
 	    }
 	}

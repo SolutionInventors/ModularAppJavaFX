@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import database.bean.student.AspiringStudent;
 import database.bean.student.MeanOfDiscovery;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
@@ -82,5 +83,11 @@ public final class DiscoveryManager
 	}
 
 	return list.toArray( new MeanOfDiscovery[ list.size()] );
+    }
+
+    public static MeanOfDiscovery[] getDiscoveryMeans(AspiringStudent aspStudent)
+    {
+	// TODO Auto-generated method stub
+	return null;
     }
 }

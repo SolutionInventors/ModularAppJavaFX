@@ -90,7 +90,7 @@ public class BiodataManager
     {
 	ResultSet result = null;
 	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call getBiodata(?) }", studentID);)
+		("SELECT * FROM biodata WHERE studentId = ?", studentID);)
 	{
 	    if( statement.execute()){
 		result = statement.getResultSet();

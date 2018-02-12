@@ -109,7 +109,5 @@ public final class ModularClassManager
 	return list.toArray( new ModularClass[ list.size() ] );
 
     }
-    public static boolean isInDatabase( ModularClass cert ){
-	return false;
-    }
+   
 }

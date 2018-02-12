@@ -2,7 +2,7 @@ package database.bean.student;
 
 public class AspiringStudentData
 {
-    private  String StudentID;
+    private  int id;
     
     private EducationalBackground[] education;
     private MeanOfDiscovery[] meansOfDiscovery;
@@ -11,13 +11,17 @@ public class AspiringStudentData
     private Sponsor[] sponsors;
     
     
-    public String getStudentID()
+    public AspiringStudentData(int aspID)
     {
-        return StudentID;
+	setID(aspID); 
     }
-    public void setStudentID(String studentID)
+    public int getID()
     {
-        StudentID = studentID;
+        return id;
+    }
+    public void setID(int aspID)
+    {
+        id = aspID;
     }
     public EducationalBackground[] getEducation()
     {

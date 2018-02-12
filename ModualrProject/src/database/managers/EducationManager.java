@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import database.bean.student.AspiringStudent;
 import database.bean.student.EducationalBackground;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
@@ -93,4 +94,11 @@ public final class EducationManager
 	return null;
 
     }
+    
+    public static EducationalBackground[] 
+	    getEducationInfo( AspiringStudent student ) {
+		return null;
+	
+    }
+    
 }

@@ -2,12 +2,14 @@ package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
+import database.bean.student.AspiringStudent;
 import database.bean.student.JobResponsibility;
 import database.bean.student.ProfessionalExperience;
 import database.bean.student.Student;
@@ -81,15 +83,22 @@ public final class ExperienceManager
 	return false;
     }
 
+    
+    public static ProfessionalExperience[] getExpriences(AspiringStudent student) {
+	return null ; 
+    }
+    
     public static ProfessionalExperience[] getExpriences(Student student) 
 	    throws SQLException, InvalidAdminException
     {
+	String sql = "SELECT * FROM `professional_experience` "+ 
+			"WHERE StudentId = ?;"	;
 
 	ResultSet result = null;
 	List<ProfessionalExperience> list = new LinkedList<>();
 
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call getProfExperience(?) }", student.getIdCardNumber());)
+	try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		(sql, student.getIdCardNumber());)
 	{
 
 	    result = statement.executeQuery();
