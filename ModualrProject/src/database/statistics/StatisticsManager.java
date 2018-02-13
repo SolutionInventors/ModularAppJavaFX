@@ -317,7 +317,7 @@ public class StatisticsManager
 			+ 		"bookingStatus as booked, Result, AttendanceStatus as attended, "
 			+ 		"amount as AmountPaid "
 			+ "	    FROM Module_Register as reg " + 
-			"JOIN payment  " + 
+			"LEFT JOIN payment  " + 
 			"	ON payment.RegId = reg.id " +
 			"    WHERE reg.studentId = ? " ; 
 

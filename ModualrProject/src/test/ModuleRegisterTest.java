@@ -52,6 +52,8 @@ public class ModuleRegisterTest
 	    }
 	    else 
 	    {
+		System.out.println(modReg.getStudentId());
+		System.out.println(modReg.getModuleName());
 		System.out.println("Was Unsuccessful for unknown reasons!!!");
 	    }
 

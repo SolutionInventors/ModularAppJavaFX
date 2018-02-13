@@ -117,7 +117,7 @@ public class ModuleRegister  implements Bean
      */
     public void setStudentId(String studentId)
     {
-	this.studentId = Bean.removeExtraSpaces( studentId);
+	this.studentId = Bean.removeExtraSpaces( studentId.toUpperCase());
     }
 
     /**
@@ -185,7 +185,7 @@ public class ModuleRegister  implements Bean
     public String getResult()
     {
 
-	return result;
+	return result == null ? "NO RESULT" : result;
     }
 
     /**
