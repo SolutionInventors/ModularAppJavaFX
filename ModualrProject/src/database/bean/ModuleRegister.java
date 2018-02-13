@@ -3,7 +3,6 @@ package database.bean;
 import java.io.File;
 import java.sql.Date;
 
-import GUI.utilities.ModuleTabTable;
 import database.bean.student.Student;
 import utils.ValidationType;
 

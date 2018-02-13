@@ -14,6 +14,12 @@
 		     <Tab fx:id="tab2_Modules" text="Modules">
 		        <fx:include fx:id="tabmodule" source="/GUI/views/Module.fxml" />
 		    </Tab>
+		     <Tab fx:id="tab3_ModuleRegister" text="Module Register">
+		        <fx:include fx:id="tabmoduleRegister" source="/GUI/views/Module Register.fxml" />
+		    </Tab>
+		     <Tab fx:id="tab4_Certificate" text="Certificates">
+		        <fx:include fx:id="tabCertificate" source="/GUI/views/Certificate.fxml" />
+		    </Tab>
         </tabs>
       </TabPane>
    </children>
