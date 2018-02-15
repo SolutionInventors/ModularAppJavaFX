@@ -139,16 +139,7 @@ public class TestUtils
 		}
 
 		break;
-	    case CERTIFICATE_MODULE:
-		CertificateRegister[] certMod  = 
-		CertificateRegisterManager.getCertificateRegisters(0);
-		for ( int i = 0 ; i < certMod.length ; i++ ){
-
-		    System.out.println( "*\tCert Name --->" + certMod[i].getCertificateName()+ 
-			    "\n\tMod Name --->" + certMod[i].getModuleName());
-		}
-
-		break;
+	    
 	    case MODULE:
 
 		Module[] modules = ModuleManager.getModules( 0 );

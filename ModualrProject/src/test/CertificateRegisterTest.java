@@ -26,7 +26,7 @@ public class CertificateRegisterTest
 	//	Rest of the code
 	try
 	{
-	    TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
+//	    TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
 
 	    System.out.println("---------------ADDING A MODULE FROM CERTIFICATE REQUIREMENT--------------");
 	    String certName = TestUtils.getStringInput
