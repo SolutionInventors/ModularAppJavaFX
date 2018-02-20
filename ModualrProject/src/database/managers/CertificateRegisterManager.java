@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.bean.CertificateRegister;
+import database.bean.Module;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
@@ -73,45 +74,37 @@ public final class CertificateRegisterManager
     }
 
     /**
-     * Gets the first 30 {@code CertificateRegister}s in the 
-     * {@code CertificateRegister} table  starting from a specified 
-     * {@code startIndex}. This can be used to created a paging application 
-     * that would contain all the rows in the {@code CertificateRegister}. The
-     * rows are sorted by the Certificate name and then the module name in 
-     * ascending order.  
-     * @param startIndex
-     * @return an array of {@code CertificateRegister }
+     * Gets an array of   {@code Module}s  that contains  are required to 
+     * get a particular certificate
+     * @param certificateName the certificate name
+     * @return an array of {@code Module}s
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static CertificateRegister[] getCertificateRegisters( int  startIndex )
-	    throws SQLException, InvalidAdminException
-    {
+    public static String[] getModulesRequired(String certificateName) throws SQLException{
 	ResultSet result = null;
-	ArrayList<CertificateRegister> list = new ArrayList<>(30);
-	String sql  = "SELECT certificateName, moduleName FROM certificateRegister" +  
-		  " ORDER BY certificateName ASC, moduleName DESC " +
-		" LIMIT ?, 30 ";
+	ArrayList<String> list = new ArrayList<>(30);
+	String sql  = ""
+		+ "SELECT  moduleName "
+		+ "	FROM certificateRegister "
+		+ "" +  
+		  "  WHERE certificateName = ? ";
 	
 	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
-		(sql, startIndex ))
+		(sql, certificateName ))
 	{
 	    result = statement.executeQuery() ;
 
 	    while( result.next() )
 	    {
-		CertificateRegister tempCert = 
-			new CertificateRegister(result.getString("certificateName") , 
-				result.getString("moduleName"));
-		list.add(tempCert );
-
+		list.add(result.getString(1));
 	    }
 	}
 	finally{
 	    if( result != null ) result.close();
 	}
-	return list.toArray( new CertificateRegister[ list.size() ] );
-
+	return list.toArray( new String[ list.size() ] );
     }
-
+    
+    
 }

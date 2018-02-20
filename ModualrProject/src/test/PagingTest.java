@@ -27,7 +27,7 @@ public class PagingTest
     public static void main(String[] args) throws SQLException, InvalidAdminException
     {
 	DatabaseManager.setCurrentAdmin(new Admin("Chidiebere", "Fred" ));
-	
+
 	Instant begin = Instant.now();
 	Certificate[] certs = CertificateManager.getCertificates(0, OrderBy.DATE_CREATED_DESC);
 	System.out.println("-------List of Certificates----------" );
@@ -35,17 +35,17 @@ public class PagingTest
 	{
 	    System.out.println("Cert Name:" +certs[i].getName());
 	}
-	
-	CertificateRegister[] certsMods = CertificateRegisterManager.getCertificateRegisters(0);
-	System.out.println("-------List of Certificates Modules----------" );
-	for (int i = 0; i < certsMods.length; i++)
+
+	String certName = TestUtils.getStringInput("Input Certificate Name from list: ");
+	String[] modules = CertificateRegisterManager.getModulesRequired(certName); 
+	System.out.printf("-------List of  Modules required for  %s ----------" , certName);
+	for (String module : modules)
 	{
-	    System.out.println("Cert Name: " +certsMods[i].getCertificateName());
-	    System.out.println("Required ModuleTabTable Name: " +certsMods[i].getModuleName());
-	    System.out.println("->");
+	    System.out.println(module);
+
 	}
-	
-	
+
+	System.out.println("->");
 	Module[] mods = ModuleManager.getModules(0); 
 	System.out.println("-------List of  Modules----------" );
 	for (Module mod : mods)
@@ -56,17 +56,17 @@ public class PagingTest
 	    System.out.println("Number of units " + mod.getNumberOfUnits());
 	    System.out.println("->");
 	}
-	
+
 	ModularClass[] modClasses =  ModularClassManager.getClasses(0); 
 	System.out.println("-------List of  Classes----------" );
 	for (ModularClass modClass:  modClasses)
 	{
-	   System.out.println("Class Name: " +modClass.getName());
-	   System.out.println("Date Created: " +modClass.getDateCreated()); 
+	    System.out.println("Class Name: " +modClass.getName());
+	    System.out.println("Date Created: " +modClass.getDateCreated()); 
 	    System.out.println("->");
 	}
-	
-	
+
+
 	ModuleRegister[] modRegs = ModuleRegisterManager.getRegisteredModules(0);
 	System.out.println("-------List of  Mod Registers----------" );
 	for (ModuleRegister modReg : modRegs)
@@ -77,26 +77,26 @@ public class PagingTest
 	    System.out.println(modReg.getStudentId());
 	    System.out.println("--->");
 	}
-	
+
 	Student[] studs = StudentManager.getStudents(true, 0);
 	System.out.println("-------List of  Active Students----------" );
 	for (Student stud  : studs)
 	{
-	   System.out.println( "ID: " + stud.getIdCardNumber());
-	   System.out.println("Image Exists: " + stud.getImage());
+	    System.out.println( "ID: " + stud.getIdCardNumber());
+	    System.out.println("Image Exists: " + stud.getImage());
 	}
-	
+
 	studs = StudentManager.getStudents(false, 0);
 	System.out.println("-------List of  inactive Students----------" );
 	for (Student stud  : studs)
 	{
-	   System.out.println( "ID: " + stud.getIdCardNumber());
+	    System.out.println( "ID: " + stud.getIdCardNumber());
 	}
 	Instant end = Instant.now(); 
-	
+
 	Duration diff = Duration.between(begin, end); 
 	System.out.println(diff.toMillis());
-	
+
     }
 
 }
