@@ -1,5 +1,6 @@
 package GUI.controller;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -18,6 +19,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 public class ModuleRegisterController implements Initializable{
@@ -25,8 +28,9 @@ public class ModuleRegisterController implements Initializable{
 	@FXML private Button btnGo;
 	@FXML private ComboBox<?> cmbDateRegistered;
 	@FXML private ComboBox<?> cmbCategory;
-	@FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
+	@FXML private ImageView studentImage;
 	
+	@FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
 	@FXML private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
 	@FXML private TableColumn<ModuleRegisterTableGUI, String> studentID;
 	@FXML private TableColumn<ModuleRegisterTableGUI, String> moduleName;
@@ -37,6 +41,7 @@ public class ModuleRegisterController implements Initializable{
 	@FXML private Label lblResult;
 	@FXML private Label lblBookingStatus;
 	@FXML private Label lblAttended;
+	
 	private ModuleRegister[] modRegs;
 	
 	    @Override
@@ -63,7 +68,6 @@ public class ModuleRegisterController implements Initializable{
 			    list.add(new  ModuleRegisterTableGUI(modRegs[i].getId(),modRegs[i].getStudentId(),modRegs[i].getModuleName()));
 			 
 			}
-			System.out.println(list);
 			return list;
 			
 		}//end get Modules
@@ -75,8 +79,17 @@ public class ModuleRegisterController implements Initializable{
 		    lblStudentName.setText(modRegs[selection].getStudentId());//no method
 		    lblPaymentstatus.setText(modRegs[selection].paymentComplete()?"Completed":"Incomplete");//no method
 		    lblResult.setText(modRegs[selection].getResult());
-		 //   lblAttended.setText(modRegs[selection].hasAttended()?"Attended":"Not Attended");//returns null
-		    lblBookingStatus.setText(modRegs[selection].hasBooked()?"Booked":"Not Booked");	
-		   
+		    lblBookingStatus.setText(modRegs[selection].hasBooked()?"Booked":"Not Booked");
+		    lblAttended.setText(modRegs[selection].hasAttended()?"Yes":"No");
+		    String localUrl = null;
+			try{
+			    localUrl = modRegs[selection].getStudentImage().toURI().toURL().toString();
+			}
+			catch (MalformedURLException e) {
+			    e.printStackTrace();}
+			Image localImage1 = new Image(localUrl, false);
+			studentImage.setImage(localImage1);
+			
+		    
 		}//end method get details
 }

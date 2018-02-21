@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.ModuleController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.StatisticsController">
    <children>
       <GridPane layoutX="29.0" layoutY="22.0" prefHeight="30.0" prefWidth="391.0">
         <columnConstraints>
@@ -40,18 +40,19 @@
             <ComboBox fx:id="cmbCategory" layoutX="110.0" layoutY="43.0" prefWidth="150.0" GridPane.columnIndex="1" />
          </children>
       </GridPane>
-      <TabPane layoutX="14.0" layoutY="89.0" prefHeight="332.0" prefWidth="442.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="14.0" layoutY="89.0" prefHeight="332.0" prefWidth="442.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="MODULE">
+          <Tab fx:id="tabMoudle" text="MODULE">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <GridPane layoutY="7.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="130.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="70.0" />
                           </columnConstraints>
                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -60,32 +61,34 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Total Attended" GridPane.rowIndex="3" />
-                              <Label text="Total Paid" GridPane.rowIndex="1" />
-                              <Label fx:id="lblBooked" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="lblPaid" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="lblRegistered" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Bopked" GridPane.rowIndex="2" />
-                              <Label fx:id="lblAttended" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Total Failed" GridPane.rowIndex="5" />
-                              <Label fx:id="lblPassed" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Registered" />
-                              <Label layoutX="10.0" layoutY="167.0" text="Total Passed" GridPane.rowIndex="4" />
-                              <Label fx:id="lblFailed" layoutX="110.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="Module Registered" GridPane.rowIndex="2" />
+                              <Label fx:id="lblUnitsPaid" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="lblModRegistered" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="lblModinDatabase" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Units Paid for" GridPane.rowIndex="3" />
+                              <Label text="Modules Attended" GridPane.rowIndex="6" />
+                              <Label fx:id="lblModsFailed" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Modules in Database" GridPane.rowIndex="1" />
+                              <Label layoutX="10.0" layoutY="167.0" text="Modules Failed" GridPane.rowIndex="5" />
+                              <Label fx:id="lblModsAttended" layoutX="110.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label text="This is the total" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Modules Passed" GridPane.rowIndex="4" />
+                              <Label fx:id="lblModsPassed" layoutX="140.0" layoutY="107.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="STUDENT">
+            <Tab fx:id="tabStudent" text="STUDENT">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane>
+                        <GridPane prefHeight="210.0" prefWidth="360.0">
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="241.0" minWidth="10.0" prefWidth="239.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="121.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="121.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -94,33 +97,34 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label text="Total Attended" GridPane.rowIndex="3" />
-                              <Label text="Total Paid" GridPane.rowIndex="1" />
-                              <Label fx:id="lblBooked1" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="lblPaid1" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="lblRegistered1" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Bopked" GridPane.rowIndex="2" />
-                              <Label fx:id="lblAttended1" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Total Failed" GridPane.rowIndex="5" />
-                              <Label fx:id="lblPassed1" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Registered" />
-                              <Label layoutX="10.0" layoutY="167.0" text="Total Passed" GridPane.rowIndex="4" />
-                              <Label fx:id="lblFailed1" layoutX="110.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="Students Registered this year" GridPane.rowIndex="4" />
+                              <Label text="Active Students" GridPane.rowIndex="2" />
+                              <Label fx:id="lblGraduatedStu" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="lblActiveStu" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="lblStuinDB" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Graduated Students" GridPane.rowIndex="3" />
+                              <Label fx:id="lblStuRegisteredthisYear" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="lblAverageStu" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Students in Database" GridPane.rowIndex="1" />
+                              <Label layoutX="10.0" layoutY="167.0" text="Average Student Registered in the Year" GridPane.rowIndex="5" />
+                              <Label layoutX="10.0" layoutY="47.0" text="This is the Total" />
+                              <ComboBox fx:id="cmbCategory1" prefHeight="25.0" prefWidth="76.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                            </children>
                         </GridPane>
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="PROGRAM">
+            <Tab fx:id="tabProgram" text="PROGRAM">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane>
+                        <GridPane prefHeight="210.0" prefWidth="245.0">
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="169.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="31.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -129,34 +133,32 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label text="Total Attended" GridPane.rowIndex="3" />
-                              <Label text="Total Paid" GridPane.rowIndex="1" />
-                              <Label fx:id="lblBooked2" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="lblPaid2" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="lblRegistered2" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Bopked" GridPane.rowIndex="2" />
-                              <Label fx:id="lblAttended2" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Total Failed" GridPane.rowIndex="5" />
-                              <Label fx:id="lblPassed2" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Registered" />
-                              <Label layoutX="10.0" layoutY="167.0" text="Total Passed" GridPane.rowIndex="4" />
-                              <Label fx:id="lblFailed2" layoutX="110.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="Least Certificate Awarded" GridPane.rowIndex="4" />
+                              <Label text="Students Certfied" GridPane.rowIndex="2" />
+                              <Label fx:id="lblHigestCerAwarded" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="lblStuCertified" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="lblCerinDB" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Highest Certificate Awarded" GridPane.rowIndex="3" />
+                              <Label fx:id="lblLeastCerAwarded" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Certificates in the Database" GridPane.rowIndex="1" />
+                              <Label layoutX="10.0" layoutY="47.0" text="This is the total" />
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="CLASS">
+            <Tab fx:id="tabStream" text="STREAM">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane>
+                        <GridPane prefHeight="180.0" prefWidth="251.0">
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="167.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="33.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -167,18 +169,10 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label text="Total Attended" GridPane.rowIndex="3" />
-                              <Label text="Total Paid" GridPane.rowIndex="1" />
-                              <Label fx:id="lblBooked3" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="lblPaid3" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="lblRegistered3" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Bopked" GridPane.rowIndex="2" />
-                              <Label fx:id="lblAttended3" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Total Failed" GridPane.rowIndex="5" />
-                              <Label fx:id="lblPassed3" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Total Registered" />
-                              <Label layoutX="10.0" layoutY="167.0" text="Total Passed" GridPane.rowIndex="4" />
-                              <Label fx:id="lblFailed3" layoutX="110.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="Average Students per Stream" GridPane.rowIndex="1" />
+                              <Label fx:id="lblAverageperStream" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="lblTotalStreaminDB" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Total Stream in Database" />
                            </children>
                         </GridPane>
                      </children>
@@ -212,6 +206,6 @@
           <NumberAxis fx:id="y" side="LEFT" />
         </yAxis>
       </BarChart>
-      <PieChart fx:id="pieChart" layoutX="23.0" layoutY="53.0" prefHeight="256.0" prefWidth="422.0" visible="false" />
+      <PieChart fx:id="pieChart" layoutX="488.0" layoutY="136.0" prefHeight="244.0" prefWidth="442.0" visible="false" />
    </children>
 </AnchorPane>

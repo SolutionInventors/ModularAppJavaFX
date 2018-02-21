@@ -20,6 +20,12 @@
 		     <Tab fx:id="tab4_Certificate" text="Certificates">
 		        <fx:include fx:id="tabCertificate" source="/GUI/views/Certificate.fxml" />
 		    </Tab>
+		    <Tab fx:id="tab5_Statistics" text="Statistics">
+		        <fx:include fx:id="tabStatistics" source="/GUI/views/Statistics.fxml" />
+		    </Tab>
+		    <Tab fx:id="tab6_Tracker" text="Tracker">
+		        <fx:include fx:id="tabTracker" source="/GUI/views/Tracker.fxml" />
+		    </Tab>
         </tabs>
       </TabPane>
    </children>

@@ -68,7 +68,7 @@ public class StatsTest
 
 	    }
 	}else{
-	    System.out.println("The student has not registered for any moduel");
+	    System.out.println("The student has not registered for any Module");
 	}
 
 	ConnectionManager.close();

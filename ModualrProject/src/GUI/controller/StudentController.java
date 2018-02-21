@@ -99,10 +99,11 @@ public class StudentController implements Initializable
 	try
 	{
 	    localUrl = students[selection].getImage().toURI().toURL().toString();
+	    
 	}
-	catch (MalformedURLException e){
-	   /* File noImage= new File(url2.toURI());
-	    localUrl = noImage.toURI().toURL().toString();*/
+	catch (MalformedURLException e)
+	{
+	    e.printStackTrace();
 	}
 	Image localImage1 = new Image(localUrl, false);
 	imgStudentImage.setImage(localImage1);
@@ -151,13 +152,12 @@ public class StudentController implements Initializable
 	{
 	    studMods = StatisticsManager.retrieveStudentModuleStats(
 	    	    student.getIdCardNumber());
-	    System.out.println("success");
+	    /*System.out.println("success");
 	    System.out.println(student.getIdCardNumber());
-	    System.out.println(studMods);
+	    System.out.println(studMods);*/
 	}
 	catch (SQLException e)
 	{
-	    // FIXME Auto-generated catch block
 	    e.printStackTrace();
 	} 
 	 
@@ -180,7 +180,6 @@ public class StudentController implements Initializable
 	    }
 	    catch (SQLException e)
 	    {
-		// FIXME Auto-generated catch block
 		e.printStackTrace();
 	    }
 		//import piechart data
@@ -190,7 +189,7 @@ public class StudentController implements Initializable
 				new PieChart.Data("Modules Booked", studStats.getModuleBooked()),
 				new PieChart.Data("Modules Attended", studStats.getModuleAttended()),
 				new PieChart.Data("Modules Passed", studStats.getModulePassed()),
-				new PieChart.Data(" Modules Failed:", studStats.getModuleFailed())
+				new PieChart.Data("Modules Failed:", studStats.getModuleFailed())
 				);
 		pieChart.setData(list);
 	}//end method create chart
