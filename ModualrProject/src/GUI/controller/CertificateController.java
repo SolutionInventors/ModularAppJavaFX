@@ -3,6 +3,7 @@ package GUI.controller;
 import java.sql.SQLException;
 
 import database.bean.Certificate;
+import database.bean.CertificateRegister;
 import database.managers.CertificateManager;
 import database.statistics.CertificateStats;
 import database.statistics.StatisticsManager;
@@ -14,7 +15,7 @@ import javafx.scene.input.MouseEvent;
 import utils.OrderBy;
 
 public class CertificateController {
-	@FXML private ListView<?> lvMoudlelist;
+	@FXML private ListView<String> lvMoudlelist;
 	@FXML private Label lblRequired;
 	@FXML private Label lblissused;
 	@FXML private ListView<String> lvCertificateList;
@@ -40,6 +41,8 @@ public class CertificateController {
 		    CertificateStats certStats = StatisticsManager.retrieveStats(cert);
 		    lblRequired.setText(String.valueOf(certStats.getModulesRequired()));
 		    lblissused.setText(String.valueOf(certStats.getStudentIssued()));
+		    //certStats.get
+		    //CertificateRegister
 		}
 		catch (SQLException e)
 		{

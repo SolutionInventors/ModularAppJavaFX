@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 import GUI.utilities.ModuleTableGUI;
 import GUI.utilities.StudentTableGUI;
@@ -18,6 +19,8 @@ import database.statistics.StudentStats;
 import exception.InvalidAdminException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
@@ -37,8 +40,7 @@ public class StudentController implements Initializable
     
     @FXML private TextField txtSearchBar;
     @FXML private Button btnGo;
-    @FXML private ComboBox<?> cmbDateRegistered;
-    @FXML private ComboBox<?> cmbCategory;
+    @FXML private ComboBox<String> cmbCategory;
     @FXML private Label lblStudentName;
     @FXML private Label lblisActive;
     @FXML private Label lbldateRegistered;
@@ -60,13 +62,11 @@ public class StudentController implements Initializable
     @FXML private TableColumn<ModuleTableGUI, String>booked;
     @FXML private TableColumn<ModuleTableGUI, String>result;
     
-    //private ObservableList<Student> list;
 
-    // for class mainpulation
+    // for class manipulation
     private Student[] students;
-   // private Student student;
     StudentStats studStats;
-   // private URL url2 = getClass().getResource("/GUI/resources/images/no image.png");
+    ObservableList<StudentTableGUI> studentList = FXCollections.observableArrayList();
 
 
 
@@ -84,6 +84,36 @@ public class StudentController implements Initializable
 	paid.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("paid"));
 	booked.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("booked"));
 	result.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("result"));
+    
+	ObservableList<String> filters = FXCollections.observableArrayList("Active","Inactive","All");
+	cmbCategory.setItems(filters);
+	cmbCategory.setValue("Active");
+	
+	FilteredList<StudentTableGUI> filteredData = new FilteredList<>(studentList,e->true);
+	txtSearchBar.setOnKeyReleased(e ->{
+	    txtSearchBar.textProperty().addListener((observableValue, oldValue, newValue) ->{
+		filteredData.setPredicate((Predicate<? super StudentTableGUI>)studentList ->{
+		    if(newValue == null || newValue.isEmpty()) {
+			return true;
+		    }
+		    String lowerCaseFilter = newValue.toLowerCase();
+		    if (studentList.getId().toLowerCase().contains(newValue))
+		    {
+			return true;
+		    }else if(studentList.getFirstName().toLowerCase().contains(lowerCaseFilter)) {
+			return true;
+		    }else if(studentList.getLastName().toLowerCase().contains(lowerCaseFilter)) {
+			return true;
+		    }
+		    return false;
+		   
+		});
+		
+	    });
+	    SortedList<StudentTableGUI> sortedData = new SortedList<>(filteredData);
+	    sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
+	    studentTable.setItems(sortedData);
+	});
     }
 
     public void getuser() 
@@ -93,7 +123,6 @@ public class StudentController implements Initializable
 	lbldateRegistered.setText(String.valueOf(students[selection].getDateAdmitted()));
 	lblcertissused.setText(students[selection].getCertificateIssued());
 	lblemail.setText(students[selection].getEmailAddress());
-	// imgStudentImage.setImage(new Image(students[selection].getImage()));
 
 	String localUrl = null;
 	try
@@ -116,7 +145,7 @@ public class StudentController implements Initializable
     
     private ObservableList<StudentTableGUI> getstudents(){
 
-	ObservableList<StudentTableGUI> studentList = FXCollections.observableArrayList();
+	
 
 	// Step 1 :Create current Admin
 	//should be removed later on after login screen has been created

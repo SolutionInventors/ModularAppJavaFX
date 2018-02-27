@@ -34,6 +34,7 @@ public class CertificateRegisterTest
 	    String modName = TestUtils.getStringInput
 		    ("Enter the existing module name: ");
 	    CertificateRegister certMod = new CertificateRegister(certName, modName);
+	    
 
 	    System.out.println( "validCertName: " + certMod.validateCertificateName());
 	    System.out.println( "validModName: " + certMod.validateModuleName());

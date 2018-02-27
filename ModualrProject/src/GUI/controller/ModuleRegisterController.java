@@ -12,22 +12,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 public class ModuleRegisterController implements Initializable{
-    @FXML private TextField txtSearchBar;
-    @FXML private Button btnGo;
-    @FXML private ComboBox<?> cmbDateRegistered;
-    @FXML private ComboBox<?> cmbCategory;
+    @FXML private ComboBox<String> cmbCategory;
     @FXML private ImageView studentImage;
 
     @FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
@@ -52,6 +47,8 @@ public class ModuleRegisterController implements Initializable{
 	moduleName.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, String>("moduleName"));
 	moduleRegisterTable.setItems(getModuleRegister());
 
+	ObservableList<String> filters = FXCollections.observableArrayList("Reg ID","Student ID","All","Module Name","Student ID","Registered Modules","Booked Modules","Completed Modules");
+	cmbCategory.setItems(filters);
     }
 
     public ObservableList<ModuleRegisterTableGUI> getModuleRegister() {

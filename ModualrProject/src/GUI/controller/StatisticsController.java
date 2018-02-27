@@ -2,9 +2,6 @@ package GUI.controller;
 
 import java.sql.SQLException;
 
-import javax.tools.ForwardingFileObject;
-
-import database.statistics.ModuleStats;
 import database.statistics.StatisticsManager;
 import database.statistics.TableStats;
 import javafx.beans.value.ObservableValue;
@@ -16,8 +13,8 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.chart.PieChart.Data;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -38,7 +35,7 @@ public class StatisticsController {
 	@FXML private Label lblModsFailed;
 	@FXML private Label lblModsAttended;
 	@FXML private Label lblModsPassed;
-	@FXML private Label lblGraduatedStu;
+	@FXML private Label lblCertifiedStu;
 	@FXML private Label lblActiveStu;
 	@FXML private Label lblStuinDB;
 	@FXML private Label lblStuRegisteredthisYear;
@@ -86,20 +83,20 @@ public class StatisticsController {
 		    else if (newValue == tabStudent)   {
 			lblStuinDB.setText(String.valueOf(stat.getTotalNumberOfStudents()));
 			lblActiveStu.setText(String.valueOf(stat.getNumberOfActiveStudents()));
-			//lblGraduatedStu.setText(String.valueOf(stat.gra));
+			lblCertifiedStu.setText(String.valueOf(stat.getNumberOfCertifiedStudents()));
 			lblStuRegisteredthisYear.setText(String.valueOf(stat.getTotalStudentRegisteredThisYear()));
 			label = null;
 			label = new String[4]; 
 			label[0]= "Students in DB"; 
 			label[1]="Active Students";
-			label[2]= "Graduated Students";
+			label[2]= "Certified Students";
 			label[3]= "Registered this year";
 			
 			value=null;
 			value = new int[4];
 			value[0]=stat.getTotalNumberOfStudents();
 			value[1]=stat.getNumberOfActiveStudents();
-			value[2]=stat.getnumberOfModulesAttended();//incorrect
+			value[2]=stat.getNumberOfCertifiedStudents();
 			value[3]=stat.getTotalStudentRegisteredThisYear();
 			createChart(label,value);
 		    
