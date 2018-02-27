@@ -21,7 +21,7 @@ public class StudentModuleStats
     
     public StudentModuleStats(int regID, Date regDate, String modName, String result, boolean booked, boolean payment, 
 	    boolean attended, double amount){
-	this.result = result; 
+	this.result = result== null ? "No Result": result; 
 	this.moduleName = modName; 
 	this.amountPaid = amount; 
 	this.booked = booked; 
