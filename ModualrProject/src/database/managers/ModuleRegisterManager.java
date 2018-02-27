@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import database.bean.ModuleRegister;
 import database.bean.student.Student;
 import exception.InvalidAdminException;
+import utils.ModuleRegisterFilter;
 import utils.ValidationType;
 
 public final class ModuleRegisterManager
@@ -85,6 +86,8 @@ public final class ModuleRegisterManager
 	return totalPrice;
     }
 
+    
+    
     /**
      * 
      * @param regID
@@ -183,22 +186,93 @@ public final class ModuleRegisterManager
 	return false;
     }
 
-
-
-    public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
-	String sql = 
+    
+    public static ModuleRegister[] search(ModuleRegisterFilter filter, String searchValue) throws SQLException{
+	String sql ;
+	
+	switch(filter){
+	    case MODULE_NAME:
+		sql = 
 		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
-			+ "ON stud.id_card_number = reg.studentId " +
+			+ "ON stud.id_card_number = reg.studentId "
+			+ "WHERE ModuleName like ?" +
+			"ORDER BY dateRegistered " ;
+		break;
+	    
+	    case REG_ID:
+		sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId "
+			+ "WHERE id like ? " +
+			"ORDER BY dateRegistered ";
+		break;
+	    default:
+		sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId "
+			+ "WHERE StudentId LIKE ? " +
+			"ORDER BY dateRegistered ";
+		break;
+	}
+	return getModuleRegisteredHelper(sql, "%"+ searchValue + "%");
+    }
+
+    public static ModuleRegister[] getModuleRegisters(ModuleRegisterFilter filter, int startIndex) throws SQLException{
+	String sql; 
+	switch(filter){
+	    case BOOKED_MODULES:
+		sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId "
+			+ "WHERE BookingStatus = 1 " +
 			"ORDER BY dateRegistered "+ 
 			"LIMIT ? , 30" ;
+		break;
+	    case COMPLETED_MODULES:
+		sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId "
+			+ "WHERE result is not null " +
+			"ORDER BY dateRegistered "+ 
+			"LIMIT ? , 30" ;
+		break;
+	    
+	    default:
+		sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId "+
+			"ORDER BY dateRegistered "+ 
+			"LIMIT ? , 30" ;
+		break;
+	    
+	}
+	
+	return getModuleRegisteredHelper(sql, startIndex);
+    }
+    
+    private static ModuleRegister[] getModuleRegisteredHelper(String sql, Object... args) throws SQLException{
 	ResultSet result = null;
-
 	ArrayList<ModuleRegister> list = new ArrayList<>(30);
 	try( PreparedStatement stmt =
-		DatabaseManager.getPreparedStatement(sql, startIndex); )
+		DatabaseManager.getPreparedStatement(sql, args); )
 	{
 	    result = stmt.executeQuery();
 	    ModuleRegister modReg = null;
@@ -223,4 +297,17 @@ public final class ModuleRegisterManager
 	}
 	return list.toArray(new ModuleRegister[list.size()] );
     }
+    
+    public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
+	String sql = 
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "FROM module_register as reg " + 
+			"JOIN student as stud "
+			+ "ON stud.id_card_number = reg.studentId " +
+			"ORDER BY dateRegistered "+ 
+			"LIMIT ? , 30" ;
+	return getModuleRegisteredHelper(sql, startIndex);
+    }
+	
 }

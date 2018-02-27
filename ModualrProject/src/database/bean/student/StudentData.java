@@ -27,6 +27,11 @@ public class StudentData implements Bean
 
     private static final long serialVersionUID = -4202730559200100870L;
     private final String STUDENT_ID;
+    private String HighestQualificationAttained; 
+    private String currentWorkPlace; 
+    private String lastCourseRead; 
+    private int yearsWorkingExperience;
+    
     private Biodata biodata;
 
     private EducationalBackground[] education;

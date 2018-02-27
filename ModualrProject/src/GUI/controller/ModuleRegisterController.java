@@ -24,72 +24,72 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 public class ModuleRegisterController implements Initializable{
-	@FXML private TextField txtSearchBar;
-	@FXML private Button btnGo;
-	@FXML private ComboBox<?> cmbDateRegistered;
-	@FXML private ComboBox<?> cmbCategory;
-	@FXML private ImageView studentImage;
-	
-	@FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
-	@FXML private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
-	@FXML private TableColumn<ModuleRegisterTableGUI, String> studentID;
-	@FXML private TableColumn<ModuleRegisterTableGUI, String> moduleName;
-	
-	@FXML private Label lblPaymentstatus;
-	@FXML private Label lblMoudleName;
-	@FXML private Label lblStudentName;
-	@FXML private Label lblResult;
-	@FXML private Label lblBookingStatus;
-	@FXML private Label lblAttended;
-	
-	private ModuleRegister[] modRegs;
-	
-	    @Override
-	    public void initialize(URL arg0, ResourceBundle arg1){
-		//for student table
-		registerID.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, Integer>("registerID"));
-		studentID.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, String>("studentID"));
-		moduleName.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, String>("moduleName"));
-		moduleRegisterTable.setItems(getModuleRegister());
-		
-	    }
-	    
-	    public ObservableList<ModuleRegisterTableGUI> getModuleRegister() {
-		  
-		    ObservableList<ModuleRegisterTableGUI> list = FXCollections.observableArrayList();
-		    try {
-			modRegs = ModuleRegisterManager.getRegisteredModules(0);
-		    }
-		    catch (SQLException e)
-		    {
-			e.printStackTrace();
-		    }
-			for ( int i = 0 ; i < modRegs.length ; i++ ){
-			    list.add(new  ModuleRegisterTableGUI(modRegs[i].getId(),modRegs[i].getStudentId(),modRegs[i].getModuleName()));
-			 
-			}
-			return list;
-			
-		}//end get Modules
+    @FXML private TextField txtSearchBar;
+    @FXML private Button btnGo;
+    @FXML private ComboBox<?> cmbDateRegistered;
+    @FXML private ComboBox<?> cmbCategory;
+    @FXML private ImageView studentImage;
 
-	 // Event Listener on TableView[#moduleRegisterTable].onMouseClicked
-		@FXML
-		public void getDetails(MouseEvent event) {
-		    int selection = moduleRegisterTable.getSelectionModel().getSelectedIndex();
-		    lblStudentName.setText(modRegs[selection].getStudentId());//no method
-		    lblPaymentstatus.setText(modRegs[selection].paymentComplete()?"Completed":"Incomplete");//no method
-		    lblResult.setText(modRegs[selection].getResult());
-		    lblBookingStatus.setText(modRegs[selection].hasBooked()?"Booked":"Not Booked");
-		    lblAttended.setText(modRegs[selection].hasAttended()?"Yes":"No");
-		    String localUrl = null;
-			try{
-			    localUrl = modRegs[selection].getStudentImage().toURI().toURL().toString();
-			}
-			catch (MalformedURLException e) {
-			    e.printStackTrace();}
-			Image localImage1 = new Image(localUrl, false);
-			studentImage.setImage(localImage1);
-			
-		    
-		}//end method get details
+    @FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
+    @FXML private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
+    @FXML private TableColumn<ModuleRegisterTableGUI, String> studentID;
+    @FXML private TableColumn<ModuleRegisterTableGUI, String> moduleName;
+
+    @FXML private Label lblPaymentstatus;
+    @FXML private Label lblMoudleName;
+    @FXML private Label lblStudentName;
+    @FXML private Label lblResult;
+    @FXML private Label lblBookingStatus;
+    @FXML private Label lblAttended;
+
+    private ModuleRegister[] modRegs;
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1){
+	//for student table
+	registerID.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, Integer>("registerID"));
+	studentID.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, String>("studentID"));
+	moduleName.setCellValueFactory(new PropertyValueFactory<ModuleRegisterTableGUI, String>("moduleName"));
+	moduleRegisterTable.setItems(getModuleRegister());
+
+    }
+
+    public ObservableList<ModuleRegisterTableGUI> getModuleRegister() {
+
+	ObservableList<ModuleRegisterTableGUI> list = FXCollections.observableArrayList();
+	try {
+	    modRegs = ModuleRegisterManager.getRegisteredModules(0);
+	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	}
+	for ( int i = 0 ; i < modRegs.length ; i++ ){
+	    list.add(new  ModuleRegisterTableGUI(modRegs[i].getId(),modRegs[i].getStudentId(),modRegs[i].getModuleName()));
+
+	}
+	return list;
+
+    }//end get Modules
+
+    // Event Listener on TableView[#moduleRegisterTable].onMouseClicked
+    @FXML
+    public void getDetails(MouseEvent event) {
+	int selection = moduleRegisterTable.getSelectionModel().getSelectedIndex();
+	lblStudentName.setText(modRegs[selection].getStudentId());//no method
+	lblPaymentstatus.setText(modRegs[selection].paymentComplete()?"Completed":"Incomplete");//no method
+	lblResult.setText(modRegs[selection].getResult());
+	lblBookingStatus.setText(modRegs[selection].hasBooked()?"Booked":"Not Booked");
+	lblAttended.setText(modRegs[selection].hasAttended()?"Yes":"No");
+	String localUrl = null;
+	try{
+	    localUrl = modRegs[selection].getStudentImage().toURI().toURL().toString();
+	}
+	catch (MalformedURLException e) {
+	    e.printStackTrace();}
+	Image localImage1 = new Image(localUrl, false);
+	studentImage.setImage(localImage1);
+
+
+    }//end method get details
 }

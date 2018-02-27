@@ -55,10 +55,10 @@ public final class StudentManager
 	try( PreparedStatement  stmt = DatabaseManager.getPreparedStatement( 
 		sql,studentId);)
 	{
-	   
-	   result = stmt.executeQuery(); 
-	   return result.next() ;
-	    
+
+	    result = stmt.executeQuery(); 
+	    return result.next() ;
+
 	}finally{
 	    if( result!=null) result.close();
 	}
@@ -160,23 +160,23 @@ public final class StudentManager
      * @throws InvalidBeanException when any {@code StudentData} attribute isValid
      * @throws InvalidAdminException when the current {@code Admin} that wants to make the change is invalid
      */
-    
+
     @SuppressWarnings("resource")
     public static boolean registerStudent( Student newStudent, StudentData studentData) 
 	    throws SQLException, InvalidAdminException
     {
 	Connection conn = ConnectionManager.getInstance().getConnection(); 
 	conn.setAutoCommit(false);
-	
+
 	boolean success =  registrationHelper(newStudent, studentData);
-	
+
 	if(  success ){
 	    conn.commit();  
 	}else{
 	    conn.rollback();
 	}
 	conn.setAutoCommit(true);
-	
+
 	return success;
     }
 
@@ -193,7 +193,7 @@ public final class StudentManager
 	if( newStudent.isValid(ValidationType.NEW_BEAN))
 	{
 	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
-		   CallableStatement statement = 
+		    CallableStatement statement = 
 			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?,?,?, ?, ?) }",
 				    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
 				    newStudent.getModClassName(), newStudent.getFirstName(), 
@@ -247,43 +247,80 @@ public final class StudentManager
     @SuppressWarnings("resource")
     public static boolean registerAspiringStudent(String studID, String className, AspiringStudent aspStudent) throws SQLException, InvalidAdminException{
 	AspiringStudentData aspData = AspiringStudentManager.getData(aspStudent); 
-	
+
 	Biodata bio = new Biodata(studID, aspStudent.getStateOfOrigin(), 
 		aspStudent.getCountry(), aspStudent.getCurrentAddress(), 
 		aspStudent.getPermanentAddress(), aspStudent.getGender(),
 		aspStudent.getDateOfBirth(), aspStudent.getPlaceOfBirth(),
 		aspStudent.getReligion(), aspStudent.getTitle()); 
-	
+
 	Student newStudent = new Student(aspStudent.getFirstName(), aspStudent.getLastName(),
 		studID, className, aspStudent.getEmail(), aspStudent.getImage()); 
-	
+
 	StudentData studData = new StudentData(bio,aspData.getEducation(), 
 		aspData.getPhoneNumbers(), aspData.getExperiences(), 
 		aspData.getMeansOfDiscovery(),aspData.getSponsors()); 
-	
+
 	Connection conn = ConnectionManager.getInstance().getConnection(); 
 	conn.setAutoCommit(false);
 	boolean success = registrationHelper(newStudent, studData) && 
 		AspiringStudentManager.delete(aspStudent.getId()); 
-	
+
 	if(success) conn.commit();
 	else conn.rollback();
 	conn.setAutoCommit(true);
-	
+
 	return success; 
     }
-    
-    
+
+    /**
+     * Gets all the {@code Student}s in the database and sorts them by classname without 
+     * checking if they are active or not
+     * @param startIndex using to create a pagging system
+     * @return an array of {@code Student}s
+     * @throws SQLException
+     */
+    public static Student[] getStudents(int startIndex) throws SQLException{
+	String sql = String.format("SELECT * FROM student "
+		+ "ORDER BY className"
+		+ "LIMIT ?, 30" );
+
+	return getStudentHelper(sql, startIndex); 
+    }
+
+
+    public static Student[] search(String studentId) throws SQLException{
+	String sql = String.format("SELECT * FROM student "
+		+ "ORDER BY className "
+		+ "WHERE ucase(student.id_card_number) LIKE ucase(?) ");
+		
+	return getStudentHelper(sql, studentId) ; 
+    }
+    /**
+     * Gets the {@code Student}s in the databasse based on whether they are active 
+     * or not
+     * @param active
+     * @param startIndex
+     * @return
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
     public static Student[] getStudents(boolean active , int startIndex ) throws SQLException, InvalidAdminException
     {
 	String sql = String.format("SELECT * FROM student "
-		+ "WHERE active = ? "
-		+ "LIMIT ?, 30" );
+		+ "WHERE active = %d "
+		+ "LIMIT ?, 30", active ? 1:0);
+	
+	return getStudentHelper(sql,  startIndex); 
+
+    }
+
+    private static Student[] getStudentHelper(String sql , Object... args) throws SQLException{
 
 	ResultSet result  = null;
 	List<Student> list = new ArrayList<>(30);
 	try(  PreparedStatement  statement = DatabaseManager.getPreparedStatement
-		( sql, active ? 1: 0 , startIndex);)
+		( sql, args);)
 	{
 	    result = statement.executeQuery();
 	    Student stud;
@@ -292,12 +329,12 @@ public final class StudentManager
 		String fName = result.getString("FirstName"); 
 		String lName = result.getString("LastName"); 
 		File file = Student.getImageFromStream(id, result.getBinaryStream("image"));
-		
+
 		stud = new Student(fName, lName, id, result.getString("className"),
 			result.getString("emailAddress"), file);
 		stud.setDateAdmitted(result.getDate("dateAdmitted"));
-		
-		
+
+
 		list.add(stud);
 	    }
 	}
@@ -307,8 +344,6 @@ public final class StudentManager
 	}
 	return list.toArray( new Student[list.size()] );
     }
-
-    
 
 
     private static final class StudentDataManager
