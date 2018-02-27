@@ -66,14 +66,14 @@
                               <Label fx:id="lblModRegistered" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label fx:id="lblModinDatabase" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label layoutX="10.0" layoutY="17.0" text="Units Paid for" GridPane.rowIndex="3" />
-                              <Label text="Modules Attended" GridPane.rowIndex="6" />
-                              <Label fx:id="lblModsFailed" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="Modules Attended" GridPane.rowIndex="4" />
+                              <Label fx:id="lblModsFailed" layoutX="10.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                               <Label layoutX="10.0" layoutY="17.0" text="Modules in Database" GridPane.rowIndex="1" />
-                              <Label layoutX="10.0" layoutY="167.0" text="Modules Failed" GridPane.rowIndex="5" />
-                              <Label fx:id="lblModsAttended" layoutX="110.0" layoutY="137.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label layoutX="10.0" layoutY="167.0" text="Modules Failed" GridPane.rowIndex="6" />
                               <Label text="This is the total" />
-                              <Label layoutX="10.0" layoutY="17.0" text="Modules Passed" GridPane.rowIndex="4" />
-                              <Label fx:id="lblModsPassed" layoutX="140.0" layoutY="107.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Modules Passed" GridPane.rowIndex="5" />
+                              <Label fx:id="lblModsPassed" layoutX="140.0" layoutY="107.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label fx:id="lblModsAttended" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
                      </children>

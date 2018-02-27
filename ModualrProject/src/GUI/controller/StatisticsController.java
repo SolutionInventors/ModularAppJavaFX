@@ -2,15 +2,22 @@ package GUI.controller;
 
 import java.sql.SQLException;
 
+import javax.tools.ForwardingFileObject;
+
+import database.statistics.ModuleStats;
 import database.statistics.StatisticsManager;
 import database.statistics.TableStats;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -58,6 +65,8 @@ public class StatisticsController {
 	@FXML private Tab tabStream;
 	
 	private TableStats stat = null ;
+	private String[] label;
+	private int[] value;
 	
     public void initialize()  {
 	try{
@@ -79,6 +88,21 @@ public class StatisticsController {
 			lblActiveStu.setText(String.valueOf(stat.getNumberOfActiveStudents()));
 			//lblGraduatedStu.setText(String.valueOf(stat.gra));
 			lblStuRegisteredthisYear.setText(String.valueOf(stat.getTotalStudentRegisteredThisYear()));
+			label = null;
+			label = new String[4]; 
+			label[0]= "Students in DB"; 
+			label[1]="Active Students";
+			label[2]= "Graduated Students";
+			label[3]= "Registered this year";
+			
+			value=null;
+			value = new int[4];
+			value[0]=stat.getTotalNumberOfStudents();
+			value[1]=stat.getNumberOfActiveStudents();
+			value[2]=stat.getnumberOfModulesAttended();//incorrect
+			value[3]=stat.getTotalStudentRegisteredThisYear();
+			createChart(label,value);
+		    
 		    }
 		    else if (newValue == tabProgram) {
 			lblCerinDB.setText(String.valueOf(stat.getTotalNumberOfCertificates()));
@@ -96,19 +120,65 @@ public class StatisticsController {
 
     }//end method initialize
     
+    
+    @SuppressWarnings({
+	    "rawtypes", "unchecked"
+    })
+    private void createChart(String[] chartlabel, int[] chartValue) {
+	//import pie chart data
+	ObservableList<Data> list = FXCollections.observableArrayList();
+			
+			for (int i=0; i<chartlabel.length; i++) {
+			    list.add(new PieChart.Data(chartlabel[i], chartValue[i]));
+			}
+		
+	
+	barChart.getData().clear();
+	XYChart.Series set1 =new XYChart.Series<>();
+	for (int i = 0; i < chartValue.length; i++){
+	    set1.getData().add(new XYChart.Data(chartlabel[i], chartValue[i]));
+	}
+	barChart.getData().addAll(set1);
+	
+	pieChart.setData(list);
+}//end method create chart
+    
     private void toShowinitaldata() {
 	lblModinDatabase.setText(String.valueOf(stat.getTotalNumberOfModules()));
 	lblModRegistered.setText(String.valueOf(stat.getNumberOfModulesRegistered()));
 	lblModsPassed.setText(String.valueOf(stat.getNumberOfModulesPassed()));
 	lblModsFailed.setText(String.valueOf(stat.getNumberOfModulesFailed()));
 	lblModsAttended.setText(String.valueOf(stat.getnumberOfModulesAttended()));
-  
+	label = null;
+	label = new String[5]; 
+	label[0]= "Total in DB"; 
+	label[1]="Registered";
+	label[2]= "Attended";
+	label[3]= "Passed";
+	label[4]= "Failed";
+	
+	value=null;
+	value = new int[5];
+	value[0]=stat.getTotalNumberOfModules();
+	value[1]=stat.getNumberOfModulesRegistered();
+	value[2]=stat.getnumberOfModulesAttended();
+	value[3]=stat.getNumberOfModulesPassed();
+	value[4]=stat.getNumberOfModulesFailed();
+	createChart(label,value);
+	
     }
 
     // Event Listener on RadioButton[#rbBar/#rbPie].onAction
     @FXML
     public void radioSelected(ActionEvent event)
     {
+	if (rbPie.isSelected()) {
+		barChart.setVisible(false);
+		pieChart.setVisible(true);
+	    }else {
+		pieChart.setVisible(false);
+		barChart.setVisible(true);
+	    }
     }
 
 }
