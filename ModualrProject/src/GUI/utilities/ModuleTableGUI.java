@@ -4,24 +4,24 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ModuleTableGUI
 {
-    private final SimpleStringProperty module;
+    private final SimpleStringProperty moduleName;
     private final SimpleStringProperty paid;
     private final SimpleStringProperty booked;
     private final SimpleStringProperty result;
 
-    public ModuleTableGUI(String module, String paid, String booked, String result
+    public ModuleTableGUI(String moduleName, String paid, String booked, String result
 	   )
     {
 	super();
-	this.module = new SimpleStringProperty(module);
+	this.moduleName = new SimpleStringProperty(moduleName);
 	this.paid = new SimpleStringProperty(paid);
 	this.booked = new SimpleStringProperty(booked);
 	this.result = new SimpleStringProperty(result);
     }
 
-    public String getModule()
+    public String getModuleName()
     {
-	return module.get();
+	return moduleName.get();
     }
 
     public String getPaid()

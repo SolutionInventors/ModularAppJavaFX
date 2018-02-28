@@ -5,9 +5,10 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ModuleRegisterTableGUI
 {
-    private final SimpleStringProperty moduleName;
+    //private final SimpleStringProperty module;
     private final SimpleStringProperty studentID;
     private final SimpleIntegerProperty registerID;
+    private final SimpleStringProperty moduleName;
 
     public ModuleRegisterTableGUI(Integer registerID, String string, String moduleName )
     {
@@ -26,9 +27,10 @@ public class ModuleRegisterTableGUI
 	return studentID.get();
     }
 
-    public String getModule() {
-	return moduleName.get();
-    }
+    public String getModuleName() {
+  	return moduleName.get();
+      }
+
 
 
 

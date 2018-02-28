@@ -200,7 +200,7 @@ public class StudentController implements Initializable
 	
     }
 
-	private void createChart(String id) {
+    private void createChart(String id) {
 	    StudentStats studStats = null; 
 	    Student student = new Student(id);
 	    try
@@ -223,4 +223,16 @@ public class StudentController implements Initializable
 		pieChart.setData(list);
 	}//end method create chart
 
+    /**
+     * Updates the table based on value selected
+     */
+    private void combochange() {
+	try{
+	    StudentManager.getStudents(true, 0);//returns array of students, false gives inactive
+	    StudentManager.getStudents(0);//returns all students in using start index
+	}
+	catch (SQLException | InvalidAdminException e){
+	    e.printStackTrace();
+	}
+    }
 }//end class

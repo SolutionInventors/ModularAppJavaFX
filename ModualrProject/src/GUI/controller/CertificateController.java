@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import database.bean.Certificate;
 import database.bean.CertificateRegister;
 import database.managers.CertificateManager;
+import database.managers.CertificateRegisterManager;
 import database.statistics.CertificateStats;
 import database.statistics.StatisticsManager;
 import exception.InvalidAdminException;
@@ -42,7 +43,12 @@ public class CertificateController {
 		    lblRequired.setText(String.valueOf(certStats.getModulesRequired()));
 		    lblissused.setText(String.valueOf(certStats.getStudentIssued()));
 		    //certStats.get
-		    //CertificateRegister
+		   String moduleList[] =  CertificateRegisterManager.getModulesRequired(selected);
+		   lvMoudlelist.getItems().clear();
+		   for (String module : moduleList)
+		{
+		       lvMoudlelist.getItems().add(module);
+		}
 		}
 		catch (SQLException e)
 		{

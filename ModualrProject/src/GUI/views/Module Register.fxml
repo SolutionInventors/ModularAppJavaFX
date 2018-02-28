@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -13,7 +15,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.ModuleRegisterController">
    <children>
-      <GridPane layoutX="29.0" layoutY="22.0" prefHeight="30.0" prefWidth="391.0">
+      <GridPane layoutX="29.0" layoutY="22.0" prefHeight="64.0" prefWidth="391.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="68.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="200.0" />
@@ -21,17 +23,22 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="16.0" minHeight="7.0" prefHeight="7.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="36.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label layoutX="10.0" layoutY="17.0" text="Filter by" />
-            <ComboBox fx:id="cmbCategory" layoutX="110.0" layoutY="43.0" prefHeight="25.0" prefWidth="186.0" GridPane.columnIndex="1" />
+            <ComboBox fx:id="cmbCategory" layoutX="110.0" layoutY="43.0" onAction="#itemSelected" prefHeight="25.0" prefWidth="186.0" GridPane.columnIndex="1" />
+            <Label fx:id="lblSearch" text="Search" visible="false" GridPane.rowIndex="2" />
+            <TextField fx:id="txtSearch" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button fx:id="btnGO" mnemonicParsing="false" onAction="#getFilter" text="GO" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
          </children>
       </GridPane>
       <TableView fx:id="moduleRegisterTable" layoutX="19.0" layoutY="93.0" onMouseClicked="#getDetails" prefHeight="332.0" prefWidth="384.0">
         <columns>
           <TableColumn fx:id="registerID" prefWidth="109.0" text="RegisterID" />
           <TableColumn fx:id="studentID" prefWidth="108.0" text="Student ID" />
-            <TableColumn fx:id="moduleName" prefWidth="120.0" text="Module Name" />
+            <TableColumn fx:id="moduleName" prefWidth="114.0" text="Module Name" />
         </columns>
       </TableView>
       <GridPane layoutX="473.0" layoutY="144.0" prefHeight="219.0" prefWidth="242.0">
@@ -63,5 +70,6 @@
          <image>
             <Image url="@../../../../../../Pictures/Customer.jpg" />
          </image></ImageView>
+      <Label text="Label" />
    </children>
 </AnchorPane>

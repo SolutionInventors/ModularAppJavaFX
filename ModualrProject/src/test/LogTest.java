@@ -54,6 +54,7 @@ public class LogTest
 	    System.out.println("Operation Type: " + log.getOperationType());
 	});
 	
+	System.out.println("<<<<<<<<<< >>>>>>>>>>>>>>");
 	StudentLog[] studLog =  LogManager.getLog(StudentLog.class,
 		TransactionType.INSERT, 0);
 	System.out.println("-----StudentLogs--------" );
