@@ -11,6 +11,9 @@
             <Tab fx:id="tab1_students" text="Students">
 		        <fx:include fx:id="tabstudent" source="/GUI/views/Student.fxml" /> 
 		    </Tab>
+		     <Tab fx:id="tab1a_aspStudents" text="Aspiring Students">
+		        <fx:include fx:id="tabAspStudent" source="/GUI/views/AspiringStudents.fxml" /> 
+		    </Tab>
 		     <Tab fx:id="tab2_Modules" text="Modules">
 		        <fx:include fx:id="tabmodule" source="/GUI/views/Module.fxml" />
 		    </Tab>

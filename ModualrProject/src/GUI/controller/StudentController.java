@@ -87,7 +87,7 @@ public class StudentController implements Initializable
     
 	ObservableList<String> filters = FXCollections.observableArrayList("Active","Inactive","All");
 	cmbCategory.setItems(filters);
-	cmbCategory.setValue("Active");
+	cmbCategory.setValue("All");
 	
 	FilteredList<StudentTableGUI> filteredData = new FilteredList<>(studentList,e->true);
 	txtSearchBar.setOnKeyReleased(e ->{
@@ -144,9 +144,6 @@ public class StudentController implements Initializable
     
     
     private ObservableList<StudentTableGUI> getstudents(){
-
-	
-
 	// Step 1 :Create current Admin
 	//should be removed later on after login screen has been created
 	Admin currentAdmin = new Admin("Chidi", "OguejioforTheGreat");
@@ -226,10 +223,30 @@ public class StudentController implements Initializable
     /**
      * Updates the table based on value selected
      */
+    @FXML
     private void combochange() {
 	try{
-	    StudentManager.getStudents(true, 0);//returns array of students, false gives inactive
-	    StudentManager.getStudents(0);//returns all students in using start index
+	switch (cmbCategory.getSelectionModel().getSelectedIndex())
+	{
+	    case 0:
+		students= StudentManager.getStudents(true, 0);
+		break;
+	    case 1:
+		students= StudentManager.getStudents(false, 0);
+		break;
+	    default:
+		students= StudentManager.getStudents(0);
+		break;
+	}
+	studentList.clear();
+	 for (int i = 0; i < students.length; i++)
+	    {
+		studentList.add(new StudentTableGUI(students[i].getIdCardNumber(), students[i].getFirstName(),
+			students[i].getLastName(), students[i].getModClassName()));
+
+	    }
+	 studentTable.setItems(studentList);
+	 
 	}
 	catch (SQLException | InvalidAdminException e){
 	    e.printStackTrace();

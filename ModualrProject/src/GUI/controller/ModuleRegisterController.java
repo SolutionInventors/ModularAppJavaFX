@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import utils.ModuleRegisterFilter;
 
@@ -154,6 +155,50 @@ public class ModuleRegisterController implements Initializable
 	moduleRegisterTable.setItems(list);
     }
 
+    
+    
+    @FXML
+    private void keyPressed(KeyEvent event) {
+
+	modRegs = null;
+	try
+	{
+	    switch (selectedIndex)
+	    {
+		case 0:
+		    modRegs = ModuleRegisterManager.search(ModuleRegisterFilter.REG_ID, txtSearch.getText());
+		    break;
+		case 1:
+		    modRegs = ModuleRegisterManager.search(ModuleRegisterFilter.STUDENT_ID, txtSearch.getText());
+		    break;
+		case 2:
+		    modRegs = ModuleRegisterManager.search(ModuleRegisterFilter.MODULE_NAME, txtSearch.getText());
+		    break;
+		case 3:
+		    modRegs = ModuleRegisterManager.getModuleRegisters(ModuleRegisterFilter.BOOKED_MODULES, 0);
+		    break;
+		case 4:
+		    modRegs = ModuleRegisterManager.getModuleRegisters(ModuleRegisterFilter.COMPLETED_MODULES, 0);
+		    break;
+		default:
+		    modRegs = ModuleRegisterManager.getModuleRegisters(ModuleRegisterFilter.ALL, 0);
+		    break;
+	    }
+	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	} // search value
+	list.clear();
+	for (int i = 0; i < modRegs.length; i++)
+	{
+	    list.add(new ModuleRegisterTableGUI(modRegs[i].getId(), modRegs[i].getStudentId(),
+		    modRegs[i].getModuleName()));
+	}
+	moduleRegisterTable.setItems(list);
+    }
+    
+    
     @FXML
     public void itemSelected(ActionEvent event)
     {
