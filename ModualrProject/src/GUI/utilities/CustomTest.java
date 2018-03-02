@@ -12,11 +12,11 @@ public class CustomTest extends Application {
     @Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/GUI/views/Certificate.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/GUI/views/AspiringStudents.fxml"));
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			scene.getStylesheets().add(getClass().getResource("/GUI/css/Btncss.css").toExternalForm());
+			//scene.getStylesheets().add(getClass().getResource("/GUI/css/Btncss.css").toExternalForm());
 			primaryStage.setTitle("Admin Login");
 		} catch(Exception e) {
 			e.printStackTrace();

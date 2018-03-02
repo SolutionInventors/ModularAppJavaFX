@@ -146,6 +146,7 @@ public class StatisticsController {
 	lblModsPassed.setText(String.valueOf(stat.getNumberOfModulesPassed()));
 	lblModsFailed.setText(String.valueOf(stat.getNumberOfModulesFailed()));
 	lblModsAttended.setText(String.valueOf(stat.getnumberOfModulesAttended()));
+	//lblUnitsPaid.setText(String.valueOf(stat.getpa));//no method
 	label = null;
 	label = new String[5]; 
 	label[0]= "Total in DB"; 
