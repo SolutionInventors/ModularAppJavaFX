@@ -150,7 +150,6 @@ public final class CertificateManager
 	}
 	return list.toArray( new Certificate[ list.size() ] );
     }
-
     /**
      * Gets a {@code String } that would be used in a query to retrive 
      * {@code Certifiacte}s from the {@code Certificate} table.

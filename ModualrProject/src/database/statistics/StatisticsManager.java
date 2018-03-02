@@ -116,7 +116,7 @@ public class StatisticsManager
 	    regStudThisYearResult = stmt2.executeQuery(); 
 	    regStudThisYearResult.next(); 
 	    if( result.next() ){
-
+		String[][] certTable = getIndividualCertTable(); 
 
 		return new TableStats(
 			result.getInt("Num of Modules"),
@@ -129,7 +129,8 @@ public class StatisticsManager
 			result.getDate("dateOfFirstAdmission"), result.getDate("dateOfLastAdmission"), 
 			result.getInt("Total Certs"), result.getString("Max certificate Awarded"),
 			result.getString("Min certificate Awarded"),
-			result.getDouble("Average Student Per Class"), result.getInt("Num of Class")); 
+			result.getDouble("Average Student Per Class"), result.getInt("Num of Class"), 
+			certTable); 
 	    }
 
 	}
@@ -138,9 +139,42 @@ public class StatisticsManager
 	    if(regStudThisYearResult != null ) regStudThisYearResult.close();
 	}
 
-	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "NONE", 0, 0);
+	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "NONE", 0, 0 ,null );
     }
 
+    private static String[][] getIndividualCertTable() throws SQLException
+    {
+	String sql = "SELECT name , Count(student.certificateIssued) as numCertified "
+		+ "FROM certificate  "
+		+ "LEFT JOIN student "
+		+ "  ON student.certificateIssued  = name "
+		+ "GROUP BY name "
+		+ "ORDER BY numCertified DESC "; 
+	ResultSet result = null ;
+	ArrayList<String[]> list = new ArrayList<>(); 
+	
+	try(
+		PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql); 
+		
+	    ){
+	    result = stmt.executeQuery(); 
+	    while(result.next()){
+		
+		String[] rowValue =  {
+		    result.getString("name"), 
+		    result.getString("numCertified")
+		}; 
+		
+		list.add(rowValue); 
+	    }
+	    String[][] finalOutput = new String[list.size()][2]; 
+	    for(int i = 0 ; i< finalOutput.length; i++ ){
+		finalOutput[i][0] = list.get(i)[0]; 
+		finalOutput[i][1] = list.get(i)[1]; 
+	    }
+	    return finalOutput; 
+	}
+    }
 
     /**
      * Gets the number of students that have been registered into the database 

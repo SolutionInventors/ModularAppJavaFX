@@ -96,7 +96,9 @@ public final class ModuleRegisterManager
      */
     public static ModuleRegister getModRegById( int regID ) throws SQLException{
 	String sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image,"
+		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, "
+		+ " ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -113,6 +115,7 @@ public final class ModuleRegisterManager
 		File image = 
 			Student.getImageFromStream(studentID, result.getBinaryStream("image"));
 		modReg =  new ModuleRegister(image, 
+			result.getString("StudentName"), 
 			result.getString("ModuleName"),
 			result.getString("StudentId"), 
 			result.getBoolean("BookingStatus"),
@@ -193,7 +196,8 @@ public final class ModuleRegisterManager
 	switch(filter){
 	    case MODULE_NAME:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, "
+		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName,StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -204,7 +208,8 @@ public final class ModuleRegisterManager
 	    
 	    case REG_ID:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, "
+		+ "CONCAT(stud.firstName, ' ' , stud.lastName)as StudentName,ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -214,7 +219,8 @@ public final class ModuleRegisterManager
 		break;
 	    default:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName,"
+		+ "CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -231,7 +237,8 @@ public final class ModuleRegisterManager
 	switch(filter){
 	    case BOOKED_MODULES:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, "
+		+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -242,7 +249,9 @@ public final class ModuleRegisterManager
 		break;
 	    case COMPLETED_MODULES:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, "
+		+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as studentName"
+		+ " , ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -254,7 +263,8 @@ public final class ModuleRegisterManager
 	    
 	    default:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, "
+		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -281,7 +291,8 @@ public final class ModuleRegisterManager
 		String studentID = result.getString("StudentID"); 
 		image = Student.getImageFromStream(studentID, result.getBinaryStream("image"));
 		
-		modReg = new ModuleRegister(image, 
+		modReg = new ModuleRegister(image,
+			result.getString("StudentName"), 
 			result.getString("ModuleName"),
 			result.getString("StudentId"), result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"), 
@@ -300,7 +311,8 @@ public final class ModuleRegisterManager
     
     public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
 	String sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, "
+		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "

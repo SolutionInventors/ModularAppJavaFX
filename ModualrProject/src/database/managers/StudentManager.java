@@ -137,6 +137,10 @@ public final class StudentManager
 	    ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);
 	    MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
 	    Sponsor[] spons =  SponsorManager.getSponsors( student);
+	    ResultSet otherInfoData = getOtherInfo(student.getIdCardNumber()); 
+	    
+	    otherInfoData.next(); 
+	    
 	    studData = new StudentData(data, edu, phoneNumbers,
 		    experiences, meansOfDisc, spons);
 
@@ -144,6 +148,19 @@ public final class StudentManager
 
 	return studData.isValid(ValidationType.EXISTING_BEAN) ? studData : null;
     }
+    
+    private static ResultSet getOtherInfo(String studentID) throws SQLException
+    {
+	String sql = "select * from otherStudentInfo "
+		+ "where id_card_number = ? "; 
+	
+	
+	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, studentID)){
+	    return stmt.executeQuery();
+	}
+	
+    }
+
     /**
      * Registers a new {@code Student} to the program by using the {@code Student} and 
      * {@code StudentData}. The insertion of the {@code Student} object and each 

@@ -39,7 +39,8 @@ public class ModuleRegister  implements Bean
     
     /**Foreign key from the Student table*/
     private String studentId;
-
+    private String studentName; 
+    
     private File studentImage;//stored in Student table but used here
     
     private boolean paymentStatus;
@@ -73,10 +74,11 @@ public class ModuleRegister  implements Bean
      * @param attended
      * @param result
      */
-    public ModuleRegister(File image,  String moduleName , String studentId,
+    public ModuleRegister(File image,  String studentName, String moduleName , String studentId,
 	    boolean booked, boolean attended, double totalPrice, String result )
     {
 	this(  moduleName, studentId);
+	setStudentName(studentName); 
 	setStudentImage(image);
 	setBookingStatus(booked);
 	setAttended(attended);
@@ -295,6 +297,18 @@ public class ModuleRegister  implements Bean
     public void setStudentImage(File studentImage)
     {
 	this.studentImage = studentImage;
+    }
+
+    public String getStudentName()
+    {
+	System.out.println(studentName);
+	return studentName;
+    }
+
+    public void setStudentName(String studentName)
+    {
+	System.out.println(studentName);
+	this.studentName = studentName;
     }
 
 }

@@ -32,6 +32,7 @@ public class TableStats
     private final double averageStudentPerClass; 
     private final int totalNumberOfClass;
 
+    private final String[][] individualCertStats; 
     
     
     
@@ -54,6 +55,9 @@ public class TableStats
      * @param leastCertAwarded the least {@code Certificate } awarded
      * @param aveStudentPerClass a {@code double} containing the average student per class
      * @param totalClass the total number of classes in the database
+     * @param certsTable this is a multi dimensional {@code String } array that
+     * displays the certificate name and the number of times it has been issued
+     * 
      */
     protected TableStats( //mod stats
 	    int totalMods, int totalModRegistered, int modAttended, 
@@ -65,7 +69,8 @@ public class TableStats
 	    //cert stats
 	    int totalCertificates, String higestAwardedCertificate,String leastCertAwarded, 
 	    //class stats
-	    double aveStudentPerClass, int totalClass)
+	    double aveStudentPerClass, int totalClass, 
+	    String[][] certsTable)
     {
 	//setting Module stats
 	totalNumberOfModules = totalMods;
@@ -82,7 +87,7 @@ public class TableStats
 	this.totalStudentRegisteredThisYear = totalStudentRegisteredThisYear; 
 	firstStudentRegistration =  firstStudentReg;
 	this.lastStudentRegistration = lastStudentRegistration; 
-	
+	individualCertStats = certsTable;
 		
 	//setting cert stats; 
 	totalNumberOfCertificates = totalCertificates;
@@ -259,5 +264,11 @@ public class TableStats
     public double getAverageStudentPerClass()
     {
 	return averageStudentPerClass;
+    }
+
+
+    public String[][] getIndividualCertStats()
+    {
+	return individualCertStats;
     }
 }

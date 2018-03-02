@@ -27,9 +27,10 @@ public class StudentData implements Bean
 
     private static final long serialVersionUID = -4202730559200100870L;
     private final String STUDENT_ID;
-    private String HighestQualificationAttained; 
-    private String currentWorkPlace; 
-    private String lastCourseRead; 
+    private final String highestQualificationAttained; 
+    private final String currentWorkPlace; 
+    private final String lastCourseRead; 
+    
     private int yearsWorkingExperience;
     
     private Biodata biodata;
@@ -49,11 +50,17 @@ public class StudentData implements Bean
      * @param experiences an array containing details of the places the
      * {@code Student } has worked.
      */
-    public StudentData(  Biodata data, EducationalBackground[] edu,
+    public StudentData(String highestQualification, 
+	    String currentWorkPlace, String courseRead, 
+	    int yearsExperience, Biodata data, EducationalBackground[] edu,
 	    Phone[] phoneNumbers, ProfessionalExperience[] experiences, 
 	    MeanOfDiscovery[] meansOfDis, Sponsor[] sponsors)
     {
 	STUDENT_ID = data.getStudentID();
+	highestQualificationAttained = highestQualification; 
+	this.currentWorkPlace = currentWorkPlace; 
+	yearsWorkingExperience = yearsExperience; 
+	lastCourseRead = courseRead; 
 	setBiodata(data);
 	setEducation(edu);
 	setPhoneNumbers(phoneNumbers);
@@ -261,6 +268,48 @@ public class StudentData implements Bean
 		.collect(Collectors.toList());
 
 	this.sponsors = list.toArray(new Sponsor[ list.size()]);
+    }
+
+
+    public int getYearsWorkingExperience()
+    {
+        return yearsWorkingExperience;
+    }
+
+
+    public void setYearsWorkingExperience(int yearsWorkingExperience)
+    {
+        this.yearsWorkingExperience = yearsWorkingExperience;
+    }
+
+
+    public static long getSerialversionuid()
+    {
+        return serialVersionUID;
+    }
+
+
+    public String getStudentID()
+    {
+        return STUDENT_ID;
+    }
+
+
+    public String getHighestQualificationAttained()
+    {
+        return highestQualificationAttained;
+    }
+
+
+    public String getCurrentWorkPlace()
+    {
+        return currentWorkPlace;
+    }
+
+
+    public String getLastCourseRead()
+    {
+        return lastCourseRead;
     }
 
 }
