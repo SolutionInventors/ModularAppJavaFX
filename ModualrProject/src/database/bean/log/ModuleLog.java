@@ -38,7 +38,7 @@ public class ModuleLog extends Log
      * contain {@code null} for DELETEs
      * @return
      */
-    public String getNewModuleName()
+    public String newModuleName()
     {
 	return NEW_MODULE_NAME;
     }
@@ -48,7 +48,7 @@ public class ModuleLog extends Log
      * Note that this may contain {@code null} for INSERTs
      * @return
      */
-    public String getOldModuleName()
+    public String oldModuleName()
     {
 	return OLD_MODULE_NAME;
     }
@@ -59,11 +59,11 @@ public class ModuleLog extends Log
     {
 	switch(getOperationType()){
 	    case DELETE:
-		return String.format("% was removed from database",  getOldModuleName()); 
+		return String.format("%s was removed from database on %s",  oldModuleName() ,getDateAsString()); 
 	    case INSERT:
-		return String.format("%s was inserted into the database", getNewModuleName()); 
+		return String.format("A new module, %s, was created on %s", newModuleName(), getDateAsString()); 
 	   default: 
-		return String.format("%s was updated to %s"); 
+		return String.format("%s was updated to %s", oldModuleName(), newModuleName()); 
 
 	}
     }

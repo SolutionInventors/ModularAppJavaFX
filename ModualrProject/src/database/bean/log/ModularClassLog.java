@@ -35,7 +35,7 @@ public class ModularClassLog  extends Log
      * Gets the name of the {@code ModularClass} after the transaction
      * @return
      */
-    public String getNewName()
+    public String newName()
     {
 	return NEW_NAME;
     }
@@ -44,7 +44,7 @@ public class ModularClassLog  extends Log
      * Gets the name of the modular class after the transaction. 
      * @return {@code String} containing the old module name
      */
-    public String getOldName()
+    public String oldName()
     {
 	return OLD_NAME;
     }
@@ -54,12 +54,14 @@ public class ModularClassLog  extends Log
     {
 	switch(getOperationType()){
 	    case DELETE:
-		return String.format("% was removed from database",  getOldName()); 
+		return String.format("% was removed from database",  oldName()); 
 	    case INSERT:
-		return String.format("%s was inserted into the database"); 
+		return String.format("A new Stream, %s, was created on %s", 
+			newName(), getDateAsString()); 
 
 	    default: 
-		return String.format("%s was updated to %s"); 
+		return String.format("%s was updated to %s on %s", 
+			oldName(), newName(), getDateAsString()); 
 
 	}
     }

@@ -88,11 +88,11 @@ public class CertificateRegisterLog extends Log
 	switch(getOperationType()){
 
 	    case DELETE:
-		return String.format("%s was removed from module required for  %s", 
-			getOldModuleName(), getOldCertificateName()); 
+		return String.format("%s was removed from module required for  %s on %s", 
+			getOldModuleName(), getOldCertificateName(), getDateAsString()); 
 	    default:
-		return String.format("%s was added to module required for %s", 
-			getNewModuleName(), getNewCertificateName()); 
+		return String.format("%s was added to module required for %s on %s", 
+			getNewModuleName(), getNewCertificateName(), getDateAsString()); 
 
 	}
     }
