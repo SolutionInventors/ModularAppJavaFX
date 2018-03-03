@@ -27,7 +27,6 @@ public class AspiringStudentManager
 		String lastName = result.getString("lastName"); 
 		
 		AspiringStudent aspStudent =  
-		
 			new AspiringStudent
 			(
 				result.getInt("id"), firstName, 
