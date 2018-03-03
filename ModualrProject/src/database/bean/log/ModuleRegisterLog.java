@@ -22,7 +22,12 @@ public class ModuleRegisterLog extends Log
     private final boolean NEW_ATTENDANCE_STATUS;
     private final String OLD_RESULT;
     private final String NEW_RESULT;
+    private UpdateType updateType; 
 
+
+    private enum UpdateType{
+	BOOKING, RESULT, ATTENDANCE_STATUS; 
+    }
     /**
      * Initializes this {@code ModuleRegisterLog} with the required fields
      * @param operationDate the date the transaction took place
@@ -55,7 +60,7 @@ public class ModuleRegisterLog extends Log
 	NEW_ATTENDANCE_STATUS = newAttendance;
 	OLD_RESULT = oldResult;
 	NEW_RESULT = newResult;
-	
+	if(getOperationType()  == TransactionType.UPDATE) setUpdateType(); 
     }
 
     /**
@@ -120,7 +125,7 @@ public class ModuleRegisterLog extends Log
     {
 	return OLD_ATTENDANCE_STATUS;
     }
-    
+
     /**
      * Gets the attendance status after the transaction was made
      * @return
@@ -148,6 +153,44 @@ public class ModuleRegisterLog extends Log
     public String getNewResult()
     {
 	return NEW_RESULT;
+    }
+
+
+    public void setUpdateType(){
+	if((!OLD_BOOKING_STATUS && NEW_BOOKING_STATUS) || (OLD_BOOKING_STATUS && !NEW_BOOKING_STATUS) ){
+	    updateType = UpdateType.BOOKING; 
+	}else if((!OLD_ATTENDANCE_STATUS && NEW_ATTENDANCE_STATUS)|| (OLD_ATTENDANCE_STATUS && !NEW_ATTENDANCE_STATUS)){
+	    updateType = UpdateType.ATTENDANCE_STATUS; 
+	}else if( OLD_RESULT == null && NEW_RESULT != null ){
+	    updateType = UpdateType.RESULT; 
+	}
+    }
+    @Override
+    public String logDescription()
+    {
+	switch(getOperationType()){
+	    case INSERT:
+		return String.format("Student with id of %s was registered to take %s on %s ", 
+			getStudentID(), getNewModuleName(), getDateAsString()); 
+	    default:
+		switch(updateType){
+		    case ATTENDANCE_STATUS:
+			return String.format("The attendance status of regID %s was updated from %s to %s on %s", 
+				getRegId(), oldAttendanceStatus(), newAttendanceStatus(), getDateAsString()); 
+
+		    case BOOKING:
+			return String.format("The booking status of regID %s was updated from %s to %s on %s", 
+				getRegId(), oldBookingStatus(), newBookingStatus(),  getDateAsString()); 
+
+		    case RESULT:
+			return String.format("The result of regId %s was updated from %s to %s ", REG_ID, getOldResult(), getNewResult()); 
+			
+		    default:
+			return String.format("The regID %s was updated on %s " , REG_ID, getDateAsString()); 
+
+		}
+
+	}
     }
 
 

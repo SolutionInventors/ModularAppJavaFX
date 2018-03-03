@@ -31,22 +31,31 @@ public class StudentLog extends Log
     }
 
 
-    public String getOldStudentID()
+    private String getOldDetails(){
+	return String.format("Id: %s; CertificateIssued: %s;  Email: %s;  ActiveStatus: %s", 
+		oldStudentID(), previousCertificateIssued(), oldEmail(), prevActiveStatus() ); 
+    }
+    
+    private String getNewDetails(){
+	return String.format("Id: %s; CertificateIssued: %s;  Email: %s;  ActiveStatus: %s", 
+		newStudentID(), newCertificateIssued(), newEmail(), newActiveStatus() ); 
+    }
+    public String oldStudentID()
     {
         return OLD_ID;
     }
 
-    public String getNewStudentID()
+    public String newStudentID()
     {
         return NEW_ID;
     }
 
-    public String getPreviousCertIssued()
+    public String previousCertificateIssued()
     {
         return PREV_CERT_ISSUED;
     }
 
-    public String getNewCertIssued()
+    public String newCertificateIssued()
     {
         return NEW_CERT_ISSUED;
     }
@@ -61,14 +70,29 @@ public class StudentLog extends Log
         return NEW_ACTIVE_STATUS;
     }
 
-    public String getOldEmail()
+    public String oldEmail()
     {
         return OLD_EMAIL;
     }
 
-    public String getNewEmail()
+    public String newEmail()
     {
         return NEW_EMAIL;
+    }
+
+
+    @Override
+    public String logDescription()
+    {
+	switch(getOperationType()){
+	    case INSERT:
+		return String.format("A new Student with Id %s was registered on %s",
+			newStudentID(), getDateAsString()); 
+	    default:
+		return String.format("A student detail was udpated from %s to %s on %s" , 
+			getOldDetails(), getNewDetails(), getDateAsString());
+	    
+	}
     }
 
 

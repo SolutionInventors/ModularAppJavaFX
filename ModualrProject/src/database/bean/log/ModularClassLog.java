@@ -14,7 +14,7 @@ public class ModularClassLog  extends Log
 {
     private final String NEW_NAME;
     private final String OLD_NAME;
-   
+
     /**
      * Initializes this {@code ModularClassLog} with the required data
      * @param operationDate the date the transaction took place
@@ -28,7 +28,7 @@ public class ModularClassLog  extends Log
 	super(operationDate, transactionType );
 	NEW_NAME = newName;
 	OLD_NAME = oldName;
-	
+
     }
 
     /**
@@ -37,7 +37,7 @@ public class ModularClassLog  extends Log
      */
     public String getNewName()
     {
-        return NEW_NAME;
+	return NEW_NAME;
     }
 
     /**
@@ -46,7 +46,22 @@ public class ModularClassLog  extends Log
      */
     public String getOldName()
     {
-        return OLD_NAME;
+	return OLD_NAME;
+    }
+
+    @Override
+    public String logDescription()
+    {
+	switch(getOperationType()){
+	    case DELETE:
+		return String.format("% was removed from database",  getOldName()); 
+	    case INSERT:
+		return String.format("%s was inserted into the database"); 
+
+	    default: 
+		return String.format("%s was updated to %s"); 
+
+	}
     }
 
 }

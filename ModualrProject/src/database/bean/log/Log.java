@@ -1,6 +1,8 @@
 package database.bean.log;
 
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.Locale;
 
 import database.managers.LogManager;
 
@@ -57,4 +59,27 @@ public abstract class  Log
         return OPERATION_TYPE;
     }
     
+    public abstract String logDescription(); 
+    
+    private Calendar getOperationDateAsCalendar(){
+	Calendar calendar = Calendar.getInstance();
+	
+	calendar.setTime(new java.util.Date(getDateOfOperation().getTime()));
+	return calendar; 
+	
+    }
+    
+    public String getDateAsString(){
+	Calendar calendar = getOperationDateAsCalendar(); 
+	return String.format("%s-%s-%s", 
+		calendar.get(Calendar.DAY_OF_MONTH), 
+		calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT_STANDALONE,Locale.ENGLISH), 
+		calendar.get(Calendar.YEAR));
+    }
+    
+    
+    @Override
+    public String toString(){
+	return  logDescription(); 
+    }
 }
