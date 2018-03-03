@@ -59,8 +59,20 @@ public abstract class  Log
         return OPERATION_TYPE;
     }
     
+    /**
+     * This method returns a description of the operation that is stored in this
+     * {@code Log }. This what is called in the {@link #toString()} method. 
+     * Concrete implementations are found in the subclasses
+     * @return a {@code String } containing a descrioption of the operation
+     */
     public abstract String logDescription(); 
     
+    
+    /**
+     * Converts the java.sql.Date object returned by {@link #getDateOfOperation()}
+     * to a {@link Calendar} object
+     * @return a {@code Calendar} containing a representation of the date of operation
+     */
     private Calendar getOperationDateAsCalendar(){
 	Calendar calendar = Calendar.getInstance();
 	
@@ -69,6 +81,11 @@ public abstract class  Log
 	
     }
     
+    /**
+     * Converts the {@link Date} returned by {@link #getDateOfOperation()} to a
+     * {@code String } representation in the format dd-mmm-yyyy
+     * @return a {@code String } representation of Date
+     */
     public String getDateAsString(){
 	Calendar calendar = getOperationDateAsCalendar(); 
 	return String.format("%s-%s-%s", 
@@ -77,7 +94,9 @@ public abstract class  Log
 		calendar.get(Calendar.YEAR));
     }
     
-    
+    /**
+     * Returns  {@link #logDescription()}
+     */
     @Override
     public String toString(){
 	return  logDescription(); 
