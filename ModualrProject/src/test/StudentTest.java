@@ -115,6 +115,12 @@ public class StudentTest
 	}
 
 
+	System.out.println("--------kEY EDUCATION DATA--------");
+	String highestQualification = TestUtils.getStringInput("Enter your highest Qualification you have attained: "); 
+	String courseRead = TestUtils.getStringInput("Enter the course you read: " ); 
+	
+	String lastInstituteAttended = TestUtils.getStringInput("Enter the last institute you attended: "); 
+
 	if( educationList.stream().allMatch(e->e.isValid(ValidationType.NEW_BEAN)))
 	    System.out.println("EducationBacground object can be inputed into the database" );
 	else{
@@ -182,6 +188,11 @@ public class StudentTest
 	    inputNext = TestUtils.getStringInput("Input 1 if so: " );
 	}
 
+	System.out.println("<<<<<<<<<<Key Experience Info>>>>>>>>");
+	String currentWorkPlace = TestUtils.getStringInput("Enter where you currently work: " ); 
+	int yearsExperience = Integer.parseInt( TestUtils.getStringInput("Enter the number of years you have been working: " )); 
+	
+	
 	if( expList.stream().allMatch( ex->ex.isValid( ValidationType.NEW_BEAN) ) )
 	    System.out.println("The ProfessionalExperience object is valid" );
 	else{
@@ -209,7 +220,8 @@ public class StudentTest
 	ProfessionalExperience[] expArray = expList.toArray( new ProfessionalExperience[ expList.size()] );
 	MeanOfDiscovery[] meanArr  = meanList.toArray(new MeanOfDiscovery[meanList.size()] );
 	StudentData studentData = 
-		new StudentData(bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
+		new StudentData(highestQualification, currentWorkPlace, 
+			courseRead, yearsExperience, lastInstituteAttended, bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
 
 	System.out.println( "isStudData valid: " + studentData.isValid(ValidationType.NEW_BEAN));
 	if( StudentManager.registerStudent(student, studentData))

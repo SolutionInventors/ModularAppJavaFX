@@ -44,7 +44,7 @@ public class CertificateRegisterLog extends Log
 	NEW_MODULE_NAME = newModuleName;
 
     }
-    
+
     /**
      * Gets the name of the {@code Certificate} before the transaction/ This is {@code null}
      * for inserts
@@ -63,7 +63,7 @@ public class CertificateRegisterLog extends Log
     {
 	return NEW_CERTIFICATE_NAME;
     }
-    
+
     /**
      * Gets the module name before the transaction. This is {@code null} for inserts
      * @return
@@ -72,7 +72,7 @@ public class CertificateRegisterLog extends Log
     {
 	return OLD_MODULE_NAME;
     }
-    
+
     /**
      * Gets the module name after the transaction. This is {@code null} for deletes
      * @return
@@ -81,4 +81,20 @@ public class CertificateRegisterLog extends Log
     {
 	return NEW_MODULE_NAME;
     }
+
+    @Override
+    public String logDescription()
+    {
+	switch(getOperationType()){
+
+	    case DELETE:
+		return String.format("%s was removed from module required for  %s on %s", 
+			getOldModuleName(), getOldCertificateName(), getDateAsString()); 
+	    default:
+		return String.format("%s was added to module required for %s on %s", 
+			getNewModuleName(), getNewCertificateName(), getDateAsString()); 
+
+	}
+    }
+
 }

@@ -209,7 +209,7 @@ public final class LogManager
 	    while( result.next()){
 		classLog= new ModularClassLog(result.getDate("dateOfOperation"), 
 			TransactionType.getOPerationType(result.getString("operationType") ), 
-			result.getString("NewModuleName"),result.getString("OldModuleName"));
+			result.getString("NewName"),result.getString("OldName"));
 		
 		list.add(classLog);
 	    }

@@ -32,15 +32,15 @@ public class ModuleLog extends Log
 	NEW_MODULE_NAME = newModuleName;
 	OLD_MODULE_NAME = oldModName;
     }
-   
+
     /**
      * Gets the module name after the transaction occured. May
      * contain {@code null} for DELETEs
      * @return
      */
-    public String getNewModuleName()
+    public String newModuleName()
     {
-        return NEW_MODULE_NAME;
+	return NEW_MODULE_NAME;
     }
 
     /**
@@ -48,8 +48,28 @@ public class ModuleLog extends Log
      * Note that this may contain {@code null} for INSERTs
      * @return
      */
-    public String getOldModuleName()
+    public String oldModuleName()
     {
-        return OLD_MODULE_NAME;
+	return OLD_MODULE_NAME;
     }
+
+    @Override
+
+    public String logDescription()
+    {
+	switch(getOperationType()){
+	    case DELETE:
+		return String.format("%s was removed from database on %s",  oldModuleName() ,getDateAsString()); 
+	    case INSERT:
+		return String.format("A new module, %s, was created on %s", newModuleName(), getDateAsString()); 
+	   default: 
+		return String.format("%s was updated to %s", oldModuleName(), newModuleName()); 
+
+	}
+    }
+
+
+
+
+
 }

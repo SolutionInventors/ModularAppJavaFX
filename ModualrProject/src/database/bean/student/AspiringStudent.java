@@ -6,6 +6,13 @@ import java.sql.Date;
 public class AspiringStudent
 {
     private int id; 
+    
+    private String highestQualification; 
+    private String currentWorkPlace; 
+    private String courseRead; 
+    private int yearsExperience; 
+    private String lastInstituteAttended; 
+    
     private String firstName; 
     private String lastName; 
     private String title; 
@@ -20,10 +27,13 @@ public class AspiringStudent
     private String gender; 
     private File image; 
     
-    public AspiringStudent(int id, String firstName, String lastName, 
+    public AspiringStudent(
+	    int id, String firstName, String lastName, 
 	    String title, Date birthDate, String birthPlace, String religion, 
 	    String permAddress, String currentAddress, String mail, String state, String country, 
-	    String gender, File image){
+	    String gender, File image, String highestQualification, 
+	    String currentWorkPlace, String courseRead, int yearsExperience, 
+	    String lastInstituteAttended){
 	setId(id);
 	setFirstName(firstName);
 	setLastName(lastName);
@@ -37,6 +47,11 @@ public class AspiringStudent
 	setStateOfOrigin(state);
 	setGender(gender);
 	setImage(image); 
+	setHighestQualification(highestQualification);
+	setCurrentWorkPlace(currentWorkPlace);
+	setCourseRead(courseRead);
+	setYearsExperience(yearsExperience);
+	setLastInstituteAttended(lastInstituteAttended);
     }
     
     public int getId()
@@ -152,6 +167,56 @@ public class AspiringStudent
     {
 	this.image = image !=null ? image : Student.getdefaultImage();
 	
+    }
+
+    public String getHighestQualification()
+    {
+        return highestQualification;
+    }
+
+    public void setHighestQualification(String highestQualification)
+    {
+        this.highestQualification = highestQualification;
+    }
+
+    public String getCurrentWorkPlace()
+    {
+        return currentWorkPlace;
+    }
+
+    public void setCurrentWorkPlace(String currentWorkPlace)
+    {
+        this.currentWorkPlace = currentWorkPlace;
+    }
+
+    public String getCourseRead()
+    {
+        return courseRead;
+    }
+
+    public void setCourseRead(String courseRead)
+    {
+        this.courseRead = courseRead;
+    }
+
+    public int getYearsExperience()
+    {
+        return yearsExperience;
+    }
+
+    public void setYearsExperience(int yearsExperience)
+    {
+        this.yearsExperience = yearsExperience;
+    }
+
+    public String getLastInstituteAttended()
+    {
+	return lastInstituteAttended;
+    }
+
+    public void setLastInstituteAttended(String lastInstituteAttended)
+    {
+	this.lastInstituteAttended = lastInstituteAttended;
     }
     
 }

@@ -22,7 +22,7 @@ public class StudentRetrievalTest
 	boolean isActive = true;
 	try
 	{
-	    Student[] students = StudentManager.getStudents(isActive, 0);
+	    Student[] students = StudentManager.getStudents(0);
 	    for(Student student : students) {
 		System.out.println(student.getIdCardNumber());
 		System.out.println(student.getEmailAddress());
@@ -35,7 +35,7 @@ public class StudentRetrievalTest
 		
 	    }
 	}
-	catch (SQLException | InvalidAdminException e)
+	catch (SQLException e)
 	{
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();

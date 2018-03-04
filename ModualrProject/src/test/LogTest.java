@@ -6,10 +6,12 @@ import java.util.Arrays;
 import database.bean.Admin;
 import database.bean.log.CertificateLog;
 import database.bean.log.CertificateRegisterLog;
-import database.bean.log.TransactionType;
+import database.bean.log.ModularClassLog;
 import database.bean.log.ModuleLog;
+import database.bean.log.ModuleRegisterLog;
 import database.bean.log.PaymentLog;
 import database.bean.log.StudentLog;
+import database.bean.log.TransactionType;
 import database.managers.DatabaseManager;
 import database.managers.LogManager;
 
@@ -29,7 +31,7 @@ public class LogTest
 	    System.out.println("NewCertificateNmae: " + log.getNewCertificateName());
 	    
 	    System.out.println("Operation Type: " + log.getOperationType());
-	    
+	    System.out.println("Description: " + log);
 	});
 	
 	ModuleLog[] modLog =  LogManager.getLog(ModuleLog.class,
@@ -37,10 +39,11 @@ public class LogTest
 	System.out.println("-----ModuleLogs--------" );
 	Arrays.stream(modLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("Old ModuleTabTable Name: " + log.getOldModuleName());
-	    System.out.println("New ModuleTabTable Name: " + log.getNewModuleName());
+	    System.out.println("Old ModuleTabTable Name: " + log.oldModuleName());
+	    System.out.println("New ModuleTabTable Name: " + log.newModuleName());
 	    
 	    System.out.println("Operation Type: " + log.getOperationType());
+	    System.out.println("Desctiption:  "  + log);
 	    System.out.println( ">>");
 	    
 	});
@@ -52,6 +55,7 @@ public class LogTest
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
 	    System.out.println("ModuleTabTable Name: " + log.getModuleName());
 	    System.out.println("Operation Type: " + log.getOperationType());
+	    System.out.println("Description: " + log);
 	});
 	
 	System.out.println("<<<<<<<<<< >>>>>>>>>>>>>>");
@@ -59,10 +63,7 @@ public class LogTest
 		TransactionType.INSERT, 0);
 	System.out.println("-----StudentLogs--------" );
 	Arrays.stream(studLog).forEach( log ->{
-	    System.out.println("Operation Date: " + log.getDateOfOperation());
-	    System.out.println("Old Student ID: " + log.getOldStudentID());
-	    System.out.println("New Student ID: " + log.getNewStudentID());
-	    System.out.println("Operation Type: " + log.getOperationType());
+	   System.out.println("-Description: " + log);
 	});
 	
 	CertificateRegisterLog[] certRegLog = 
@@ -71,10 +72,24 @@ public class LogTest
 	
 	System.out.println( "---CertRegisterLog----" );
 	Arrays.stream(certRegLog).forEach( log ->{
-	    System.out.println("New CertName: " + log.getNewCertificateName());
-	    System.out.println("Old CertName: " + log.getOldCertificateName());
-	    System.out.println("New ModuleTabTable Name: " + log.getNewModuleName());
-	    System.out.println("Old ModuleTabTable Name:: " + log.getOldModuleName());
+	   System.out.println("-Description: " + log);
+	});
+	
+	ModularClassLog[] modularClassLog = 
+		LogManager.getLog(ModularClassLog.class, 
+		TransactionType.NONE, 0);
+	
+	System.out.println( "\n<<<<<<<Modular ClassLog>>>>>" );
+	Arrays.stream(modularClassLog).forEach( log ->{
+	  System.out.println("-Description: " + log);
+	});
+	
+	ModuleRegisterLog[] moduleRegisterLog = LogManager.getLog(ModuleRegisterLog.class, 
+		TransactionType.NONE, 0); 
+	
+	System.out.println( "\n<<<<<<<ModuleRegisterLog>>>>>>" );
+	Arrays.stream(moduleRegisterLog).forEach( log ->{
+	    System.out.println("-Description: " + log);
 	});
 	
     }

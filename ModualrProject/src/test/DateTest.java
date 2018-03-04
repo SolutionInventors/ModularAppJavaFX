@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class DateTest
 {
@@ -29,6 +30,8 @@ public class DateTest
 	endCal.add(Calendar.YEAR, -100); 
 //	Date d  = new Date( endCal.getTime().getTime());
 	System.out.println(calendar.before(endCal));
+	System.out.println(calendar.get(Calendar.DATE));
+	System.out.println(calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US));
     }
 
 }

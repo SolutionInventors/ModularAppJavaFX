@@ -83,4 +83,18 @@ public class PaymentLog extends Log
         return BANK_NAME;
     }
 
+    @Override
+    public String logDescription()
+    {
+	switch(getOperationType()){
+	    case INSERT:
+		return String.format("NGN%s was paid in %s bank on %s for regID %s ", 
+			AMOUNT, BANK_NAME, getDateAsString(), REG_ID); 
+	    default:
+		return String.format("Some operation was performed on regID %s on %s " , 
+			REG_ID, getDateAsString());
+	    
+	}
+    }
+
 }

@@ -54,6 +54,24 @@ public class CertificateLog extends Log
         return NEW_CERTIFICATE_NAME;
     }
 
+
+    @Override
+    public String logDescription()
+    {
+	switch(getOperationType()){
+	    case DELETE:
+		return String.format("%s was deleted on %s ", getOldCertificateName(),
+			getDateAsString()); 
+	    case INSERT:
+		return String.format("A new certificate, %s, was created on %s ", 
+			getNewCertificateName(),
+			getDateAsString());
+	    default:
+		return String.format("%s was changed to %s on %s", getOldCertificateName(), 
+			getNewCertificateName(), getDateAsString()); 
+	}
+    }
+
   
     
 }
