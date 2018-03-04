@@ -61,6 +61,6 @@
             </ImageView>
          </children>
       </GridPane>
-      <Button fx:id="btnRegisterStudent" layoutX="57.0" layoutY="441.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="122.0" text="Register Student" />
+      <Button fx:id="btnRegisterStudent" layoutX="57.0" layoutY="441.0" mnemonicParsing="false" onAction="#studentDetails" prefHeight="47.0" prefWidth="122.0" text="Register Student" />
    </children>
 </AnchorPane>

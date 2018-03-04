@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="605.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.VerifyStudentController">
    <children>
       <TabPane layoutX="6.0" layoutY="47.0" prefHeight="540.0" prefWidth="545.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -56,17 +56,20 @@
                               <Label text="Country" GridPane.rowIndex="11" />
                               <Label text="Telephone" GridPane.rowIndex="12" />
                               <Label text="Attach Photograph" GridPane.rowIndex="13" />
-                              <TextField GridPane.columnIndex="1" />
-                              <TextField layoutX="120.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField layoutX="120.0" layoutY="223.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
                               <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <Label text="Label" GridPane.columnIndex="1" />
+                              <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="120.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label layoutX="120.0" layoutY="167.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label layoutX="120.0" layoutY="257.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                            </children>
                         </GridPane>
                         <Button layoutX="37.0" layoutY="472.0" mnemonicParsing="false" text="Button" />
@@ -107,14 +110,14 @@
                               <Label text="End Date:" GridPane.rowIndex="7" />
                               <Label text="Corese Read:" GridPane.rowIndex="8" />
                               <Label text="Certification" GridPane.rowIndex="9" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField layoutX="110.0" layoutY="103.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField layoutX="110.0" layoutY="223.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="196.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label layoutX="196.0" layoutY="197.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                            </children>
                         </GridPane>
                      </children>
@@ -153,13 +156,9 @@
                               <Label text="Begin Date:" GridPane.rowIndex="7" />
                               <Label text="End Date:" GridPane.rowIndex="8" />
                               <Label text="Your Responsibility" GridPane.rowIndex="9" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField layoutX="110.0" layoutY="103.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <TextArea layoutX="194.0" layoutY="316.0" prefHeight="158.0" prefWidth="189.0" />
@@ -242,5 +241,6 @@
             </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="btnRegister" layoutX="157.0" layoutY="583.0" mnemonicParsing="false" onAction="#registerStudent" prefHeight="36.0" prefWidth="123.0" text="Register" />
    </children>
 </AnchorPane>
