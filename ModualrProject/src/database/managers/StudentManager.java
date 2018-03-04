@@ -130,35 +130,52 @@ public final class StudentManager
 	    throws InvalidAdminException, SQLException
     {
 	StudentData studData= null;
-	if( student.isValid(ValidationType.EXISTING_BEAN) ){
-	    Biodata data = BiodataManager.getBiodata( student.getIdCardNumber());
-	    EducationalBackground[] edu = EducationManager.getEducationInfo(student);
-	    Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
-	    ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);
-	    MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
-	    Sponsor[] spons =  SponsorManager.getSponsors( student);
-	    ResultSet otherInfoData = getOtherInfo(student.getIdCardNumber()); 
-	    
-	    otherInfoData.next(); 
-	    
-	    studData = new StudentData(data, edu, phoneNumbers,
-		    experiences, meansOfDisc, spons);
+	ResultSet otherInfoResulSet = null; 
+	try{
+	    if( student.isValid(ValidationType.EXISTING_BEAN) ){
+		Biodata data = BiodataManager.getBiodata( student.getIdCardNumber());
+		EducationalBackground[] edu = EducationManager.getEducationInfo(student);
+		Phone[] phoneNumbers = PhoneManager.getPhoneNumber(student.getIdCardNumber());
+		ProfessionalExperience[] experiences = ExperienceManager.getExpriences( student);
+		MeanOfDiscovery[] meansOfDisc = DiscoveryManager.getDiscoveryMeans( student);
+		Sponsor[] spons =  SponsorManager.getSponsors( student);
 
+		otherInfoResulSet = getOtherInfo(student.getIdCardNumber()); 
+
+
+		if( otherInfoResulSet.next()){
+		    String higestEducation =  otherInfoResulSet.getString("HighestEducation"); 
+		    String currentWorkPlace =  otherInfoResulSet.getString("currentWorkPlace" ); 
+		    String courseRead = otherInfoResulSet.getString("CourseRead"); 
+		    int yearsExperience = otherInfoResulSet.getInt("yearsExperience"); 
+		    String lastInstituteAttended = otherInfoResulSet.getString("lastInstituteAttended"); 
+		    studData = new StudentData(
+			    higestEducation, currentWorkPlace, courseRead, yearsExperience,
+			    lastInstituteAttended, data, edu, phoneNumbers,experiences, meansOfDisc, spons);
+
+		}else{
+		    studData = new StudentData(null, null, null, -1, null, 
+			    data, edu, phoneNumbers,experiences, meansOfDisc, spons);
+		}
+	    }
+
+	}finally{
+	    if(otherInfoResulSet != null ) otherInfoResulSet.close();
 	}
 
 	return studData.isValid(ValidationType.EXISTING_BEAN) ? studData : null;
     }
-    
+
     private static ResultSet getOtherInfo(String studentID) throws SQLException
     {
 	String sql = "select * from otherStudentInfo "
 		+ "where id_card_number = ? "; 
-	
-	
+
+
 	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, studentID)){
 	    return stmt.executeQuery();
 	}
-	
+
     }
 
     /**
@@ -214,11 +231,19 @@ public final class StudentManager
 			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?,?,?, ?, ?) }",
 				    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
 				    newStudent.getModClassName(), newStudent.getFirstName(), 
-				    newStudent.getLastName()) ; )
+				    newStudent.getLastName()) ; 
+		    CallableStatement otherInfoStmt = 
+			    DatabaseManager.getCallableStatement("{call insertOtherInfo(?, ?, ? ?, ?,? )",
+				    studentData.getStudentID(), studentData.getHighestQualificationAttained(), 
+				    studentData.getCurrentWorkPlace(), studentData.getLastCourseRead(), 
+				    studentData.getYearsWorkingExperience()); )
 	    {
 		statement.registerOutParameter(7,  Types.DATE);
-		int affected = statement.executeUpdate();
-		if( affected > 0  && StudentDataManager.insert( studentData) )
+		int rowAffected1 = statement.executeUpdate();
+		int rowAffected2 = otherInfoStmt.executeUpdate(); 
+		
+		
+		if( rowAffected2 > 0 && rowAffected1 > 0  && StudentDataManager.insert( studentData) )
 		{
 		    newStudent.setDateAdmitted( statement.getDate( 7 ) );
 		    return true;
@@ -262,7 +287,7 @@ public final class StudentManager
     }
 
     @SuppressWarnings("resource")
-    public static boolean registerAspiringStudent(String studID, String className, AspiringStudent aspStudent) throws SQLException, InvalidAdminException{
+    public static boolean registerStudent(String studID, String className, AspiringStudent aspStudent) throws SQLException, InvalidAdminException{
 	AspiringStudentData aspData = AspiringStudentManager.getData(aspStudent); 
 
 	Biodata bio = new Biodata(studID, aspStudent.getStateOfOrigin(), 
@@ -274,9 +299,15 @@ public final class StudentManager
 	Student newStudent = new Student(aspStudent.getFirstName(), aspStudent.getLastName(),
 		studID, className, aspStudent.getEmail(), aspStudent.getImage()); 
 
-	StudentData studData = new StudentData(bio,aspData.getEducation(), 
-		aspData.getPhoneNumbers(), aspData.getExperiences(), 
-		aspData.getMeansOfDiscovery(),aspData.getSponsors()); 
+
+
+	StudentData studData = new StudentData(
+		aspStudent.getHighestQualification(),aspStudent.getCurrentWorkPlace(), 
+		aspStudent.getCourseRead(), aspStudent.getYearsExperience(), 
+		aspStudent.getLastInstituteAttended(), bio,aspData.getEducation(),aspData.getPhoneNumbers(), 
+		aspData.getExperiences(),aspData.getMeansOfDiscovery(),
+		aspData.getSponsors() 
+		); 
 
 	Connection conn = ConnectionManager.getInstance().getConnection(); 
 	conn.setAutoCommit(false);
@@ -299,8 +330,8 @@ public final class StudentManager
      */
     public static Student[] getStudents(int startIndex) throws SQLException{
 	String sql = String.format("SELECT * FROM student "
-		+ "ORDER BY className"
-		+ "LIMIT ?, 30" );
+		+ "ORDER BY className "
+		+ "LIMIT ?, 30 "  );
 
 	return getStudentHelper(sql, startIndex); 
     }
@@ -310,7 +341,7 @@ public final class StudentManager
 	String sql = String.format("SELECT * FROM student "
 		+ "ORDER BY className "
 		+ "WHERE ucase(student.id_card_number) LIKE ucase(?) ");
-		
+
 	return getStudentHelper(sql, studentId) ; 
     }
     /**
@@ -327,7 +358,7 @@ public final class StudentManager
 	String sql = String.format("SELECT * FROM student "
 		+ "WHERE active = %d "
 		+ "LIMIT ?, 30", active ? 1:0);
-	
+
 	return getStudentHelper(sql,  startIndex); 
 
     }

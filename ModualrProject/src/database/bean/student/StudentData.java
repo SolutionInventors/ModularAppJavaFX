@@ -30,6 +30,7 @@ public class StudentData implements Bean
     private final String highestQualificationAttained; 
     private final String currentWorkPlace; 
     private final String lastCourseRead; 
+    private final String lastInstituteAttended; 
     
     private int yearsWorkingExperience;
     
@@ -51,8 +52,9 @@ public class StudentData implements Bean
      * {@code Student } has worked.
      */
     public StudentData(String highestQualification, 
-	    String currentWorkPlace, String courseRead, 
-	    int yearsExperience, Biodata data, EducationalBackground[] edu,
+	    String currentWorkPlace, String courseRead,
+	  
+	    int yearsExperience, String lastInstituteAttended,  Biodata data, EducationalBackground[] edu,
 	    Phone[] phoneNumbers, ProfessionalExperience[] experiences, 
 	    MeanOfDiscovery[] meansOfDis, Sponsor[] sponsors)
     {
@@ -60,7 +62,9 @@ public class StudentData implements Bean
 	highestQualificationAttained = highestQualification; 
 	this.currentWorkPlace = currentWorkPlace; 
 	yearsWorkingExperience = yearsExperience; 
-	lastCourseRead = courseRead; 
+	lastCourseRead = courseRead;
+	this.lastInstituteAttended = lastInstituteAttended; 
+	
 	setBiodata(data);
 	setEducation(edu);
 	setPhoneNumbers(phoneNumbers);
@@ -310,6 +314,12 @@ public class StudentData implements Bean
     public String getLastCourseRead()
     {
         return lastCourseRead;
+    }
+
+
+    public String getLastInstituteAttended()
+    {
+	return lastInstituteAttended;
     }
 
 }

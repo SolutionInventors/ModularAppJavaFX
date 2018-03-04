@@ -11,6 +11,7 @@ public class AspiringStudent
     private String currentWorkPlace; 
     private String courseRead; 
     private int yearsExperience; 
+    private String lastInstituteAttended; 
     
     private String firstName; 
     private String lastName; 
@@ -26,11 +27,13 @@ public class AspiringStudent
     private String gender; 
     private File image; 
     
-    public AspiringStudent(int id, String firstName, String lastName, 
+    public AspiringStudent(
+	    int id, String firstName, String lastName, 
 	    String title, Date birthDate, String birthPlace, String religion, 
 	    String permAddress, String currentAddress, String mail, String state, String country, 
 	    String gender, File image, String highestQualification, 
-	    String currentWorkPlace, String courseRead, int yearsExperience){
+	    String currentWorkPlace, String courseRead, int yearsExperience, 
+	    String lastInstituteAttended){
 	setId(id);
 	setFirstName(firstName);
 	setLastName(lastName);
@@ -48,6 +51,7 @@ public class AspiringStudent
 	setCurrentWorkPlace(currentWorkPlace);
 	setCourseRead(courseRead);
 	setYearsExperience(yearsExperience);
+	setLastInstituteAttended(lastInstituteAttended);
     }
     
     public int getId()
@@ -203,6 +207,16 @@ public class AspiringStudent
     public void setYearsExperience(int yearsExperience)
     {
         this.yearsExperience = yearsExperience;
+    }
+
+    public String getLastInstituteAttended()
+    {
+	return lastInstituteAttended;
+    }
+
+    public void setLastInstituteAttended(String lastInstituteAttended)
+    {
+	this.lastInstituteAttended = lastInstituteAttended;
     }
     
 }

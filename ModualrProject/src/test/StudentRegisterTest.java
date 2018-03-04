@@ -60,6 +60,8 @@ public class StudentRegisterTest
 	System.out.println("-------Creating Educational Background object------");
 	Set<EducationalBackground> educationSet = new HashSet<>();
 
+	
+	
 	System.out.println("Input first School you attended" );
 
 	String institution = TestUtils.getStringInput("Enter institution: ");
@@ -81,7 +83,13 @@ public class StudentRegisterTest
 	    inputNext =  TestUtils.getStringInput("Input 1 if yes else quit");
 	}
 
+	System.out.println("--------kEY EDUCATION DATA--------");
+	String highestQualification = TestUtils.getStringInput("Enter your highest Qualification you have attained: "); 
+	String courseRead = TestUtils.getStringInput("Enter the course you read: " ); 
+	
+	String lastInstituteAttended = TestUtils.getStringInput("Enter the last institute you attended: "); 
 
+	
 	if( educationSet.stream().allMatch(e->e.isValid(ValidationType.NEW_BEAN)))
 	    System.out.println("EducationBacground object can be inputed into the database" );
 	else{
@@ -149,7 +157,10 @@ public class StudentRegisterTest
 	    System.out.println("Have you worked anywhere else?" );
 	    inputNext = TestUtils.getStringInput("Input 1 if so: " );
 	}
-
+	System.out.println("<<<<<<<<<<Key Professional Experience Info>>>>>>>>");
+	String currentWorkPlace = TestUtils.getStringInput("Enter where you currently work: " ); 
+	int yearsExperience = Integer.parseInt( TestUtils.getStringInput("Enter the number of years you have been working: " )); 
+	
 	if( expList.stream().allMatch( ex->ex.isValid( ValidationType.NEW_BEAN) ) )
 	    System.out.println("The ProfessionalExperience object is valid" );
 	else{
@@ -175,9 +186,11 @@ public class StudentRegisterTest
 	MeanOfDiscovery[] meanArr  = meanList.toArray(new MeanOfDiscovery[meanList.size()] );
 
 
-	StudentData studentData = 
-		new StudentData(bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
 
+	StudentData studentData = 
+		new StudentData(highestQualification, currentWorkPlace, 
+			courseRead, yearsExperience, lastInstituteAttended,
+			bio, eduArray,phoneArray,expArray, meanArr, sponsArray);
 
 	if( StudentManager.registerStudent(student, studentData))
 	    System.out.println("The new Student was registered successfully" );

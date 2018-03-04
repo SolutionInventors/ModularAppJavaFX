@@ -13,7 +13,7 @@ import database.bean.student.Student;
 public class AspiringStudentManager
 {
     public static Map<AspiringStudent, AspiringStudentData> getAspiringStudents(int startIndex) throws SQLException{
-	String sql = "SELECT * FROM aspiringStudent"
+	String sql = "SELECT * FROM aspiringStudent "
 		+ "LIMIT ?, 30"; 
 	
 	Map<AspiringStudent, AspiringStudentData> map = new HashMap<>(); 
@@ -37,7 +37,13 @@ public class AspiringStudentManager
 				result.getString("StateOfOrigin"),result.getString("Country"), 
 				result.getString("gender"), 
 				Student.getImageFromStream(firstName + "  " +
-					lastName,result.getBinaryStream("image"))
+					lastName,result.getBinaryStream("image")),
+				result.getString("highestQualification"), 
+				result.getString("currentWorkPlace"), 
+				result.getString("courseRead"), 
+				result.getInt("YearsExperience"), 
+				result.getString("LastInstituteAttended")
+
 			);
 		AspiringStudentData aspData = getData(aspStudent); 
 		map.put(aspStudent, aspData); 
