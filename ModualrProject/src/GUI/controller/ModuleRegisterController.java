@@ -8,11 +8,14 @@ import java.util.ResourceBundle;
 import GUI.utilities.ModuleRegisterTableGUI;
 import database.bean.ModuleRegister;
 import database.managers.ModuleRegisterManager;
+import exception.InvalidAdminException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -24,6 +27,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import utils.ModuleRegisterFilter;
 
 public class ModuleRegisterController implements Initializable
@@ -46,6 +52,7 @@ public class ModuleRegisterController implements Initializable
     
     @FXML private TextField txtSearch;
     @FXML private Button btnGO;
+    @FXML private Button btnRegisterStudent;
     
     
     private ModuleRegister[] modRegs;
@@ -155,7 +162,59 @@ public class ModuleRegisterController implements Initializable
 	moduleRegisterTable.setItems(list);
     }
 
-    
+    @FXML
+    private void registerStudent(ActionEvent event) {
+	 	Stage window = new Stage(); 
+	 	window.initModality(Modality.WINDOW_MODAL);
+	        window.setTitle("thenewboston - JavaFX");
+
+	        //GridPane with 10px padding around edge
+	        GridPane grid = new GridPane();
+	        grid.setPadding(new Insets(10, 10, 10, 10));
+	        grid.setVgap(8);
+	        grid.setHgap(10);
+
+	        //Name Label - constrains use (child, column, row)
+	        Label nameLabel = new Label("StudentID:");
+	        GridPane.setConstraints(nameLabel, 0, 0);
+
+	        //Name Input
+	        TextField txtstudentID = new TextField();
+	        GridPane.setConstraints(txtstudentID, 1, 0);
+
+	        //Password Label
+	        Label moduleLabel = new Label("Module:");
+	        GridPane.setConstraints(moduleLabel, 0, 1);
+
+	        //Password Input
+	        TextField txtModuleName = new TextField();
+	       // passInput.setPromptText("password");
+	        GridPane.setConstraints(txtModuleName, 1, 1);
+
+	        //Login
+	        Button registerButton = new Button("Register");
+	        GridPane.setConstraints(registerButton, 1, 2);
+	        
+	        registerButton.setOnMouseClicked(e->{
+	            try
+		    {
+			ModuleRegisterManager.registerForModule(new ModuleRegister(txtstudentID.getText(),txtModuleName.getText()));
+		    }
+		    catch (SQLException | InvalidAdminException e1)
+		    {
+			e1.printStackTrace();
+		    }
+	            
+	            System.out.println(txtstudentID.getText() + "was successfully registered for " + txtModuleName.getText());
+	        });
+	        //Add everything to grid
+	        grid.getChildren().addAll(nameLabel, txtstudentID, moduleLabel, txtModuleName, registerButton);
+
+	        Scene scene = new Scene(grid, 300, 200);
+	        window.setScene(scene);
+	        window.show();
+	    
+    }
     
     @FXML
     private void keyPressed(KeyEvent event) {

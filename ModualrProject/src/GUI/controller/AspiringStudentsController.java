@@ -1,21 +1,29 @@
 package GUI.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import GUI.utilities.AspStudentTableGUI;
+import GUI.utilities.Paths;
 import database.bean.Admin;
+import database.bean.ModuleRegister;
 import database.bean.student.Student;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
+import database.managers.ModuleRegisterManager;
 import database.managers.StudentManager;
 import exception.InvalidAdminException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -25,13 +33,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class AspiringStudentsController implements Initializable{
 	@FXML private TextField txtSearchBar;
 	@FXML private Button btnGo;
 	@FXML private Button btnRegisterStudent;
 	
-	@FXML private ComboBox cmbCategory;
+	@FXML private ComboBox<?> cmbCategory;
 	@FXML private TableView<AspStudentTableGUI> aspStudentTable;
 	@FXML private TableColumn<AspStudentTableGUI,String> sn;
 	@FXML private TableColumn<AspStudentTableGUI,String> firstName;
@@ -47,8 +58,17 @@ public class AspiringStudentsController implements Initializable{
 
 	
 
-	@FXML private void studentDetails(ActionEvent event) {
-
+	@FXML private void studentDetails(ActionEvent event) throws IOException {
+	    	Stage regInfo = new Stage();
+		regInfo.initModality(Modality.APPLICATION_MODAL);
+		Parent root = FXMLLoader.load(getClass().getResource(Paths.viewpath + "VerifyStudent.fxml"));
+		Scene scene = new Scene(root);
+		//helpStage.getIcons().add(new Image(logoURL));
+		regInfo.setResizable(false);
+		regInfo.setScene(scene);
+		regInfo.sizeToScene();
+		regInfo.setTitle("Aspiring Students info");
+		regInfo.show();
 	    }
 	
 	
@@ -61,6 +81,8 @@ public class AspiringStudentsController implements Initializable{
 		lastName.setCellValueFactory(new PropertyValueFactory<AspStudentTableGUI, String>("lastName"));
 		aspStudentTable.setItems(getstudents());
 	}
+	
+	
 	
 	 private ObservableList<AspStudentTableGUI> getstudents(){
 
