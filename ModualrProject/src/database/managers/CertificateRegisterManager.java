@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import database.bean.CertificateRegister;
-import database.bean.Module;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
@@ -46,6 +46,87 @@ public final class CertificateRegisterManager
 	return false;
     }
 
+    
+    /**
+     * This method adds multiple modules to the requirement of a specified 
+     * certificate. 
+     * @param certName the certificate name as {@code String}
+     * @param modules the array of moduleName as {@code String}
+     * @return {@code true} if all the modules were successfully added
+     * @throws SQLException when a connection error occurs
+     */
+    public static boolean addMultipleModules(final String certName, String[] modules) throws SQLException{
+	
+	ConnectionManager.setAutoCommiting(false); 
+	
+	boolean success = Arrays.stream(modules)
+	      .allMatch( module-> { 
+		try
+		{
+		    return true == addModuleToCertificate(
+		          new CertificateRegister(certName, module)
+		          ) ; 
+		}
+		catch (InvalidAdminException| SQLException e)
+		{
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		    return false;
+		}
+		
+		
+	    }); 
+	if(success){
+	    ConnectionManager.commit (); 
+	}else{
+	    ConnectionManager.rollback(); 
+	}
+	ConnectionManager.setAutoCommiting(true);
+	return success; 
+	
+    }
+    
+    
+    
+    /**
+     * This method removes multiple modules to the requirement of a specified 
+     * certificate. 
+     * @param certName the certificate name as {@code String}
+     * @param modules the array of moduleName as {@code String}
+     * @return {@code true} if all the modules were successfully added
+     * @throws SQLException when a connection error occurs
+     */
+    public static boolean removeMultipleModules(final String certName, String[] modules) throws SQLException{
+	
+	ConnectionManager.setAutoCommiting(false); 
+	
+	boolean success = Arrays.stream(modules)
+	      .allMatch( module-> { 
+		try
+		{
+		    return true == removeModules(
+		          new CertificateRegister(certName, module)
+		          ) ; 
+		}
+		catch (InvalidAdminException| SQLException e)
+		{
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		    return false;
+		}
+		
+		
+	    }); 
+	if(success){
+	    ConnectionManager.commit (); 
+	}else{
+	    ConnectionManager.rollback(); 
+	}
+	ConnectionManager.setAutoCommiting(true);
+	return success; 
+	
+    }
+    
     /**
      * Removes a {@code ModuleTabTable } from a Cerificate requirement
      * @param certModule the certificateRegister object that encapsulates the 
@@ -55,7 +136,7 @@ public final class CertificateRegisterManager
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static boolean removeModuleFromCertificate( CertificateRegister certModule ) 
+    public static boolean removeModules( CertificateRegister certModule ) 
 	    throws  SQLException, InvalidAdminException
     {
 

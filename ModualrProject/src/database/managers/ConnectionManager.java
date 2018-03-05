@@ -250,4 +250,40 @@ public final class ConnectionManager
 	}
 
     }
+
+
+    public static void setAutoCommiting(boolean autoCommit) throws SQLException
+    {
+	if( conn != null)
+	    conn.setAutoCommit(autoCommit);
+	
+    }
+
+
+    public static void commit()
+    {
+	try
+	{
+	    if(!conn.getAutoCommit()) conn.commit();
+	}
+	catch (SQLException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
+    
+    public static void rollback()
+    {
+	
+	    try
+	    {
+		if(!conn.getAutoCommit()) conn.rollback();
+	    }
+	    catch (SQLException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+    }
 }

@@ -64,7 +64,7 @@ public class CertificateRegisterTest
 	    certMod = new CertificateRegister(certName, modName);
 
 
-	    if( CertificateRegisterManager.removeModuleFromCertificate(certMod)){
+	    if( CertificateRegisterManager.removeModules(certMod)){
 		System.out.println( "CertModule was removed succcessfullly!!!");
 		TestUtils.displayBean( BeanType.CERTIFICATE_MODULE , 0);
 	    }
