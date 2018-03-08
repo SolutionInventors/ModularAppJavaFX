@@ -100,6 +100,8 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button layoutX="57.0" layoutY="443.0" mnemonicParsing="false" onAction="#addModule" prefHeight="47.0" prefWidth="90.0" text="Add Module" />
+      <Button layoutX="146.0" layoutY="443.0" mnemonicParsing="false" onAction="#addModule" prefHeight="47.0" prefWidth="90.0" text="Add Module" />
+      <Button layoutX="252.0" layoutY="443.0" mnemonicParsing="false" onAction="#deleteModule" prefHeight="47.0" prefWidth="101.0" text="Delete Module" />
+      <Button layoutX="32.0" layoutY="443.0" mnemonicParsing="false" onAction="#updateModule" prefHeight="47.0" prefWidth="101.0" text="Update Module" />
    </children>
 </AnchorPane>

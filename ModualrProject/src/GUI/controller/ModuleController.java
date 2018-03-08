@@ -38,8 +38,10 @@ import javafx.stage.Stage;
 import test.TestUtils;
 import utils.BeanType;
 
-public class ModuleController implements Initializable{
-	@FXML private TextField txtSearchBar;
+public class ModuleController implements Initializable
+{
+
+    @FXML private TextField txtSearchBar;
 	@FXML private Button btnGo;
 	
 	@FXML private TableView<ModuleTabTable>moduleTable;
@@ -70,140 +72,242 @@ public class ModuleController implements Initializable{
 	@FXML private CategoryAxis x;
 	@FXML private NumberAxis y;
 	
-	//@FXML private Label 
-
 	  private Module[] modules = null;
 	  private ModuleStats modStats =null;
-	
-	// Event Listener on TableView[#studentTable].onMouseClicked
-	@FXML
-	public void getDetails(MouseEvent event) {
-	    int selection = moduleTable.getSelectionModel().getSelectedIndex();
-	   
-	    try{
-		modStats = StatisticsManager.retrieveStats(new Module(modules[selection].getName()));
-	    }
-	    catch (SQLException e)
-	    {
-		e.printStackTrace();
-	    }
-	    lblRegistered.setText(String.valueOf(modStats.getNumRegistered()));
-	    lblPaid.setText(String.valueOf(modStats.getNumPaid()));
-	    lblBooked.setText(String.valueOf(modStats.getNumBooked()));
-	    lblAttended.setText(String.valueOf(modStats.getNumAttended()));
-	    lblPassed.setText(String.valueOf(modStats.getNumPassed()));
-	    lblFailed.setText(String.valueOf(modStats.getNumFailed()));
-	    
-	    createChart(modStats);
-	}
+    // Event Listener on TableView[#studentTable].onMouseClicked
+    @FXML
+    public void getDetails(MouseEvent event)
+    {
+	int selection = moduleTable.getSelectionModel().getSelectedIndex();
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-	    	noofUnits.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, Integer>("noofUnits"));
-		moduleName.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, String>("moduleName"));
-		dateCreated.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, String>("dateCreated"));
-		amount.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, String>("amount"));
-		moduleTable.setItems(getModules());
-	}//end initialize
-	
-	public ObservableList<ModuleTabTable> getModules() {
-	  
-	    ObservableList<ModuleTabTable> list = FXCollections.observableArrayList();
-	    try {
-		modules = ModuleManager.getModules( 0 );
-	    }
-	    catch (SQLException | InvalidAdminException e)
+	try
+	{
+	    modStats = StatisticsManager.retrieveStats(new Module(modules[selection].getName()));
+	}
+	catch (SQLException e)
+	{
+	    e.printStackTrace();
+	}
+	lblRegistered.setText(String.valueOf(modStats.getNumRegistered()));
+	lblPaid.setText(String.valueOf(modStats.getNumPaid()));
+	lblBooked.setText(String.valueOf(modStats.getNumBooked()));
+	lblAttended.setText(String.valueOf(modStats.getNumAttended()));
+	lblPassed.setText(String.valueOf(modStats.getNumPassed()));
+	lblFailed.setText(String.valueOf(modStats.getNumFailed()));
+
+	createChart(modStats);
+    }
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1)
+    {
+	noofUnits.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, Integer>("noofUnits"));
+	moduleName.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, String>("moduleName"));
+	dateCreated.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, String>("dateCreated"));
+	amount.setCellValueFactory(new PropertyValueFactory<ModuleTabTable, String>("amount"));
+	moduleTable.setItems(getModules());
+    }// end initialize
+
+    public ObservableList<ModuleTabTable> getModules()
+    {
+
+	ObservableList<ModuleTabTable> list = FXCollections.observableArrayList();
+	try
+	{
+	    modules = ModuleManager.getModules(0);
+	}
+	catch (SQLException | InvalidAdminException e)
+	{
+	    e.printStackTrace();
+	}
+	for (int i = 0; i < modules.length; i++)
+	{
+	    list.add(new ModuleTabTable(modules[i].getNumberOfUnits(), modules[i].getName(),
+		    String.valueOf(modules[i].getAmountPerUnit()), String.valueOf(modules[i].getDateCreated())));
+
+	}
+	return list;
+
+    }// end get Modules
+
+    @FXML
+    public void radioSelected(ActionEvent event)
+    {
+	if (rbPie.isSelected())
+	{
+	    barChart.setVisible(false);
+	    pieChart.setVisible(true);
+	}
+	else
+	{
+	    pieChart.setVisible(false);
+	    barChart.setVisible(true);
+	}
+    }
+
+    @FXML
+    public void addModule(ActionEvent event)
+    {
+	Stage window = new Stage();
+	window.setTitle("Add New Module");
+	Button button;
+
+	InputPair[] pairs =
+	{
+		new InputPair("Name:"), new InputPair("Amount per Unit:"), new InputPair("Number of Unit:")
+	};
+
+	button = new Button();
+	button.setText("Add");
+	TestVBox layout = new TestVBox(button, pairs);
+
+	Scene scene = new Scene(layout, 300, 250);
+	window.setScene(scene);
+	window.show();
+
+	button.setOnMouseClicked(e -> {
+
+	    String name = layout.getValue("Name:");
+	    int numberOfUnits = Integer.valueOf((layout.getValue("Number of Unit:")));
+	    double amount = Double.valueOf(layout.getValue("Amount per Unit:"));
+	    Module newModule = new Module(name, numberOfUnits, amount);
+
+	    try
 	    {
-		e.printStackTrace();
-	    }
-		for ( int i = 0 ; i < modules.length ; i++ ){
-		    list.add(new  ModuleTabTable(modules[i].getNumberOfUnits(),modules[i].getName(),String.valueOf(modules[i].getAmountPerUnit()),String.valueOf(modules[i].getDateCreated())));
-		 
+		if (ModuleManager.addNewModule(newModule))
+		{
+		    System.out.println(
+			    "Successfully created a new module and " + "also  updated the dateCreated attribute.");
+		    moduleTable.setItems(getModules());
 		}
-		return list;
-		
-	}//end get Modules
-	@FXML public void radioSelected(ActionEvent event) {
-	    if (rbPie.isSelected()) {
-		barChart.setVisible(false);
-		pieChart.setVisible(true);
-	    }else {
-		pieChart.setVisible(false);
-		barChart.setVisible(true);
+		else
+		{
+		    System.out.println("Was Unsuccessful for unknown reasons!!!");
+		}
 	    }
-	}
-	
-	@FXML public void addModule(ActionEvent event) {
-	    	Stage window = new Stage();
-	    	window.setTitle("Title of the Window");
-		Button button;
-	    	
-		InputPair[] pairs = {
-			new InputPair("Name:"),
-			new InputPair("Amount per Unit:"),
-			new InputPair("Number of Unit:")
-		};
-		
-		
-		button = new Button();
-		button.setText("Add");
-		TestVBox layout = new TestVBox(button,pairs);
-		
-		Scene scene = new Scene(layout, 300, 250);
-		window.setScene(scene);
-		window.show();
-		
-		button.setOnMouseClicked(e -> {
-		    
-		    String name = layout.getValue("Name:");
-		    int numberOfUnits = Integer.valueOf((layout.getValue("Number of Unit:")));
-		    double amount = Double.valueOf(layout.getValue("Amount per Unit:"));
-		    Module newModule = new Module(name, numberOfUnits, amount);
-		    
-		    try
-		    {
-			if( ModuleManager.addNewModule(newModule) ) {
-			System.out.println("Successfully created a new module and "
-				+ "also  updated the dateCreated attribute.");
-			moduleTable.setItems(getModules());
-			}
-			else
-			{
-			System.out.println("Was Unsuccessful for unknown reasons!!!");
-			}
-		    }
-		    catch (SQLException | InvalidAdminException e1)
-		    {
-			e1.printStackTrace();
-		    }
-		});
-		
-		
-	}
-	@SuppressWarnings({
-		"rawtypes", "unchecked"
-	})
-	private void createChart(ModuleStats modStats) {
-		//import pie chart data
-		ObservableList<Data> list = FXCollections.observableArrayList(
-				new PieChart.Data("Registered", modStats.getNumRegistered()),
-				new PieChart.Data("Paid", modStats.getNumPaid()),
-				new PieChart.Data("Booked", modStats.getNumBooked()),
-				new PieChart.Data("Attended", modStats.getNumAttended()),
-				new PieChart.Data("Passed", modStats.getNumPassed()),
-				new PieChart.Data("Failed", modStats.getNumFailed())
-				);
-		
-		barChart.getData().clear();
-		XYChart.Series set1 =new XYChart.Series<>();
-		set1.getData().add(new XYChart.Data("Registered", modStats.getNumRegistered()));
-		set1.getData().add(new XYChart.Data("Paid", modStats.getNumPaid()));
-		set1.getData().add(new XYChart.Data("Booked", modStats.getNumBooked()));
-		set1.getData().add(new XYChart.Data("Attended", modStats.getNumAttended()));
-		set1.getData().add(new XYChart.Data("Passed", modStats.getNumPassed()));
-		set1.getData().add(new XYChart.Data("Failed", modStats.getNumFailed()));
-		barChart.getData().addAll(set1);
-		
-		pieChart.setData(list);
-	}//end method create chart
+	    catch (SQLException | InvalidAdminException e1)
+	    {
+		e1.printStackTrace();
+	    }
+	});
+
+    }
+
+    @FXML
+    public void deleteModule(ActionEvent event)
+    {
+	Stage window = new Stage();
+	window.setTitle("Delete Module");
+	Button deleteButton;
+
+	InputPair[] pairs =
+	{
+		new InputPair("Module Name:")
+	};
+
+	deleteButton = new Button();
+	deleteButton.setText("Delete");
+	TestVBox layout = new TestVBox(deleteButton, pairs);
+
+	Scene scene = new Scene(layout, 300, 250);
+	window.setScene(scene);
+	window.show();
+
+	deleteButton.setOnMouseClicked(e -> {
+	    String name = layout.getValue("Module Name:");
+
+	    Module existingModule = new Module(name);
+	    try
+	    {
+		if (ModuleManager.removeModule(existingModule))
+		{
+		    System.out.println("ModuleTabTable was removed succcessfullly!!!");
+		    moduleTable.setItems(getModules());
+		}
+		else
+		{
+		    System.out.println(
+			    "Nothing was removed! " + "Maybe the module name you inputed is not in the database");
+		}
+	    }
+	    catch (SQLException | InvalidAdminException ee)
+	    {
+		// FIXME Auto-generated catch block
+		ee.printStackTrace();
+	    }
+	});
+    }// end method deleteModule
+
+    @FXML
+    public void updateModule(ActionEvent event)
+    {
+	Stage window = new Stage();
+	window.setTitle("Update Module");
+	Button updatebutton;
+
+	InputPair[] pairs =
+	{
+		new InputPair("Module Name:"), new InputPair("New Module Name:"), new InputPair("New Amount per Unit:"),
+		new InputPair("New Number of Unit:")
+	};
+
+	updatebutton = new Button();
+	updatebutton.setText("Update");
+	TestVBox layout = new TestVBox(updatebutton, pairs);
+
+	Scene scene = new Scene(layout, 300, 250);
+	window.setScene(scene);
+	window.show();
+
+	updatebutton.setOnMouseClicked(e -> {
+	    String oldname = layout.getValue("Module Name:");
+	    String name = layout.getValue("New Module Name:");
+	    int numberOfUnits = Integer.valueOf((layout.getValue("New Number of Unit:")));
+	    double amount = Double.valueOf(layout.getValue("New Amount per Unit:"));
+	    Module existingModule = new Module(oldname);
+	    Module newModule = new Module(name, numberOfUnits, amount);
+
+	    try {
+		if (ModuleManager.updateModule(newModule, existingModule)){
+		    System.out.println("The ModuleTabTable was updated succcessfullly!!!");
+		    moduleTable.setItems(getModules());
+		}
+		else{
+		    System.out.println(
+			    "Nothing was removed! " + "Maybe the module name you inputed is not in the database");
+		}
+	    }
+	    catch (SQLException | InvalidAdminException e1)
+	    {
+		e1.printStackTrace();
+	    }
+	});
+    }
+
+    @SuppressWarnings(
+    {
+	    "rawtypes", "unchecked"
+    })
+    private void createChart(ModuleStats modStats)
+    {
+	// import pie chart data
+	ObservableList<Data> list = FXCollections.observableArrayList(
+		new PieChart.Data("Registered", modStats.getNumRegistered()),
+		new PieChart.Data("Paid", modStats.getNumPaid()), new PieChart.Data("Booked", modStats.getNumBooked()),
+		new PieChart.Data("Attended", modStats.getNumAttended()),
+		new PieChart.Data("Passed", modStats.getNumPassed()),
+		new PieChart.Data("Failed", modStats.getNumFailed()));
+
+	barChart.getData().clear();
+	XYChart.Series set1 = new XYChart.Series<>();
+	set1.getData().add(new XYChart.Data("Registered", modStats.getNumRegistered()));
+	set1.getData().add(new XYChart.Data("Paid", modStats.getNumPaid()));
+	set1.getData().add(new XYChart.Data("Booked", modStats.getNumBooked()));
+	set1.getData().add(new XYChart.Data("Attended", modStats.getNumAttended()));
+	set1.getData().add(new XYChart.Data("Passed", modStats.getNumPassed()));
+	set1.getData().add(new XYChart.Data("Failed", modStats.getNumFailed()));
+	barChart.getData().addAll(set1);
+
+	pieChart.setData(list);
+    }// end method create chart
 }
