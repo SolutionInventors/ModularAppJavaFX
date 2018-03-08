@@ -160,4 +160,6 @@ public interface Bean extends Serializable
 		( currentDate.after(earlier) || currentDate.equals(earlier)) && 
 		( currentDate.after(later) || currentDate.equals(later));
     }
+    
+    
 }

@@ -46,7 +46,7 @@ public final class CertificateRegisterManager
 	return false;
     }
 
-    
+
     /**
      * This method adds multiple modules to the requirement of a specified 
      * certificate. 
@@ -56,26 +56,26 @@ public final class CertificateRegisterManager
      * @throws SQLException when a connection error occurs
      */
     public static boolean addMultipleModules(final String certName, String[] modules) throws SQLException{
-	
+
 	ConnectionManager.setAutoCommiting(false); 
-	
+
 	boolean success = Arrays.stream(modules)
-	      .allMatch( module-> { 
-		try
-		{
-		    return true == addModuleToCertificate(
-		          new CertificateRegister(certName, module)
-		          ) ; 
-		}
-		catch (InvalidAdminException| SQLException e)
-		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		    return false;
-		}
-		
-		
-	    }); 
+		.allMatch( module-> { 
+		    try
+		    {
+			return true == addModuleToCertificate(
+				new CertificateRegister(certName, module)
+				) ; 
+		    }
+		    catch (InvalidAdminException| SQLException e)
+		    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		    }
+
+
+		}); 
 	if(success){
 	    ConnectionManager.commit (); 
 	}else{
@@ -83,11 +83,11 @@ public final class CertificateRegisterManager
 	}
 	ConnectionManager.setAutoCommiting(true);
 	return success; 
-	
+
     }
-    
-    
-    
+
+
+
     /**
      * This method removes multiple modules to the requirement of a specified 
      * certificate. 
@@ -97,26 +97,26 @@ public final class CertificateRegisterManager
      * @throws SQLException when a connection error occurs
      */
     public static boolean removeMultipleModules(final String certName, String[] modules) throws SQLException{
-	
+
 	ConnectionManager.setAutoCommiting(false); 
-	
+
 	boolean success = Arrays.stream(modules)
-	      .allMatch( module-> { 
-		try
-		{
-		    return true == removeModules(
-		          new CertificateRegister(certName, module)
-		          ) ; 
-		}
-		catch (InvalidAdminException| SQLException e)
-		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		    return false;
-		}
-		
-		
-	    }); 
+		.allMatch( module-> { 
+		    try
+		    {
+			return true == removeModules(
+				new CertificateRegister(certName, module)
+				) ; 
+		    }
+		    catch (InvalidAdminException| SQLException e)
+		    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		    }
+
+
+		}); 
 	if(success){
 	    ConnectionManager.commit (); 
 	}else{
@@ -124,9 +124,9 @@ public final class CertificateRegisterManager
 	}
 	ConnectionManager.setAutoCommiting(true);
 	return success; 
-	
+
     }
-    
+
     /**
      * Removes a {@code ModuleTabTable } from a Cerificate requirement
      * @param certModule the certificateRegister object that encapsulates the 
@@ -154,25 +154,29 @@ public final class CertificateRegisterManager
 	return false;
     }
 
-    /**
-     * Gets an array of   {@code Module}s  that contains  are required to 
-     * get a particular certificate
-     * @param certificateName the certificate name
-     * @return an array of {@code Module}s
-     * @throws SQLException
-     * @throws InvalidAdminException
-     */
-    public static String[] getModulesRequired(String certificateName) throws SQLException{
+
+    public static String[] getModules(String certificateName, boolean required) throws SQLException{
+	String sql = ""; 
+	if(required){
+	    return getModulesRequired(certificateName); 
+	}else{
+	    sql = "SELECT DISTINCT module.name as ModuleName from module " +
+		    "LEFT JOIN certificateregister as certReg " + 
+		    " ON module.name = certReg.moduleName " + 
+		    " WHERE certReg.certificateName!= ? OR certReg.certificateName IS NULL "+ 
+		    " ORDER BY module.name ASC ; " ;
+	    return getModulesHelper(sql, certificateName); 
+	}
+
+	
+    }
+    private static String[] getModulesHelper(String sql, Object ... arguments) throws SQLException
+    {
 	ResultSet result = null;
 	ArrayList<String> list = new ArrayList<>(30);
-	String sql  = ""
-		+ "SELECT  moduleName "
-		+ "	FROM certificateRegister "
-		+ "" +  
-		  "  WHERE certificateName = ? ";
-	
+
 	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
-		(sql, certificateName ))
+		(sql, arguments ))
 	{
 	    result = statement.executeQuery() ;
 
@@ -186,6 +190,25 @@ public final class CertificateRegisterManager
 	}
 	return list.toArray( new String[ list.size() ] );
     }
-    
-    
+
+
+    /**
+     * Gets an array of   {@code Module}s  that contains  are required to 
+     * get a particular certificate
+     * @param certificateName the certificate name
+     * @return an array of {@code Module}s
+     * @throws SQLException
+     * @throws InvalidAdminException
+     */
+    public static String[] getModulesRequired(String certificateName) throws SQLException{
+	String sql  = ""
+		+ "SELECT  moduleName "
+		+ "	FROM certificateRegister "
+		+ "" +  
+		"  WHERE certificateName = ? ";
+
+	return getModulesHelper(sql, certificateName); 
+    }
+
+
 }
