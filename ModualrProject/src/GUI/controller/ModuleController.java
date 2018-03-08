@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import GUI.utilities.ModuleTabTable;
+import GUI.utilities.custom.InputPair;
+import GUI.utilities.custom.TestVBox;
 import database.bean.Module;
 import database.managers.ModuleManager;
 import database.statistics.ModuleStats;
@@ -15,12 +17,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.chart.PieChart.Data;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,6 +34,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import test.TestUtils;
+import utils.BeanType;
 
 public class ModuleController implements Initializable{
 	@FXML private TextField txtSearchBar;
@@ -127,7 +133,53 @@ public class ModuleController implements Initializable{
 	    }
 	}
 	
-	
+	@FXML public void addModule(ActionEvent event) {
+	    	Stage window = new Stage();
+	    	window.setTitle("Title of the Window");
+		Button button;
+	    	
+		InputPair[] pairs = {
+			new InputPair("Name:"),
+			new InputPair("Amount per Unit:"),
+			new InputPair("Number of Unit:")
+		};
+		
+		
+		button = new Button();
+		button.setText("Add");
+		TestVBox layout = new TestVBox(button,pairs);
+		
+		Scene scene = new Scene(layout, 300, 250);
+		window.setScene(scene);
+		window.show();
+		
+		button.setOnMouseClicked(e -> {
+		    
+		    String name = layout.getValue("Name:");
+		    int numberOfUnits = Integer.valueOf((layout.getValue("Number of Unit:")));
+		    double amount = Double.valueOf(layout.getValue("Amount per Unit:"));
+		    Module newModule = new Module(name, numberOfUnits, amount);
+		    
+		    try
+		    {
+			if( ModuleManager.addNewModule(newModule) ) {
+			System.out.println("Successfully created a new module and "
+				+ "also  updated the dateCreated attribute.");
+			moduleTable.setItems(getModules());
+			}
+			else
+			{
+			System.out.println("Was Unsuccessful for unknown reasons!!!");
+			}
+		    }
+		    catch (SQLException | InvalidAdminException e1)
+		    {
+			e1.printStackTrace();
+		    }
+		});
+		
+		
+	}
 	@SuppressWarnings({
 		"rawtypes", "unchecked"
 	})

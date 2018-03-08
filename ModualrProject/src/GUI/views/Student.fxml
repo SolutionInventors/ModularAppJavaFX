@@ -33,7 +33,6 @@
             <Label text="Search ID" />
             <Label layoutX="10.0" layoutY="17.0" text="Category" GridPane.rowIndex="1" />
             <TextField fx:id="txtSearchBar" GridPane.columnIndex="1" />
-            <Button fx:id="btnGo" mnemonicParsing="false" text="GO" GridPane.columnIndex="3" />
             <ComboBox fx:id="cmbCategory" layoutX="110.0" layoutY="43.0" onAction="#combochange" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
@@ -126,5 +125,7 @@
             </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="btnUpdate" layoutX="40.0" layoutY="443.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="67.0" text="Update" />
+      <Button fx:id="btnAddStudent" layoutX="118.0" layoutY="443.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="110.0" text="Add Student" />
    </children>
 </AnchorPane>

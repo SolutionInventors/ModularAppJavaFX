@@ -30,31 +30,49 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import test.TestUtils;
+import utils.BeanType;
 import utils.ModuleRegisterFilter;
+import utils.ValidationType;
 
 public class ModuleRegisterController implements Initializable
 {
-    @FXML private ComboBox<String> cmbCategory;
-    @FXML private ImageView studentImage;
+    @FXML
+    private ComboBox<String> cmbCategory;
+    @FXML
+    private ImageView studentImage;
 
-    @FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
-    @FXML private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
-    @FXML private TableColumn<ModuleRegisterTableGUI, String> studentID;
-    @FXML private TableColumn<ModuleRegisterTableGUI, String> moduleName;
+    @FXML
+    private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
+    @FXML
+    private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
+    @FXML
+    private TableColumn<ModuleRegisterTableGUI, String> studentID;
+    @FXML
+    private TableColumn<ModuleRegisterTableGUI, String> moduleName;
 
-    @FXML private Label lblPaymentstatus;
-    @FXML private Label lblMoudleName;
-    @FXML private Label lblStudentName;
-    @FXML private Label lblResult;
-    @FXML private Label lblBookingStatus;
-    @FXML private Label lblAttended;
-    @FXML private Label lblSearch;
-    
-    @FXML private TextField txtSearch;
-    @FXML private Button btnGO;
-    @FXML private Button btnRegisterStudent;
-    
-    
+    @FXML
+    private Label lblPaymentstatus;
+    @FXML
+    private Label lblMoudleName;
+    @FXML
+    private Label lblStudentName;
+    @FXML
+    private Label lblResult;
+    @FXML
+    private Label lblBookingStatus;
+    @FXML
+    private Label lblAttended;
+    @FXML
+    private Label lblSearch;
+
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private Button btnGO;
+    @FXML
+    private Button btnRegisterStudent;
+
     private ModuleRegister[] modRegs;
     private int selectedIndex;
     ObservableList<ModuleRegisterTableGUI> list = FXCollections.observableArrayList();
@@ -108,6 +126,7 @@ public class ModuleRegisterController implements Initializable
 	lblBookingStatus.setText(modRegs[selection].hasBooked() ? "Booked" : "Not Booked");
 	lblAttended.setText(modRegs[selection].hasAttended() ? "Yes" : "No");
 	String localUrl = null;
+
 	try
 	{
 	    localUrl = modRegs[selection].getStudentImage().toURI().toURL().toString();
@@ -163,61 +182,84 @@ public class ModuleRegisterController implements Initializable
     }
 
     @FXML
-    private void registerStudent(ActionEvent event) {
-	 	Stage window = new Stage(); 
-	 	window.initModality(Modality.WINDOW_MODAL);
-	        window.setTitle("thenewboston - JavaFX");
+    private void registerStudent(ActionEvent event)
+    {
+	Stage window = new Stage();
+	window.initModality(Modality.WINDOW_MODAL);
+	window.setTitle("thenewboston - JavaFX");
 
-	        //GridPane with 10px padding around edge
-	        GridPane grid = new GridPane();
-	        grid.setPadding(new Insets(10, 10, 10, 10));
-	        grid.setVgap(8);
-	        grid.setHgap(10);
+	// GridPane with 10px padding around edge
+	GridPane grid = new GridPane();
+	grid.setPadding(new Insets(10, 10, 10, 10));
+	grid.setVgap(8);
+	grid.setHgap(10);
 
-	        //Name Label - constrains use (child, column, row)
-	        Label nameLabel = new Label("StudentID:");
-	        GridPane.setConstraints(nameLabel, 0, 0);
+	// Name Label - constrains use (child, column, row)
+	Label nameLabel = new Label("StudentID:");
+	GridPane.setConstraints(nameLabel, 0, 0);
 
-	        //Name Input
-	        TextField txtstudentID = new TextField();
-	        GridPane.setConstraints(txtstudentID, 1, 0);
+	// Name Input
+	TextField txtstudentID = new TextField();
+	GridPane.setConstraints(txtstudentID, 1, 0);
 
-	        //Password Label
-	        Label moduleLabel = new Label("Module:");
-	        GridPane.setConstraints(moduleLabel, 0, 1);
+	// Password Label
+	Label moduleLabel = new Label("Module:");
+	GridPane.setConstraints(moduleLabel, 0, 1);
 
-	        //Password Input
-	        TextField txtModuleName = new TextField();
-	       // passInput.setPromptText("password");
-	        GridPane.setConstraints(txtModuleName, 1, 1);
+	// Password Input
+	TextField txtModuleName = new TextField();
+	// passInput.setPromptText("password");
+	GridPane.setConstraints(txtModuleName, 1, 1);
 
-	        //Login
-	        Button registerButton = new Button("Register");
-	        GridPane.setConstraints(registerButton, 1, 2);
-	        
-	        registerButton.setOnMouseClicked(e->{
-	            try
-		    {
-			ModuleRegisterManager.registerForModule(new ModuleRegister(txtstudentID.getText(),txtModuleName.getText()));
-		    }
-		    catch (SQLException | InvalidAdminException e1)
-		    {
-			e1.printStackTrace();
-		    }
-	            
-	            System.out.println(txtstudentID.getText() + "was successfully registered for " + txtModuleName.getText());
-	        });
-	        //Add everything to grid
-	        grid.getChildren().addAll(nameLabel, txtstudentID, moduleLabel, txtModuleName, registerButton);
+	// Login
+	Button registerButton = new Button("Register");
+	GridPane.setConstraints(registerButton, 1, 2);
 
-	        Scene scene = new Scene(grid, 300, 200);
-	        window.setScene(scene);
-	        window.show();
-	    
+	registerButton.setOnMouseClicked(e -> {
+	    try
+	    {
+		System.out.println(txtstudentID.getText());
+		System.out.println(txtModuleName.getText());
+		ModuleRegister modReg = new ModuleRegister(txtModuleName.getText(), txtstudentID.getText());
+		if (ModuleRegisterManager.registerForModule(modReg))
+		{
+		    System.out.println("Successfully registered Student for module and  "
+			    + "also gave updated the dateCreated attribute.");
+		    moduleRegisterTable.setItems(getModuleRegister());
+
+		}
+		else if (!modReg.isValid(ValidationType.NEW_BEAN))
+		    System.err.println("The format of the ModuleRegister was invalid");
+		else if (!ModuleRegisterManager.canRegister(modReg))
+		{
+		    System.err.println("Unsuccesful ! It possible the module has already been passed");
+		    System.err.println("Or it's result is not out yet");
+		}
+		else
+		{
+		    System.out.println(modReg.getStudentId());
+		    System.out.println(modReg.getModuleName());
+		    System.out.println("Was Unsuccessful for unknown reasons!!!");
+		}
+	    }
+	    catch (SQLException | InvalidAdminException e1)
+	    {
+		e1.printStackTrace();
+	    }
+
+	});
+	// Add everything to grid
+	grid.getChildren().addAll(nameLabel, txtstudentID, moduleLabel, txtModuleName, registerButton);
+
+	Scene scene = new Scene(grid, 300, 200);
+	window.setScene(scene);
+	window.show();
+
     }
-    
+
     @FXML
-    private void keyPressed(KeyEvent event) {
+    private void keyPressed(KeyEvent event)
+    {
 
 	modRegs = null;
 	try
@@ -256,14 +298,13 @@ public class ModuleRegisterController implements Initializable
 	}
 	moduleRegisterTable.setItems(list);
     }
-    
-    
+
     @FXML
     public void itemSelected(ActionEvent event)
     {
 	selectedIndex = cmbCategory.getSelectionModel().getSelectedIndex();
 	if (selectedIndex <= 2)
-	   
+
 	{
 	    txtSearch.setVisible(true);
 	    lblSearch.setVisible(true);
@@ -289,17 +330,18 @@ public class ModuleRegisterController implements Initializable
 			break;
 		}
 	    }
-	    catch (SQLException e){
+	    catch (SQLException e)
+	    {
 		e.printStackTrace();
 	    }
 	    list.clear();
-		for (int i = 0; i < modRegs.length; i++)
-		{
-		    list.add(new ModuleRegisterTableGUI(modRegs[i].getId(), modRegs[i].getStudentId(),
-			    modRegs[i].getModuleName()));
+	    for (int i = 0; i < modRegs.length; i++)
+	    {
+		list.add(new ModuleRegisterTableGUI(modRegs[i].getId(), modRegs[i].getStudentId(),
+			modRegs[i].getModuleName()));
 
-		}
-		moduleRegisterTable.setItems(list);
+	    }
+	    moduleRegisterTable.setItems(list);
 	}
     }
 }

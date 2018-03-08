@@ -21,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
@@ -39,7 +40,9 @@ public class StudentController implements Initializable
 {
     
     @FXML private TextField txtSearchBar;
-    @FXML private Button btnGo;
+    @FXML private Button btnUpdate;
+    @FXML private Button btnAddStudent;
+    
     @FXML private ComboBox<String> cmbCategory;
     @FXML private Label lblStudentName;
     @FXML private Label lblisActive;
@@ -115,7 +118,16 @@ public class StudentController implements Initializable
 	    studentTable.setItems(sortedData);
 	});
     }
-
+    @FXML
+    private void Update(ActionEvent event) {
+	
+    }
+    @FXML
+    private void regStudent(ActionEvent event) {
+	
+    }
+    
+    
     public void getuser() 
     {
 	int selection = studentTable.getSelectionModel().getSelectedIndex();
@@ -150,9 +162,9 @@ public class StudentController implements Initializable
 	DatabaseManager.setCurrentAdmin(currentAdmin);
 
 	// Step 2: call getStudents method
-	boolean isActive = true;
+	
 	try{
-	    students = StudentManager.getStudents(isActive, 0);
+	    students = StudentManager.getStudents(0);
 
 	    for (int i = 0; i < students.length; i++)
 	    {
@@ -161,7 +173,7 @@ public class StudentController implements Initializable
 
 	    }
 	}
-	catch (SQLException | InvalidAdminException e){
+	catch (SQLException e){
 	    e.printStackTrace();
 	}
 	finally{
@@ -235,7 +247,7 @@ public class StudentController implements Initializable
 		students= StudentManager.getStudents(false, 0);
 		break;
 	    default:
-		students= StudentManager.getStudents(0);
+		//students = StudentManager.getStudents(isActive, 0);
 		break;
 	}
 	studentList.clear();
