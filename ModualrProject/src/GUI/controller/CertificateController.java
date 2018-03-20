@@ -42,7 +42,7 @@ public class CertificateController {
 		    CertificateStats certStats = StatisticsManager.retrieveStats(cert);
 		    lblRequired.setText(String.valueOf(certStats.getModulesRequired()));
 		    lblissused.setText(String.valueOf(certStats.getStudentIssued()));
-		    //certStats.get
+		    //certStats.
 		   String moduleList[] =  CertificateRegisterManager.getModulesRequired(selected);
 		   lvMoudlelist.getItems().clear();
 		   for (String module : moduleList)

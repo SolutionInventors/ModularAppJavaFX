@@ -17,43 +17,36 @@ public class TestVBox extends VBox
     private Button button;
     private InputPair[] pairs;
 
-    public TestVBox(Button btn, InputPair... inputPairs)
-    {
+    public TestVBox(Button btn, InputPair... inputPairs){
 	super();
 
 	button = btn;
 	setPairs(inputPairs);
 	setPadding(new Insets(5));
-	for (int i = 0; i < inputPairs.length; i++)
-	{
+	for (int i = 0; i < inputPairs.length; i++){
 	    getChildren().add(inputPairs[i]);
-	}
-	getChildren().add(button);
+	
+	}getChildren().add(button);
 
     }
 
-    public String getValue(String string)
-    {
-	try
-	{
+    public String getValue(String string) {
+	try{
 	    InputPair result = Arrays.stream(getPairs()).filter(pair -> pair.getName().equals(string)).findFirst()
 		    .get();
 	    return result.getText();
 	}
-	catch (Exception e)
-	{
+	catch (Exception e) {
 	    return "";
 	}
 
     }
 
-    public InputPair[] getPairs()
-    {
+    public InputPair[] getPairs(){
 	return pairs;
     }
 
-    public void setPairs(InputPair[] pairs)
-    {
+    public void setPairs(InputPair[] pairs){
 	this.pairs = pairs;
     }
 

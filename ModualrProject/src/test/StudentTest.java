@@ -115,7 +115,7 @@ public class StudentTest
 	}
 
 
-	System.out.println("--------kEY EDUCATION DATA--------");
+	System.out.println("--------KEY EDUCATION DATA--------");
 	String highestQualification = TestUtils.getStringInput("Enter your highest Qualification you have attained: "); 
 	String courseRead = TestUtils.getStringInput("Enter the course you read: " ); 
 	

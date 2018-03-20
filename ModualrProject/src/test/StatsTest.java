@@ -55,7 +55,17 @@ public class StatsTest
 	System.out.println("--------Database Stats--------");
 	System.out.println(stat);
 	System.out.println(Arrays.toString(studMods)); 
-
+	System.out.println("Individual cert stat");
+	String cert1[][] =  stat.getIndividualCertStats();
+	
+	for ( int row = 0; row < cert1.length; row++ ){
+	// loop through columns of current row
+	for ( int column = 0; column < cert1[ row ].length; column++ )
+	System.out.printf( "%s ", cert1[ row ][ column ] );
+	System.out.println(); // start new line of output
+	} // end outer for
+	
+	
 	System.out.println("--------StudentModule Stats--------");
 	if(studMods != null ){
 	    for( StudentModuleStats studMod : studMods){

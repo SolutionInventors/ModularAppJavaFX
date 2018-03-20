@@ -1,7 +1,9 @@
 package GUI.controller;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 
+import database.bean.log.ModularClassLog;
 import database.bean.log.StudentLog;
 import database.bean.log.TransactionType;
 import database.managers.LogManager;
@@ -26,6 +28,16 @@ public class TrackerController {
 	    {
 		StudentLog[] studLog =  LogManager.getLog(StudentLog.class,
 			TransactionType.INSERT, 0);//TransactionType can take 3 different things
+		ModularClassLog[] modularClassLog = 
+			LogManager.getLog(ModularClassLog.class, 
+			TransactionType.NONE, 0);
+		txtAreaStudentLog.setWrapText(true);
+		System.out.println( "\n<<<<<<<Modular ClassLog>>>>>" );
+		Arrays.stream(modularClassLog).forEach( log ->{
+		 // System.out.println("-Description: " + log);
+		    
+		    txtAreaStudentLog.setText(txtAreaStudentLog.getText() + " -Description: " + log);
+		});
 		
 	    }
 	    catch (SQLException e)

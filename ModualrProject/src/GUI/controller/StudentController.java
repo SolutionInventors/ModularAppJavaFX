@@ -1,5 +1,6 @@
 package GUI.controller;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -7,6 +8,7 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
 import GUI.utilities.ModuleTableGUI;
+import GUI.utilities.Paths;
 import GUI.utilities.StudentTableGUI;
 import database.bean.Admin;
 import database.bean.student.Student;
@@ -23,7 +25,10 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Button;
@@ -35,6 +40,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class StudentController implements Initializable
 {
@@ -119,12 +126,20 @@ public class StudentController implements Initializable
 	});
     }
     @FXML
-    private void Update(ActionEvent event) {
+    private void update(ActionEvent event) {
 	
     }
     @FXML
-    private void regStudent(ActionEvent event) {
-	
+    private void regStudent(ActionEvent event) throws IOException {
+	Stage regInfo = new Stage();
+	regInfo.initModality(Modality.APPLICATION_MODAL);
+	Parent root = FXMLLoader.load(getClass().getResource(Paths.viewpath + "Registration.fxml"));
+	Scene scene = new Scene(root);
+	regInfo.setResizable(false);
+	regInfo.setScene(scene);
+	regInfo.sizeToScene();
+	regInfo.setTitle("Student Info");
+	regInfo.show();
     }
     
     

@@ -2,6 +2,7 @@ package GUI.controller;
 
 import java.sql.SQLException;
 
+import GUI.utilities.CertificateTableGUI;
 import database.statistics.StatisticsManager;
 import database.statistics.TableStats;
 import javafx.beans.value.ObservableValue;
@@ -21,8 +22,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class StatisticsController {
 	@FXML private TextField txtSearchBar;
@@ -61,14 +65,23 @@ public class StatisticsController {
 	@FXML private Tab tabProgram;
 	@FXML private Tab tabStream;
 	
+	@FXML private TableView<CertificateTableGUI> certTable;
+	@FXML private TableColumn<CertificateTableGUI, String> certName;
+	@FXML private TableColumn<CertificateTableGUI, String> noIssused;
+	
 	private TableStats stat = null ;
 	private String[] label;
 	private int[] value;
 	
     public void initialize()  {
+	certName.setCellValueFactory(new PropertyValueFactory<CertificateTableGUI, String>("certName"));
+	noIssused.setCellValueFactory(new PropertyValueFactory<CertificateTableGUI, String>("noIssused"));
+	
+	
 	try{
 	    stat = StatisticsManager.retrieveStats();
 	    toShowinitaldata();
+	    certTable.setItems(getModules());
 	}
 	catch (SQLException e)	{
 	    e.printStackTrace();
@@ -118,6 +131,24 @@ public class StatisticsController {
     }//end method initialize
     
     
+    private ObservableList<CertificateTableGUI> getModules()
+    {
+	String certificate[][] = stat.getIndividualCertStats();
+	ObservableList<CertificateTableGUI> list = FXCollections.observableArrayList();
+	for ( int row = 0; row < certificate.length; row++ ){
+		// loop through columns of current row
+		for ( int column = 0; column < certificate[ row ].length; column++ )
+		    list.add(new CertificateTableGUI(certificate[ row ][ 0 ], certificate[ row ][ 1 ]));
+		
+	} // end outer for
+		
+	
+	
+	return list;
+	
+    }
+
+
     @SuppressWarnings({
 	    "rawtypes", "unchecked"
     })
