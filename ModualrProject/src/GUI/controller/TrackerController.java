@@ -3,6 +3,7 @@ package GUI.controller;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+import database.bean.log.CertificateRegisterLog;
 import database.bean.log.ModularClassLog;
 import database.bean.log.StudentLog;
 import database.bean.log.TransactionType;
@@ -17,6 +18,8 @@ import javafx.scene.control.TextArea;
 public class TrackerController {
 	@FXML private TextArea txtAreaStudentLog;
 	@FXML private TextArea txtAreaModuleLog;
+	@FXML private TextArea txtAreaClassLog;
+	@FXML private TextArea txtAreaRegistrationLog;
 	@FXML private ComboBox<String> cmbFilter;
 	
 	 public void initialize() {
@@ -26,30 +29,44 @@ public class TrackerController {
 	     
 	     try
 	    {
-		StudentLog[] studLog =  LogManager.getLog(StudentLog.class,
-			TransactionType.INSERT, 0);//TransactionType can take 3 different things
-		ModularClassLog[] modularClassLog = 
+		 CertificateRegisterLog[] certRegLog = 
+				LogManager.getLog(CertificateRegisterLog.class, 
+				TransactionType.NONE, 0);//TransactionType can take 3 different things
+		
+		
+		txtAreaStudentLog.setWrapText(true);
+		Arrays.stream(certRegLog).forEach( log ->{
+		    txtAreaStudentLog.setText(txtAreaStudentLog.getText() + "- " + log + "\n\n");
+		});
+		
+		
+		
+		/*ModularClassLog[] modularClassLog = 
 			LogManager.getLog(ModularClassLog.class, 
 			TransactionType.NONE, 0);
 		txtAreaStudentLog.setWrapText(true);
-		System.out.println( "\n<<<<<<<Modular ClassLog>>>>>" );
 		Arrays.stream(modularClassLog).forEach( log ->{
-		 // System.out.println("-Description: " + log);
-		    
 		    txtAreaStudentLog.setText(txtAreaStudentLog.getText() + " -Description: " + log);
-		});
+		});*/
 		
 	    }
-	    catch (SQLException e)
-	    {
-		// FIXME Auto-generated catch block
+	    catch (SQLException e)  {
 		e.printStackTrace();
 	    }
 	 }
 	 
 
 	    @FXML
-	    public void itemsSelected(ActionEvent event) {
+	    public void itemsSelectedfrmStudent(ActionEvent event) {
+	    }
+	    @FXML
+	    public void itemsSelectedfrmmodule(ActionEvent event) {
+	    }
+	    @FXML
+	    public void itemsSelectedfrmClass(ActionEvent event) {
+	    }
+	    @FXML
+	    public void itemsSelectedfrmReg(ActionEvent event) {
 	    }
 
 }
