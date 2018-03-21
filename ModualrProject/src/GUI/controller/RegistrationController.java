@@ -32,33 +32,23 @@ import javafx.scene.control.DatePicker;
 
 public class RegistrationController
 {
-    @FXML
-    private TextField txttitle;
-    @FXML
-    private TextField txtbirthplace;
-    @FXML
-    private TextField txtcurAdd;
-    @FXML
-    private TextField txtemail;
-    @FXML
-    private TextField txtLname;
-    @FXML
-    private TextField txtFname;
-    @FXML
-    private TextField txtcountry;
-    @FXML
-    private TextField txtstate;
-    @FXML
-    private TextField txtPerAdd;
-    @FXML
-    private TextField txttel;
+    @FXML private TextField txttitle;
+    @FXML private TextField txtbirthplace;
+    @FXML private TextField txtcurAdd;
+    @FXML private TextField txtemail;
+    @FXML private TextField txtLname;
+    @FXML private TextField txtFname;
+    @FXML private TextField txtcountry;
+    @FXML private TextField txtstate;
+    @FXML private TextField txtPerAdd;
+    @FXML private TextField txttel;
     @FXML private TextField txtstudentID;
-    @FXML
-    private DatePicker selectDate;
-    @FXML
-    private TextField txtreligion; 
+    
+    @FXML private DatePicker selectDate;
+    @FXML private TextField txtreligion; 
     @FXML private TextField txtclass;
     @FXML private Button btnCreateStd;
+    
     @FXML private ImageView img;
     
     File file1;
@@ -70,6 +60,7 @@ public class RegistrationController
 	String mail =  txtemail.getText();
 	String className = txtclass.getText();
 	
+	//Date df = new Date
 
 	String firstName = txtFname.getText();
 	String lName= txtLname.getText();

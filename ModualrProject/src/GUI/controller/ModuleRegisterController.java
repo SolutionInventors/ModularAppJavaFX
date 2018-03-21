@@ -37,41 +37,25 @@ import utils.ValidationType;
 
 public class ModuleRegisterController implements Initializable
 {
-    @FXML
-    private ComboBox<String> cmbCategory;
-    @FXML
-    private ImageView studentImage;
+    @FXML private ComboBox<String> cmbCategory;
+    @FXML private ImageView studentImage;
 
-    @FXML
-    private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
-    @FXML
-    private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
-    @FXML
-    private TableColumn<ModuleRegisterTableGUI, String> studentID;
-    @FXML
-    private TableColumn<ModuleRegisterTableGUI, String> moduleName;
+    @FXML private TableView<ModuleRegisterTableGUI> moduleRegisterTable;
+    @FXML private TableColumn<ModuleRegisterTableGUI, Integer> registerID;
+    @FXML private TableColumn<ModuleRegisterTableGUI, String> studentID;
+    @FXML private TableColumn<ModuleRegisterTableGUI, String> moduleName;
 
-    @FXML
-    private Label lblPaymentstatus;
-    @FXML
-    private Label lblMoudleName;
-    @FXML
-    private Label lblStudentName;
-    @FXML
-    private Label lblResult;
-    @FXML
-    private Label lblBookingStatus;
-    @FXML
-    private Label lblAttended;
-    @FXML
-    private Label lblSearch;
+    @FXML private Label lblPaymentstatus;
+    @FXML private Label lblMoudleName;
+    @FXML private Label lblStudentName;
+    @FXML private Label lblResult;
+    @FXML private Label lblBookingStatus;
+    @FXML private Label lblAttended;
+    @FXML private Label lblSearch;
 
-    @FXML
-    private TextField txtSearch;
-    @FXML
-    private Button btnGO;
-    @FXML
-    private Button btnRegisterStudent;
+    @FXML private TextField txtSearch;
+    @FXML private Button btnGO;
+    @FXML private Button btnRegisterStudent;
 
     private ModuleRegister[] modRegs;
     private int selectedIndex;
@@ -97,16 +81,13 @@ public class ModuleRegisterController implements Initializable
 	// ObservableList<ModuleRegisterTableGUI> list =
 	// FXCollections.observableArrayList();
 	list.clear();
-	try
-	{
+	try {
 	    modRegs = ModuleRegisterManager.getRegisteredModules(0);
 	}
-	catch (SQLException e)
-	{
+	catch (SQLException e){
 	    e.printStackTrace();
 	}
-	for (int i = 0; i < modRegs.length; i++)
-	{
+	for (int i = 0; i < modRegs.length; i++){
 	    list.add(new ModuleRegisterTableGUI(modRegs[i].getId(), modRegs[i].getStudentId(),
 		    modRegs[i].getModuleName()));
 
@@ -146,8 +127,7 @@ public class ModuleRegisterController implements Initializable
 	modRegs = null;
 	try
 	{
-	    switch (selectedIndex)
-	    {
+	    switch (selectedIndex){
 		case 0:
 		    modRegs = ModuleRegisterManager.search(ModuleRegisterFilter.REG_ID, txtSearch.getText());
 		    break;
@@ -168,13 +148,11 @@ public class ModuleRegisterController implements Initializable
 		    break;
 	    }
 	}
-	catch (SQLException e)
-	{
+	catch (SQLException e){
 	    e.printStackTrace();
 	} // search value
 	list.clear();
-	for (int i = 0; i < modRegs.length; i++)
-	{
+	for (int i = 0; i < modRegs.length; i++){
 	    list.add(new ModuleRegisterTableGUI(modRegs[i].getId(), modRegs[i].getStudentId(),
 		    modRegs[i].getModuleName()));
 	}
@@ -182,8 +160,7 @@ public class ModuleRegisterController implements Initializable
     }
 
     @FXML
-    private void registerStudent(ActionEvent event)
-    {
+    private void registerStudent(ActionEvent event){
 	Stage window = new Stage();
 	window.initModality(Modality.WINDOW_MODAL);
 	window.setTitle("thenewboston - JavaFX");
