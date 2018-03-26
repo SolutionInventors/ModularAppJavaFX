@@ -51,11 +51,6 @@ public class dateTestController {
 	    return localDate;
 	}
 
-	/*try {
-	        datePicker.setValue(LOCAL_DATE("2016-05-01");
-	    } catch (NullPointerException e) {
-	    }*/
-	
 	
 	// Event Listener on DatePicker[#datePicker].onAction
 	@FXML

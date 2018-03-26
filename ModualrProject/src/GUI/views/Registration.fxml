@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -18,11 +19,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
+<!--    <?import java.util.ArrayList?> -->
+
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="642.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.RegistrationController">
    <children>
-      <TabPane layoutX="6.0" layoutY="12.0" prefHeight="577.0" prefWidth="545.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="6.0" layoutY="12.0" prefHeight="577.0" prefWidth="545.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Personal Details">
+          <Tab fx:id="tabPersonalDetail" text="Personal Details">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="545.0">
                      <children>
@@ -78,9 +81,19 @@
                               <TextField fx:id="txtstudentID" layoutX="120.0" layoutY="43.0" GridPane.columnIndex="1" />
                               <Label layoutX="10.0" layoutY="16.0" text="Class" GridPane.rowIndex="1" />
                               <TextField fx:id="txtclass" layoutX="120.0" layoutY="12.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="cbGender" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                 <!-- <items>
+							        <FXCollections fx:factory="observableArrayList">
+							            <String fx:value="Male" />
+							            <String fx:value="Female" />
+							        </FXCollections>
+							    </items>
+							    <value>
+							        <String fx:value="Male" />
+							    </value>
+							    </ComboBox> -->
                            </children>
                         </GridPane>
-                        <Button fx:id="btnCreateStd" layoutX="14.0" layoutY="500.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="NEXT&gt;&gt;" />
                         <ImageView fx:id="img" fitHeight="119.0" fitWidth="126.0" layoutX="383.0" layoutY="23.0" onMouseClicked="#changeImage" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../resources/images/clickme.PNG" />
@@ -90,7 +103,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Educational Background">
+          <Tab fx:id="tabedu" text="Educational Background">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -123,33 +136,33 @@
                               <Label text="End Date:" GridPane.rowIndex="8" />
                               <Label text="Corese Read:" GridPane.rowIndex="9" />
                               <Label text="Certification" GridPane.rowIndex="10" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField layoutX="110.0" layoutY="103.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextField layoutX="110.0" layoutY="223.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                              <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtlastintattended" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txthigestqual" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtcourseStudy" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="txtinstitution" layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <DatePicker fx:id="dpBeginDate" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <DatePicker fx:id="dpEndDate" layoutX="196.0" layoutY="223.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <TextField fx:id="txtcourseRead" layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtCertification" layoutX="110.0" layoutY="223.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                               <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
-                        <Button fx:id="btnCreateStd2" layoutX="21.0" layoutY="500.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="NEXT&gt;&gt;" />
-                        <TableView layoutX="1.0" layoutY="349.0" prefHeight="135.0" prefWidth="455.0">
+                        <TableView fx:id="eduBackTable" layoutX="21.0" layoutY="349.0" prefHeight="182.0" prefWidth="516.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="Name" />
-                            <TableColumn prefWidth="75.0" text="Start Date" />
-                              <TableColumn prefWidth="75.0" text="End Date" />
-                              <TableColumn prefWidth="75.0" text="Course" />
-                              <TableColumn prefWidth="75.0" text="Certification" />
+                            <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="startDate" prefWidth="75.0" text="Start Date" />
+                              <TableColumn fx:id="endDate" prefWidth="75.0" text="End Date" />
+                              <TableColumn fx:id="course" prefWidth="75.0" text="Course" />
+                              <TableColumn fx:id="certification" prefWidth="127.0" text="Certification" />
                           </columns>
                         </TableView>
-                        <Button fx:id="btnCreateStd21" layoutX="389.0" layoutY="307.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="91.0" text="Add Course" />
+                        <Button layoutX="375.0" layoutY="307.0" mnemonicParsing="false" onAction="#addtoTable" prefHeight="34.0" prefWidth="69.0" text="Add" />
+                        <Button layoutX="466.0" layoutY="307.0" mnemonicParsing="false" onAction="#removefromTable" prefHeight="34.0" prefWidth="65.0" text="Remove" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Experience">
+            <Tab fx:id="tabexp" text="Experience">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -174,7 +187,7 @@
                            <children>
                               <Label text="INPUT WORK DETAILS" GridPane.columnSpan="2147483647" />
                               <Label text="Where do you work" GridPane.rowIndex="1" />
-                              <Label text="Experience" GridPane.rowIndex="2" />
+                              <Label text="Experience (Years)" GridPane.rowIndex="2" />
                               <Label layoutX="10.0" layoutY="77.0" text="Employer" GridPane.rowIndex="6" />
                               <Label layoutX="10.0" layoutY="17.0" text="INPUT THE PLACES YOU HAVE WORKED IF ANY" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
                               <Label layoutX="10.0" layoutY="17.0" text="What course did you study" GridPane.rowIndex="3" />
@@ -183,7 +196,7 @@
                               <Label text="End Date:" GridPane.rowIndex="9" />
                               <Label text="Your Responsibility" GridPane.rowIndex="10" />
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtworkPlace" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextField layoutX="110.0" layoutY="103.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -193,12 +206,11 @@
                            </children>
                         </GridPane>
                         <TextArea layoutX="194.0" layoutY="316.0" prefHeight="158.0" prefWidth="189.0" />
-                        <Button fx:id="btnCreateStd22" layoutX="25.0" layoutY="492.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="NEXT&gt;&gt;" />
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="How You Heard">
+            <Tab fx:id="tabHowYouHeard" text="How You Heard">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -228,7 +240,6 @@
                               <TextField promptText="Others" GridPane.rowIndex="7" />
                            </children>
                         </GridPane>
-                        <Button fx:id="btnCreateStd23" layoutX="26.0" layoutY="481.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="NEXT&gt;&gt;" />
                      </children>
                   </AnchorPane>
               </content>
@@ -268,13 +279,56 @@
                               <TextField layoutX="10.0" layoutY="13.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
-                        <Button fx:id="btnCreateStd231" layoutX="21.0" layoutY="500.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="Finish" />
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnCreateStd1" layoutX="454.0" layoutY="589.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="Create Student" />
+      <Button layoutX="454.0" layoutY="589.0" mnemonicParsing="false" onAction="#createStudent" prefHeight="34.0" prefWidth="117.0" text="Create Student" />
+      <Button layoutX="173.0" layoutY="588.0" mnemonicParsing="false" onAction="#nextTab" prefHeight="34.0" prefWidth="117.0" text="NEXT&gt;&gt;" />
+      <Button layoutX="41.0" layoutY="589.0" mnemonicParsing="false" onAction="#previousTab" prefHeight="34.0" prefWidth="117.0" text="&lt;&lt;PREVIOUS" />
    </children>
+    <fx:define>
+        <ArrayList fx:id="personalDetail">
+            <fx:reference source="txtstudentID" />
+            <fx:reference source="txtclass" />
+            <fx:reference source="txttitle" />
+            <fx:reference source="txtFname" />
+            
+             <fx:reference source="txtLname" />
+            <fx:reference source="txtemail" />
+            <fx:reference source="txtbirthplace" />
+            <fx:reference source="txtreligion" />
+            
+            <fx:reference source="txtcurAdd" />
+            <fx:reference source="txtPerAdd" />
+            <fx:reference source="txtstate" />
+            <fx:reference source="txtcountry" />
+            <fx:reference source="txttel" />
+            
+        </ArrayList>
+    </fx:define>
+    
+    <fx:define>
+        <ArrayList fx:id="tabsArray">
+            <fx:reference source="tabPersonalDetail" />
+            <fx:reference source="tabedu" />
+            <fx:reference source="tabexp" />
+            <fx:reference source="tabHowYouHeard" />
+        </ArrayList>
+    </fx:define>
+    
+       
+    <fx:define>
+        <ArrayList fx:id="eduBack">
+            <fx:reference source="txtlastintattended" />
+            <fx:reference source="txthigestqual" />
+            <fx:reference source="txtcourseStudy" />
+            <fx:reference source="txtinstitution" />
+            <fx:reference source="txtcourseRead" />
+            <fx:reference source="txtCertification" />
+            
+        </ArrayList>
+    </fx:define>
 </AnchorPane>
