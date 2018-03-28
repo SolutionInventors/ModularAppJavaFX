@@ -88,7 +88,7 @@ public class StudentController implements Initializable
 	lastName.setCellValueFactory(new PropertyValueFactory<StudentTableGUI, String>("lastName"));
 	className.setCellValueFactory(new PropertyValueFactory<StudentTableGUI, String>("className"));
 	studentTable.setItems(getstudents());
-	
+
 	//for modules table per student
 	module.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("module"));
 	paid.setCellValueFactory(new PropertyValueFactory<ModuleTableGUI, String>("paid"));
