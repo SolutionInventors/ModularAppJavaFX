@@ -61,7 +61,7 @@ public final class ModuleRegisterManager
 	String sql = 
 		"Select COUNT(IF(UCASE(result) ='PASS', 1, NULL)) AS numPassed,  " + 
 			"	COUNT(IF(result,NULL, 1)) AS registeredButNoResult FROM module_Register as reg " +  
-			"WHERE reg.studentId = ? AND	 reg.moduleName = ? ";
+			"WHERE UCASE(reg.studentId) = UCASE(?) AND	 UCASE(reg.moduleName) = UCASE(?) ";
 
 
 	ResultSet result = null;
@@ -103,7 +103,7 @@ public final class ModuleRegisterManager
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId " +
-			"WHERE reg.id = ? " ;
+			"WHERE UCASE(reg.id) = UCASE(?) " ;
 	ResultSet result = null;
 	try( PreparedStatement statement = DatabaseManager.getPreparedStatement
 		(sql, regID))
@@ -202,7 +202,7 @@ public final class ModuleRegisterManager
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
-			+ "WHERE ModuleName like ?" +
+			+ "WHERE UCASE(ModuleName) like UCASE(?) " +
 			"ORDER BY dateRegistered " ;
 		break;
 	    
@@ -214,7 +214,7 @@ public final class ModuleRegisterManager
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
-			+ "WHERE id like ? " +
+			+ "WHERE UCASE(id) like UCASE(?) " +
 			"ORDER BY dateRegistered ";
 		break;
 	    default:
@@ -225,7 +225,7 @@ public final class ModuleRegisterManager
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
-			+ "WHERE StudentId LIKE ? " +
+			+ "WHERE UCASE(StudentId) LIKE UCASE(?)  " +
 			"ORDER BY dateRegistered ";
 		break;
 	}

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import database.bean.Admin;
 import database.bean.Payment;
 import exception.InvalidAdminException;
 import utils.ValidationType;
@@ -29,7 +30,8 @@ public final class PaymentManager
     {
 	double remainingPayment = getRemaingPayment(payment.getRegId());
 	
-	if( payment.isValid(ValidationType.NEW_BEAN )  && remainingPayment > 0  && 
+	Admin currentAdmin = DatabaseManager.getCurrentAdmin(); 
+	if( currentAdmin.isAccountant() && payment.isValid(ValidationType.NEW_BEAN )  && remainingPayment > 0  && 
 		remainingPayment >= payment.getAmount() )
 	{
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
@@ -47,7 +49,7 @@ public final class PaymentManager
     /**
      * Gets the amount of cash that is remaining for the payment of the specified
      * regID to be complete. A zero indicates that the payment is complete.
-     * @param regID the regID in the {@code ModuleRegister} table
+     * @param regID the {@code regID} in the {@code ModuleRegister} table
      * @return
      * @throws SQLException
      */

@@ -124,7 +124,7 @@ public class Admin implements Bean
 
     public  boolean validateAccessType()
     {
-	return getAccessType().matches("READ|WRITE|SUPER|READ_AND_WRITE") ;
+	return getAccessType().matches("READ|SUPER|READ_AND_WRITE") ;
     }
 
 
@@ -187,12 +187,12 @@ public class Admin implements Bean
     
     public boolean canRead(){
 	return accessType != null && 
-		accessType.matches("SUPER|READ|READ_AND_WRITE"); 
+		accessType.matches("SUPER|READ|ACCOUNTANT|READ_AND_WRITE"); 
     }
     
     public boolean canWrite(){
 	return accessType != null && 
-		accessType.matches("SUPER|WRITE|READ_AND_WRITE");
+		accessType.matches("SUPER|READ_AND_WRITE|ACCOUNTANT");
     }
     
     public String getAccessType(){
@@ -203,4 +203,7 @@ public class Admin implements Bean
 	this.accessType = accessType != null ? accessType.toUpperCase(): "";
     }
     
+    public boolean isAccountant(){
+	return getAccessType().toLowerCase().equals("accountant" ); 
+    }
 }
