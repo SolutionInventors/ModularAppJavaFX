@@ -30,15 +30,17 @@ public final class ModuleRegisterManager
 	boolean modAndStudentExists = 
 		StudentManager.exists(modReg.getStudentId()) && 
 		ModuleManager.exists(modReg.getModuleName());
-
+	
 	if(modAndStudentExists && modReg.isValid( ValidationType.NEW_BEAN ) && 
 		canRegister(modReg) ){
 	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
-		    ("{call registerForModule(?,?,?)}", modReg.getStudentId(), modReg.getModuleName());)
+		    ("{call registerForModule(?,?,?, ?)}", modReg.getStudentId(),modReg.getModuleName());)
 	    {
 		stmt.registerOutParameter(3, Types.DATE);
+		stmt.registerOutParameter(4, Types.INTEGER);
 		if( stmt.executeUpdate() > 0 ) {
 		    modReg.setDateRegistered(stmt.getDate(3));
+		    modReg.setNumberOfUnits(stmt.getInt(4));
 		    return true;
 		}
 	    }
@@ -82,12 +84,12 @@ public final class ModuleRegisterManager
     public static double getTotalPriceForModule(int regID) throws SQLException
     {
 	ModuleRegister modReg = ModuleRegisterManager.getModRegById(regID);
-	double totalPrice = modReg.getTotalPriceForModule();
+	double totalPrice = modReg.getAmountPerUnit();
 	return totalPrice;
     }
 
-    
-    
+
+
     /**
      * 
      * @param regID
@@ -96,9 +98,9 @@ public final class ModuleRegisterManager
      */
     public static ModuleRegister getModRegById( int regID ) throws SQLException{
 	String sql = 
-		"SELECT id, DateRegistered, stud.image as Image,"
-		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, "
-		+ " ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id,numberOfUnits,  DateRegistered, stud.image as Image,"
+			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, "
+			+ " ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -120,7 +122,8 @@ public final class ModuleRegisterManager
 			result.getString("StudentId"), 
 			result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"),
-			result.getDouble("totalPriceForModule" ), 
+			result.getDouble("totalPriceForModule" ),
+			result.getInt("numberOfUnits"), 
 			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
 		modReg.setPaymentStatus(result.getBoolean("Paid"));
@@ -153,15 +156,15 @@ public final class ModuleRegisterManager
     }
 
 
-    public static boolean setAttendanceForModule( int modRegId, String studId, String moduleName ) 
+    public static boolean setAttendance( int modRegId, String studId, String moduleName , boolean attended ) 
 	    throws SQLException, InvalidAdminException
     {
 
 	ModuleRegister modReg = getModRegById(modRegId);
 	if( modReg != null &&  modReg.hasBooked() && modReg.getResult() == null){
-	    String sql  = "{call attendModule(?,?,?) }";
+	    String sql  = "{call attendModule(?,?,?, ? ) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId, studId, moduleName))
+		    (sql, modRegId, studId, moduleName, attended))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }
@@ -189,15 +192,15 @@ public final class ModuleRegisterManager
 	return false;
     }
 
-    
+
     public static ModuleRegister[] search(ModuleRegisterFilter filter, String searchValue) throws SQLException{
 	String sql ;
-	
+
 	switch(filter){
 	    case MODULE_NAME:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, "
-		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName,StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, ModuleName, "
+			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName,StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -205,11 +208,11 @@ public final class ModuleRegisterManager
 			+ "WHERE UCASE(ModuleName) like UCASE(?) " +
 			"ORDER BY dateRegistered " ;
 		break;
-	    
+
 	    case REG_ID:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, "
-		+ "CONCAT(stud.firstName, ' ' , stud.lastName)as StudentName,ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, "
+			+ "CONCAT(stud.firstName, ' ' , stud.lastName)as StudentName,ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -219,8 +222,8 @@ public final class ModuleRegisterManager
 		break;
 	    default:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName,"
-		+ "CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, ModuleName,"
+			+ "CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -237,8 +240,8 @@ public final class ModuleRegisterManager
 	switch(filter){
 	    case BOOKED_MODULES:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, "
-		+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, ModuleName, "
+			+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -249,9 +252,9 @@ public final class ModuleRegisterManager
 		break;
 	    case COMPLETED_MODULES:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, "
-		+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as studentName"
-		+ " , ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, "
+			+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as studentName"
+			+ " , ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -260,11 +263,11 @@ public final class ModuleRegisterManager
 			"ORDER BY dateRegistered "+ 
 			"LIMIT ? , 30" ;
 		break;
-	    
+
 	    default:
 		sql = 
-		"SELECT id, DateRegistered, stud.image as Image, "
-		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
+		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, "
+			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -272,12 +275,12 @@ public final class ModuleRegisterManager
 			"ORDER BY dateRegistered "+ 
 			"LIMIT ? , 30" ;
 		break;
-	    
+
 	}
-	
+
 	return getModuleRegisteredHelper(sql, startIndex);
     }
-    
+
     private static ModuleRegister[] getModuleRegisteredHelper(String sql, Object... args) throws SQLException{
 	ResultSet result = null;
 	ArrayList<ModuleRegister> list = new ArrayList<>(30);
@@ -290,13 +293,14 @@ public final class ModuleRegisterManager
 	    while( result.next()){
 		String studentID = result.getString("StudentID"); 
 		image = Student.getImageFromStream(studentID, result.getBinaryStream("image"));
-		
+
 		modReg = new ModuleRegister(image,
 			result.getString("StudentName"), 
 			result.getString("ModuleName"),
 			result.getString("StudentId"), result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"), 
-			result.getDouble("totalPriceForModule"), 
+			result.getDouble("totalPriceForModule"),
+			result.getInt("numberOfUnits"), 
 			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
 		modReg.setId(result.getInt("id"));
@@ -308,11 +312,11 @@ public final class ModuleRegisterManager
 	}
 	return list.toArray(new ModuleRegister[list.size()] );
     }
-    
+
     public static ModuleRegister[] getRegisteredModules( int startIndex ) throws SQLException{
 	String sql = 
-		"SELECT id, DateRegistered, stud.image as Image, ModuleName, StudentId, "
-		+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, BookingStatus, AttendanceStatus, "
+		"SELECT id,numberOfUnits,  DateRegistered, stud.image as Image, ModuleName, StudentId, "
+			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, BookingStatus, AttendanceStatus, "
 			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
@@ -321,5 +325,5 @@ public final class ModuleRegisterManager
 			"LIMIT ? , 30" ;
 	return getModuleRegisteredHelper(sql, startIndex);
     }
-	
+
 }

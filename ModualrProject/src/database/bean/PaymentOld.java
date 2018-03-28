@@ -1,5 +1,7 @@
 package database.bean;
 
+import java.sql.Date;
+
 import utils.ValidationType;
 
 /**
@@ -15,29 +17,38 @@ import utils.ValidationType;
  * @see ModuleRegister
  *@since v1.0
  */
-public class Payment implements Bean 
+public class PaymentOld implements Bean 
 {
+
     private static final long serialVersionUID = 6495853015546110411L;
     private int id;
     private int regId;
     private double amount;
-   
+    private String bankName;
+    private String tellerNumber;
+    private Date paymentDate;
 
 
-    public Payment( int id , int modRegId, double amount){
+    public PaymentOld( int id , int modRegId, double amount, String bank , 
+	    String tellerNum , Date payDate ){
 	setId(id);
 	setModuleRegisterId(modRegId);
 	setAmount(amount);
-	
+	setBankName(bank);
+	setTellerNumber(tellerNum);
+	setPaymentDate(payDate);
     }
 
-    public Payment(  int modRegId, double amount){
+    public PaymentOld(  int modRegId, double amount, String bank , 
+	    String tellerNum , Date payDate ){
 	setModuleRegisterId(modRegId);
 	setAmount(amount);
-	
+	setBankName(bank);
+	setTellerNumber(tellerNum);
+	setPaymentDate(payDate);
     }
 
-    public Payment(){}
+    public PaymentOld(){}
 
     /**
      * Gets the id of this {@code Payment} object as an {@code int}
@@ -95,7 +106,61 @@ public class Payment implements Bean
 	this.amount = amount;
     }
 
-   
+    /**
+     * Gets the bank name in which the payment was made
+     * @return a {@code String} containing 
+     */
+    public String getBankName()
+    {
+	return bankName;
+    }
+
+    /**
+     * Capitalizes the first letter in each word in the {@code String} passed
+     * as an argument and uses it to set the name of the bank in which this
+     * {@code Payment} was made
+     * @param bankName a {@code String} containing bank name 
+     */
+    public void setBankName(String bankName)
+    {
+	this.bankName = Bean.capitalizeWords( bankName);
+    }
+
+    /**
+     * Gets  the teller number stored in this {@code Payment} 
+     * @return a {@code String}
+     */
+    public String getTellerNumber()
+    {
+	return tellerNumber;
+    }
+
+    /**
+     * Sets the teller number of this object.
+     * @param tellerNumber the teller number with which the payment was made
+     */
+    public void setTellerNumber(String tellerNumber)
+    {
+	this.tellerNumber = tellerNumber.replaceAll("\\s{1,}", "");
+    }
+
+    /**
+     * Gets the date in which the payment was made
+     * @return the date in which the payment was made as {@link java.sql.Date}  
+     */
+    public Date getPaymentDate()
+    {
+	return paymentDate;
+    }
+
+    /**
+     * Sets the date in which the payment was made. 
+     * @param paymentDate the date in which the payment was made
+     */
+    public void setPaymentDate(Date paymentDate)
+    {
+	this.paymentDate = paymentDate;
+    }
 
     /**
      * Checks that this {@code Payment } according to the {@code ValidationType}
@@ -112,16 +177,32 @@ public class Payment implements Bean
     public boolean isValid(ValidationType type)
     {
 	switch( type){
-	    case EXISTING_BEAN:
 	    case NEW_BEAN:
-		return  validateAmount() && validateModuleRegId()  ; 
-	  
+		return validateTellerNumber() && validateAmount() && 
+			validateModuleRegId() && validateBankName() ; 
+	    case EXISTING_BEAN:
+		return validateId();
 	}
 	return false;
     }
 
-   
-   
+    /**
+     * Checks that the id attribute stored in this object is greater than 0
+     * @return {@code true } if the id is greater than zero
+     */
+    public boolean validateId()
+    {
+	return getId() >  0;
+    }
+
+    /**
+     * Checks that the teller number stored in this object contains only
+     * numbers.
+     * @return
+     */
+    public boolean validateTellerNumber(){
+	return Bean.hasOnlyNumbers( getTellerNumber());
+    }
 
     /**
      * Checks that the amount paid is greater than zero
@@ -139,4 +220,9 @@ public class Payment implements Bean
 	return getRegId() > 0;
     }
 
+    public boolean validateBankName(){
+	String bankName = getBankName();
+	return bankName !=null && bankName.length()>0;
+
+    }
 }

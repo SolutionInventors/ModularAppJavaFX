@@ -36,55 +36,64 @@ public class ModuleRegister  implements Bean
 
     /**Foreign key from the ModuleTabTable table*/
     private String moduleName;
-    
+
     /**Foreign key from the Student table*/
     private String studentId;
     private String studentName; 
-    
+
     private File studentImage;//stored in Student table but used here
-    
+
     private boolean paymentStatus;
     private boolean bookingStatus;
     private boolean attended;
     private String result;
 
-    private double totalPriceForModule;
+    private double amountPerUnit;
+    private int numberOfUnits; 
     private Date dateRegistered;
 
     public ModuleRegister(){}
 
-    /**
-     * Initializes this object with the moduleId and studentId. {@code ModuleRegister}s 
-     * created with this
-     * constructor can be added to the database. 
-     * @param moduleId the foreign key from the {@code ModuleTabTable } table
-     * @param studentId the foreing key from the {@code Student} table
-     */
-    public ModuleRegister(  String moduleId, String studentId){
-	setModuleName(moduleId);
-	setStudentId(studentId);
 
-    }
 
     /**
      * 
+     * @param image
+     * @param studentName
      * @param moduleName
      * @param studentId
-       @param booked
+     * @param booked
      * @param attended
+     * @param amountPerUnit
      * @param result
+     * @param numberOfUnits
      */
     public ModuleRegister(File image,  String studentName, String moduleName , String studentId,
-	    boolean booked, boolean attended, double totalPrice, String result )
+	    boolean booked, boolean attended, double amountPerUnit, int numberOfUnits,  String result )
     {
-	this(  moduleName, studentId);
+	this(moduleName, studentId);
+
 	setStudentName(studentName); 
 	setStudentImage(image);
 	setBookingStatus(booked);
 	setAttended(attended);
 	setResult(result);
-	setTotalPriceForModule(totalPrice);
+	setAmountPerUnit(amountPerUnit);
     }
+
+    /**
+     * Creates a {@code ModuleRegister} object with the required details
+     * 
+     * @param modName
+     * @param studId
+     */
+    public ModuleRegister(String modName, String studId)
+    {
+	setModuleName(modName);
+	setStudentId(studId);
+	setNumberOfUnits(0);
+    }
+
     /**
      * Gets the module name of stored in this object
      * @return a {@code String } containing the module name of this object
@@ -203,7 +212,7 @@ public class ModuleRegister  implements Bean
 	{
 	    this.result = result.toUpperCase();
 	}
-	
+
     }
 
     /**
@@ -279,14 +288,14 @@ public class ModuleRegister  implements Bean
 	return Student.validateStudentID(getStudentId());
     }
 
-    public double getTotalPriceForModule()
+    public double getAmountPerUnit()
     {
-        return totalPriceForModule;
+	return amountPerUnit;
     }
 
-    public void setTotalPriceForModule(double totalPriceForModule)
+    public void setAmountPerUnit(double amountPerUnit)
     {
-        this.totalPriceForModule = totalPriceForModule;
+	this.amountPerUnit = amountPerUnit;
     }
 
     public File getStudentImage()
@@ -311,4 +320,18 @@ public class ModuleRegister  implements Bean
 	this.studentName = studentName;
     }
 
+    public double totalCost(){
+	return getAmountPerUnit() *getNumberOfUnits()  ; 
+
+    }
+
+    public int getNumberOfUnits()
+    {
+	return numberOfUnits;
+    }
+
+    public void setNumberOfUnits(int numberOfUnits)
+    {
+	this.numberOfUnits = numberOfUnits;
+    }
 }

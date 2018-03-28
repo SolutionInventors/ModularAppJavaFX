@@ -1,21 +1,20 @@
 package test;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import database.bean.Admin;
+import database.bean.ModuleRegister;
 import database.bean.Payment;
 import database.managers.ConnectionManager;
 import database.managers.DatabaseManager;
+import database.managers.ModuleRegisterManager;
 import database.managers.PaymentManager;
 import exception.InvalidAdminException;
 import utils.BeanType;
 import utils.ValidationType;
 
-public class PaymentTest
+public class PaymentTest2
 {
 
     public static void main(String[] args) throws ParseException
@@ -31,14 +30,10 @@ public class PaymentTest
 	    
 	   int modRegId = Integer.parseInt(TestUtils.getStringInput("Enter ModuleRegister ID: ") );
 	   double amount = Double.parseDouble(TestUtils.getStringInput("Input Amount Paod: " ));
-	   String bank = TestUtils.getStringInput( "Enter Bank Name: " );
-	   String tellerNum = TestUtils.getStringInput("Enter teller number: " );
-	   String payDate = TestUtils.getStringInput("Input date of payment in format dd-mm-yyyy " );
-	   DateFormat df = new SimpleDateFormat("dd-mm-yyyy" );
-	   Date date = new Date( df.parse(payDate).getTime());
 	   
-	   Payment payment = new Payment( modRegId, amount, bank, tellerNum, date);
-			
+	   Payment payment = new Payment( modRegId, amount);
+	   ModuleRegister modReg = ModuleRegisterManager.getModRegById(modRegId);
+	   
 	   if( PaymentManager.makePayment(payment)){
 	       System.out.println("Successfully made the required payment" );
 	   }
@@ -48,9 +43,12 @@ public class PaymentTest
 	   else if( PaymentManager.isPaymentComplete(payment.getRegId())){
 	       System.err.println("Payment unsuccessful because it is complete" );
 	   }
+	   else if(!modReg.hasBooked() ){
+	       System.err.println("Failed because module has not yet been booked");
+	   }
 	   else
 	   {
-	       System.err.println("Payment was unsuccessful");
+	       System.err.println("Payment was unsuccessful for unknown reasons");
 	   }
 	}
 	catch ( InvalidAdminException e)

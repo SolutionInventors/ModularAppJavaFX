@@ -30,8 +30,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import test.TestUtils;
-import utils.BeanType;
 import utils.ModuleRegisterFilter;
 import utils.ValidationType;
 

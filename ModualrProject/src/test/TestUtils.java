@@ -170,11 +170,12 @@ public class TestUtils
 		    System.out.println("ModRegID: " + modRegs[i].getId());
 		    System.out.println("ModuleTabTable Name: " + modRegs[i].getModuleName()); 	
 		    System.out.println("StudentID: " + modRegs[i].getStudentId());
-		    System.out.println("Total Price: " + modRegs[i].getTotalPriceForModule());
+		    System.out.println("AmountPerUnit: " + modRegs[i].getAmountPerUnit());
 		    System.out.println("Amount Paid: "+ PaymentManager.getAmountPaid(modRegs[i].getId()));
 		    System.out.println("Has Paid: " + modRegs[i].paymentComplete());
 		    System.out.println("Booked: " + modRegs[i].hasBooked());
 		    System.out.println("Attended: " + modRegs[i].hasAttended());
+		    System.out.println("Number of units: " + modRegs[i].getNumberOfUnits());
 		    System.out.println("Result: " + modRegs[i].getResult());
 		    
 		    System.out.println("--->");

@@ -15,8 +15,9 @@ import utils.ValidationType;
  * @see ModuleRegister
  *@since v1.0
  */
-public class Payment implements Bean 
+public class PaymentMain implements Bean 
 {
+
     private static final long serialVersionUID = 6495853015546110411L;
     private int id;
     private int regId;
@@ -24,20 +25,20 @@ public class Payment implements Bean
    
 
 
-    public Payment( int id , int modRegId, double amount){
+    public PaymentMain( int id , int modRegId, double amount){
 	setId(id);
 	setModuleRegisterId(modRegId);
 	setAmount(amount);
 	
     }
 
-    public Payment(  int modRegId, double amount){
+    public PaymentMain(  int modRegId, double amount){
 	setModuleRegisterId(modRegId);
 	setAmount(amount);
 	
     }
 
-    public Payment(){}
+    public PaymentMain(){}
 
     /**
      * Gets the id of this {@code Payment} object as an {@code int}
@@ -139,4 +140,5 @@ public class Payment implements Bean
 	return getRegId() > 0;
     }
 
+    
 }

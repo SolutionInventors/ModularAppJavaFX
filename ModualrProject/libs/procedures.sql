@@ -532,3 +532,15 @@ SELECT dateAdmitted from student WHERE id_card_number = studId INTO regDate;
 
 END$$
 DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `makePayment`(IN `modRegisterId` INT, IN `amountPaid` DOUBLE)
+BEGIN
+
+INSERT INTO `payment`( `RegId`, `amount`) 
+VALUES (modRegisterId ,amountPaid );
+
+end$$
+DELIMITER ;
