@@ -122,7 +122,7 @@ public final class ModuleManager
     
     
     public static Module getModule(String moduleName) throws SQLException{
-	String sql = "SELECT name FROM module WHERE name = ? ";
+	String sql = "SELECT name, units, amountPerUnit FROM module WHERE name = ? ";
 	ResultSet result = null ; 
 	try( PreparedStatement  stmt = DatabaseManager.getPreparedStatement( 
 		sql,moduleName);)

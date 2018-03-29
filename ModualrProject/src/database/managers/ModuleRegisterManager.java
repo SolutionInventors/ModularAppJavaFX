@@ -101,7 +101,7 @@ public final class ModuleRegisterManager
 		"SELECT id,numberOfUnits,  DateRegistered, stud.image as Image,"
 			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, "
 			+ " ModuleName, StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId " +
@@ -122,7 +122,7 @@ public final class ModuleRegisterManager
 			result.getString("StudentId"), 
 			result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"),
-			result.getDouble("totalPriceForModule" ),
+			result.getDouble("amountPerUnit" ),
 			result.getInt("numberOfUnits"), 
 			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
@@ -201,7 +201,7 @@ public final class ModuleRegisterManager
 		sql = 
 		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, ModuleName, "
 			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName,StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
@@ -213,7 +213,7 @@ public final class ModuleRegisterManager
 		sql = 
 		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, "
 			+ "CONCAT(stud.firstName, ' ' , stud.lastName)as StudentName,ModuleName, StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
@@ -224,7 +224,7 @@ public final class ModuleRegisterManager
 		sql = 
 		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, ModuleName,"
 			+ "CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
@@ -242,7 +242,7 @@ public final class ModuleRegisterManager
 		sql = 
 		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, ModuleName, "
 			+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
@@ -255,7 +255,7 @@ public final class ModuleRegisterManager
 		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, "
 			+ "	CONCAT(stud.firstName, ' ' , stud.lastName) as studentName"
 			+ " , ModuleName, StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "
@@ -268,7 +268,7 @@ public final class ModuleRegisterManager
 		sql = 
 		"SELECT id, numberOfUnits, DateRegistered, stud.image as Image, "
 			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, ModuleName, StudentId, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId "+
@@ -299,7 +299,7 @@ public final class ModuleRegisterManager
 			result.getString("ModuleName"),
 			result.getString("StudentId"), result.getBoolean("BookingStatus"),
 			result.getBoolean("AttendanceStatus"), 
-			result.getDouble("totalPriceForModule"),
+			result.getDouble("amountPerUnit"),
 			result.getInt("numberOfUnits"), 
 			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
@@ -317,7 +317,7 @@ public final class ModuleRegisterManager
 	String sql = 
 		"SELECT id,numberOfUnits,  DateRegistered, stud.image as Image, ModuleName, StudentId, "
 			+ " CONCAT(stud.firstName, ' ' , stud.lastName) as StudentName, BookingStatus, AttendanceStatus, "
-			+ "totalPriceForModule, Result , isPaymentComplete( reg.id ) as 'Paid' "
+			+ "amountPerUnit, Result , isPaymentComplete( reg.id ) as 'Paid' "
 			+ "FROM module_register as reg " + 
 			"JOIN student as stud "
 			+ "ON stud.id_card_number = reg.studentId " +
