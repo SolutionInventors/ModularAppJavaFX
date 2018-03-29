@@ -11,7 +11,7 @@ import utils.ValidationType;
  * {@code ModuleRegiser} id, the amount that was paid, the bankName, the 
  * tellerNumber and the paymentDate. <br>
  * All these can be retrieved from the {@code Payment}'s getters.<br>
- * Note that multiple payments can be made for thesame module register id. Thus
+ * Note that multiple payments can be made for the same module register id. Thus
  * this object contains an id attribute of its own
  * @author Oguejiofor Chidiebere
  * @see ModuleRegister
