@@ -9,14 +9,15 @@ import utils.ValidationType;
  * {@code ModuleRegiser} id, the amount that was paid, the bankName, the 
  * tellerNumber and the paymentDate. <br>
  * All these can be retrieved from the {@code Payment}'s getters.<br>
- * Note that multiple payments can be made for the same module register id. Thus
+ * Note that multiple payments can be made for thesame module register id. Thus
  * this object contains an id attribute of its own
  * @author Oguejiofor Chidiebere
  * @see ModuleRegister
  *@since v1.0
  */
-public class Payment implements Bean 
+public class PaymentMain implements Bean 
 {
+
     private static final long serialVersionUID = 6495853015546110411L;
     private int id;
     private int regId;
@@ -24,20 +25,20 @@ public class Payment implements Bean
    
 
 
-    public Payment( int id , int modRegId, double amount){
+    public PaymentMain( int id , int modRegId, double amount){
 	setId(id);
 	setModuleRegisterId(modRegId);
 	setAmount(amount);
 	
     }
 
-    public Payment(  int modRegId, double amount){
+    public PaymentMain(  int modRegId, double amount){
 	setModuleRegisterId(modRegId);
 	setAmount(amount);
 	
     }
 
-    public Payment(){}
+    public PaymentMain(){}
 
     /**
      * Gets the id of this {@code Payment} object as an {@code int}
@@ -139,4 +140,5 @@ public class Payment implements Bean
 	return getRegId() > 0;
     }
 
+    
 }

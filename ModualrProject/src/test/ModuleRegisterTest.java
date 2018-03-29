@@ -13,7 +13,7 @@ import utils.ValidationType;
 
 public class ModuleRegisterTest
 {
-
+    
     public static void main(String[] args)
     {
 	//	First and very important step is to specify the Admin that is 
@@ -36,6 +36,7 @@ public class ModuleRegisterTest
 		    ("Enter the existing Student ID: ");
 	    String modName = TestUtils.getStringInput
 		    ("Enter the existing module name: ");
+	   
 	    ModuleRegister modReg = new ModuleRegister(modName, studId);
 
 	    if( ModuleRegisterManager.registerForModule(modReg)) {

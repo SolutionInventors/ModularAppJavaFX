@@ -117,6 +117,11 @@ public final class ModuleManager
      */
     public static boolean exists(String moduleName) throws SQLException
     {
+	return getModule(moduleName) != null; 
+    }
+    
+    
+    public static Module getModule(String moduleName) throws SQLException{
 	String sql = "SELECT name FROM module WHERE name = ? ";
 	ResultSet result = null ; 
 	try( PreparedStatement  stmt = DatabaseManager.getPreparedStatement( 
@@ -124,7 +129,14 @@ public final class ModuleManager
 	{
 	   
 	   result = stmt.executeQuery(); 
-	   return result.next() ;
+	  if(result.next()){
+	      return new Module(
+		      result.getString("name"),
+		      result.getInt("units"), 
+		      result.getDouble("amountPerUnit")); 
+	  }else{
+	      return null ; 
+	  }
 	    
 	}finally{
 	    if( result!=null) result.close();

@@ -12,7 +12,7 @@ import database.bean.Payment;
 import exception.InvalidAdminException;
 import utils.ValidationType;
 
-public final class PaymentManager
+public final class PaymentOldManager
 {
     /**
      * Makes a payment for a registered {@code ModuleTabTable}. The amount to be paid is 
@@ -31,15 +31,15 @@ public final class PaymentManager
 	double remainingPayment = getRemaingPayment(payment.getRegId());
 	
 	Admin currentAdmin = DatabaseManager.getCurrentAdmin(); 
-	if( (currentAdmin.canWrite() ||currentAdmin.isAccountant()) && payment.isValid(ValidationType.NEW_BEAN )  && remainingPayment > 0  && 
+	if( currentAdmin.isAccountant() && payment.isValid(ValidationType.NEW_BEAN )  && remainingPayment > 0  && 
 		remainingPayment >= payment.getAmount() )
 	{
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call makePayment(?,?) }", payment.getRegId(), 
-			    payment.getAmount()) ; )
+		    ("{call makePayment(?,?,?,?,?) }", payment.getRegId(), 
+			    payment.getAmount(), payment.getBankName() , payment.getTellerNumber() , 
+			    payment.getPaymentDate() ) ; )
 	    {
 		int affected = statement.executeUpdate();
-		
 		if( affected > 0 ) return true;
 	    }
 	}
@@ -93,15 +93,17 @@ public final class PaymentManager
     public static Payment[] getPayments( int regId) 
 	    throws SQLException
     {
-	String sql = "SELECT id, amount FROM payment as pay "
+	String sql = "SELECT * FROM payment as pay "
 		+ "WHERE pay.regID = ? ";
 	ResultSet result= null;
 	List<Payment> list = new ArrayList<>();
 	try( PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, regId);){
 	    result = stmt.executeQuery();
-	    while( result.next() ){
-		Payment pay = new Payment(result.getInt("id"), regId,
-			result.getDouble("amount"));
+	    if( result.next() ){
+		Payment pay = new Payment(result.getInt("id"), result.getInt("regId"),
+			result.getDouble("amount"), result.getString("bankName"),
+			result.getString("tellerNumber"), 
+			result.getDate("DateOfPayment"));
 		list.add( pay  );
 	    }
 	}

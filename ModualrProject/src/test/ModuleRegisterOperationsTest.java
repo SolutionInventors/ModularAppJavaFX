@@ -60,7 +60,7 @@ public class ModuleRegisterOperationsTest
 		    ("Enter the module name: ");
 	    
 	    
-	    if( ModuleRegisterManager.setAttendanceForModule(modRegId, studId, moduleName)) {
+	    if( ModuleRegisterManager.setAttendance(modRegId, studId, moduleName, true)) {
 		System.out.println("Attendance status updated.");
 		TestUtils.displayBean( BeanType.MODULE_REGISTER , 0);
 

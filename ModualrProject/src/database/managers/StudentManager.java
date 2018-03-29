@@ -50,7 +50,7 @@ public final class StudentManager
 
     public static boolean exists(String studentId) throws SQLException
     {
-	String sql = "SELECT id_card_number FROM student WHERE id_card_number = ? ";
+	String sql = "SELECT id_card_number FROM student WHERE UCASE(id_card_number) = UCASE(?) ";
 	ResultSet result = null ; 
 	try( PreparedStatement  stmt = DatabaseManager.getPreparedStatement( 
 		sql,studentId);)
@@ -169,7 +169,7 @@ public final class StudentManager
     private static ResultSet getOtherInfo(String studentID) throws SQLException
     {
 	String sql = "select * from otherStudentInfo "
-		+ "where id_card_number = ? "; 
+		+ "where UCASE(id_card_number) = UCASE(?) "; 
 
 
 	try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(sql, studentID)){

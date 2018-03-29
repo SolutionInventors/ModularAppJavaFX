@@ -163,7 +163,7 @@ public final class CertificateRegisterManager
 	    sql = "SELECT DISTINCT module.name as ModuleName from module " +
 		    "LEFT JOIN certificateregister as certReg " + 
 		    " ON module.name = certReg.moduleName " + 
-		    " WHERE certReg.certificateName!= ? OR certReg.certificateName IS NULL "+ 
+		    " WHERE UCASE(certReg.certificateName) != UCASE(?) OR certReg.certificateName IS NULL "+ 
 		    " ORDER BY module.name ASC ; " ;
 	    return getModulesHelper(sql, certificateName); 
 	}
@@ -205,7 +205,7 @@ public final class CertificateRegisterManager
 		+ "SELECT  moduleName "
 		+ "	FROM certificateRegister "
 		+ "" +  
-		"  WHERE certificateName = ? ";
+		"  WHERE UCASE(certificateName) = UCASE(?) ";
 
 	return getModulesHelper(sql, certificateName); 
     }
