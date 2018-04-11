@@ -1,4 +1,4 @@
-package database.managers;
+/*package database.managers;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import utils.ValidationType;
 
 public final class PaymentOldManager
 {
-    /**
+    *//**
      * Makes a payment for a registered {@code ModuleTabTable}. The amount to be paid is 
      * validated by first checking that the amount remaining amount is not
      * more than zero. Also checks that the amount about to be paid is not 
@@ -24,7 +24,7 @@ public final class PaymentOldManager
      * @return {@code true} if the object was inserted successful.
      * @throws SQLException
      * @throws InvalidAdminException
-     */
+     *//*
     public static boolean makePayment( Payment payment) 
 	    throws SQLException, InvalidAdminException
     {
@@ -46,13 +46,13 @@ public final class PaymentOldManager
 	return false;
     }
 
-    /**
+    *//**
      * Gets the amount of cash that is remaining for the payment of the specified
      * regID to be complete. A zero indicates that the payment is complete.
      * @param regID the {@code regID} in the {@code ModuleRegister} table
      * @return
      * @throws SQLException
-     */
+     *//*
     public static double getRemaingPayment(int regID) throws SQLException
     {
 	int factor = 10000; 
@@ -83,13 +83,13 @@ public final class PaymentOldManager
     public static boolean isPaymentComplete( int regId ) throws SQLException{
 	return getRemaingPayment(regId) <= 0;
     }
-    /**
+    *//**
      * Gets an array of all the payments that has been made for the specified 
      * {@code regID}. 
      * @param regId
      * @return
      * @throws SQLException
-     */
+     *//*
     public static Payment[] getPayments( int regId) 
 	    throws SQLException
     {
@@ -113,3 +113,4 @@ public final class PaymentOldManager
 	return list.toArray( new Payment[ list.size() ] ) ;
     }
 }
+*/

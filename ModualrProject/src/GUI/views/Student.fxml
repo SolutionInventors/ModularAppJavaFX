@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.StudentController">
    <children>
@@ -31,7 +32,10 @@
         </rowConstraints>
          <children>
             <Label text="Search ID" />
-            <Label layoutX="10.0" layoutY="17.0" text="Category" GridPane.rowIndex="1" />
+            <Label layoutX="10.0" layoutY="17.0" text="Category" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Trebuchet MS" size="12.0" />
+               </font></Label>
             <TextField fx:id="txtSearchBar" GridPane.columnIndex="1" />
             <ComboBox fx:id="cmbCategory" layoutX="110.0" layoutY="43.0" onAction="#combochange" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>

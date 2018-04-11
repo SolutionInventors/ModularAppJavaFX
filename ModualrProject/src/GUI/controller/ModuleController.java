@@ -24,7 +24,10 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -35,8 +38,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import test.TestUtils;
-import utils.BeanType;
 
 public class ModuleController implements Initializable
 {
@@ -80,12 +81,10 @@ public class ModuleController implements Initializable
     {
 	int selection = moduleTable.getSelectionModel().getSelectedIndex();
 
-	try
-	{
+	try{
 	    modStats = StatisticsManager.retrieveStats(new Module(modules[selection].getName()));
 	}
-	catch (SQLException e)
-	{
+	catch (SQLException e){
 	    e.printStackTrace();
 	}
 	lblRegistered.setText(String.valueOf(modStats.getNumRegistered()));
@@ -112,12 +111,10 @@ public class ModuleController implements Initializable
     {
 
 	ObservableList<ModuleTabTable> list = FXCollections.observableArrayList();
-	try
-	{
+	try{
 	    modules = ModuleManager.getModules(0);
 	}
-	catch (SQLException | InvalidAdminException e)
-	{
+	catch (SQLException | InvalidAdminException e){
 	    e.printStackTrace();
 	}
 	for (int i = 0; i < modules.length; i++)
@@ -194,48 +191,38 @@ public class ModuleController implements Initializable
     }
 
     @FXML
-    public void deleteModule(ActionEvent event)
-    {
-	Stage window = new Stage();
-	window.setTitle("Delete Module");
-	Button deleteButton;
+    public void deleteModule(ActionEvent event) {
+	if (!moduleTable.getSelectionModel().isEmpty())	{
+	    
+	
+	String moduleName = moduleTable.getSelectionModel().getSelectedItem().getModuleName();
+	
+	Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to Delete Module " + moduleName + " ?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+	alert.showAndWait();
 
-	InputPair[] pairs =
-	{
-		new InputPair("Module Name:")
-	};
+	if (alert.getResult() == ButtonType.YES) {
 
-	deleteButton = new Button();
-	deleteButton.setText("Delete");
-	TestVBox layout = new TestVBox(deleteButton, pairs);
-
-	Scene scene = new Scene(layout, 300, 250);
-	window.setScene(scene);
-	window.show();
-
-	deleteButton.setOnMouseClicked(e -> {
-	    String name = layout.getValue("Module Name:");
-
-	    Module existingModule = new Module(name);
-	    try
-	    {
-		if (ModuleManager.removeModule(existingModule))
-		{
-		    System.out.println("ModuleTabTable was removed succcessfullly!!!");
-		    moduleTable.setItems(getModules());
-		}
-		else
-		{
-		    System.out.println(
-			    "Nothing was removed! " + "Maybe the module name you inputed is not in the database");
-		}
-	    }
-	    catch (SQLException | InvalidAdminException ee)
-	    {
-		// FIXME Auto-generated catch block
-		ee.printStackTrace();
-	    }
-	});
+		    Module existingModule = new Module(moduleName);
+		    try
+		    {
+			if (ModuleManager.removeModule(existingModule))
+			{
+			    System.out.println("ModuleTabTable was removed succcessfullly!!!");
+			    moduleTable.setItems(getModules());
+			}
+			else
+			{
+			    System.out.println(
+				    "Nothing was removed! " + "Maybe the module name you inputed is not in the database");
+			}
+		    }
+		    catch (SQLException | InvalidAdminException ee)
+		    {
+			// FIXME Auto-generated catch block
+			ee.printStackTrace();
+		    }
+	}
+	}//end if
     }// end method deleteModule
 
     @FXML

@@ -65,7 +65,10 @@
             <Label fx:id="lblResult" layoutX="110.0" layoutY="81.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label fx:id="lblBookingStatus" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label fx:id="lblAttended" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" text="Paid" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button fx:id="btnPayment" mnemonicParsing="false" onAction="#updatePayment" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button fx:id="btnResult" layoutX="222.0" layoutY="69.0" mnemonicParsing="false" onAction="#updateResult" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Button fx:id="btnBooking" layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#updateBooking" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Button fx:id="btnAttendance" layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#updateAttendance" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="2" />
          </children>
       </GridPane>
       <ImageView fx:id="studentImage" fitHeight="122.0" fitWidth="181.0" layoutX="473.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">

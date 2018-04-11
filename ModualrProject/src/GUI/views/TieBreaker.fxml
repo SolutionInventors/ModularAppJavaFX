@@ -48,12 +48,12 @@
                   <Button fx:id="btnsendRight" mnemonicParsing="false" onAction="#sendLeft" text="&lt;&lt;" />
                </children>
             </VBox>
-            <Label text="Possible Breakers">
+            <Label text="Modules in Certificate">
                <font>
                   <Font name="Trebuchet MS Bold" size="15.0" />
                </font>
             </Label>
-            <Label text="Selected Breakers" GridPane.columnIndex="2">
+            <Label text="Modules not in certificate" GridPane.columnIndex="2">
                <font>
                   <Font name="Trebuchet MS Bold" size="15.0" />
                </font>

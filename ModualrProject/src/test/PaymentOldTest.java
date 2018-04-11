@@ -1,4 +1,4 @@
-package test;
+/*package test;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -70,3 +70,4 @@ public class PaymentOldTest
 }
 
 
+*/

@@ -3,11 +3,14 @@ package GUI.controller;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import GUI.utilities.ModuleRegisterTableGUI;
 import database.bean.ModuleRegister;
+import database.bean.Payment;
 import database.managers.ModuleRegisterManager;
+import database.managers.PaymentManager;
 import exception.InvalidAdminException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,10 +57,23 @@ public class ModuleRegisterController implements Initializable
 
     @FXML private TextField txtSearch;
     @FXML private Button btnGO;
-    @FXML private Button btnRegisterStudent;
-
+    @FXML private Button btnRegisterStudent;       
+    @FXML private Button btnResult;
+    @FXML private Button btnBooking;
+    @FXML private Button btnAttendance;
+    @FXML private Button btnPayment;
+    
+    private TextInputDialog dialog;
+    private int selection;
+    
+    //gotten from selection
     private ModuleRegister[] modRegs;
     private int selectedIndex;
+    
+    private int modRegId;
+    private String studId; 
+    private String modulename;
+    
     ObservableList<ModuleRegisterTableGUI> list = FXCollections.observableArrayList();
 
     @Override
@@ -98,9 +115,9 @@ public class ModuleRegisterController implements Initializable
     @FXML
     public void getDetails(MouseEvent event)
     {
-	int selection = moduleRegisterTable.getSelectionModel().getSelectedIndex();
-	lblStudentName.setText(modRegs[selection].getStudentId());// no method
-	lblPaymentstatus.setText(modRegs[selection].paymentComplete() ? "Completed" : "Incomplete");// no method
+	selection = moduleRegisterTable.getSelectionModel().getSelectedIndex();
+	lblStudentName.setText(modRegs[selection].getStudentName());
+	lblPaymentstatus.setText(modRegs[selection].paymentComplete() ? "Completed" : "Incomplete");
 	lblResult.setText(modRegs[selection].getResult());
 	lblBookingStatus.setText(modRegs[selection].hasBooked() ? "Booked" : "Not Booked");
 	lblAttended.setText(modRegs[selection].hasAttended() ? "Yes" : "No");
@@ -117,6 +134,11 @@ public class ModuleRegisterController implements Initializable
 	Image localImage1 = new Image(localUrl, false);
 	studentImage.setImage(localImage1);
 
+	
+	//used by other methods
+	modRegId = modRegs[selection].getId();
+	studId = modRegs[selection].getStudentId();
+	modulename = modRegs[selection].getModuleName();
     }// end method get details
 
     @FXML
@@ -158,10 +180,106 @@ public class ModuleRegisterController implements Initializable
     }
 
     @FXML
+    private void updatePayment(ActionEvent event){
+	
+	if (!moduleRegisterTable.getSelectionModel().isEmpty()){
+	   int modregid =  moduleRegisterTable.getSelectionModel().getSelectedItem().getRegisterID();
+	
+	dialog = new TextInputDialog();
+	dialog.setTitle("Update Payment");
+	dialog.setHeaderText("Please Input Amount");
+
+	Optional<String> result = dialog.showAndWait();
+	String entered = null;
+	
+	if (result.isPresent()) {
+
+		entered = result.get();
+	}
+	if (entered != null && !entered.isEmpty())
+	{
+	    double fee = Double.valueOf(entered);
+	    Payment payment = new Payment(modregid,fee);
+		try{
+		    PaymentManager.makePayment(payment);
+		}
+		catch (SQLException | InvalidAdminException e){
+		    e.printStackTrace();
+		}
+	
+		lblPaymentstatus.setText(modRegs[selection].paymentComplete() ? "Completed" : "Incomplete");
+	}
+	
+
+
+
+	
+	
+	}
+
+    }
+    
+    @FXML
+    private void updateAttendance(ActionEvent event){
+	boolean attendance = modRegs[selection].hasAttended();
+	System.out.println("value before running is "+attendance);
+	attendance = !attendance;
+	
+	try{
+	    ModuleRegisterManager.setAttendance(modRegId, studId, modulename, attendance);
+	    System.out.println("I ran");
+	}
+	catch (SQLException | InvalidAdminException e){
+	    e.printStackTrace();
+	    System.out.println("an error occured");
+	}
+	
+	moduleRegisterTable.setItems(getModuleRegister());
+	moduleRegisterTable.getSelectionModel().select(selection);
+	getDetails(null);
+	
+	System.out.println("value AFTER running is "+attendance);
+	lblAttended.setText(modRegs[selection].hasAttended() ? "Yes" : "No");
+	
+    }
+    
+    @FXML
+    private void updateBooking(ActionEvent event){
+	try{
+	    ModuleRegisterManager.bookModule(modRegId, studId, modulename);
+	}
+	catch (SQLException | InvalidAdminException e)
+	{
+	    e.printStackTrace();
+	}
+	moduleRegisterTable.setItems(getModuleRegister());
+	moduleRegisterTable.getSelectionModel().select(selection);
+	getDetails(null);
+	lblBookingStatus.setText(modRegs[selection].hasBooked() ? "Booked" : "Not Booked");
+    }
+    
+    @FXML
+    private void updateResult(ActionEvent event){
+	try{
+	    ModuleRegisterManager.setResultForModule(modRegId, studId, modulename, "Pass");
+	}
+	catch (SQLException | InvalidAdminException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	moduleRegisterTable.setItems(getModuleRegister());
+	moduleRegisterTable.getSelectionModel().select(selection);
+	getDetails(null);
+    }
+    
+    
+    
+    @FXML
     private void registerStudent(ActionEvent event){
 	Stage window = new Stage();
 	window.initModality(Modality.WINDOW_MODAL);
-	window.setTitle("thenewboston - JavaFX");
+	window.setTitle("Register Student");
 
 	// GridPane with 10px padding around edge
 	GridPane grid = new GridPane();
@@ -193,8 +311,6 @@ public class ModuleRegisterController implements Initializable
 	registerButton.setOnMouseClicked(e -> {
 	    try
 	    {
-		System.out.println(txtstudentID.getText());
-		System.out.println(txtModuleName.getText());
 		ModuleRegister modReg = new ModuleRegister(txtModuleName.getText(), txtstudentID.getText());
 		if (ModuleRegisterManager.registerForModule(modReg))
 		{
@@ -205,13 +321,11 @@ public class ModuleRegisterController implements Initializable
 		}
 		else if (!modReg.isValid(ValidationType.NEW_BEAN))
 		    System.err.println("The format of the ModuleRegister was invalid");
-		else if (!ModuleRegisterManager.canRegister(modReg))
-		{
+		else if (!ModuleRegisterManager.canRegister(modReg)){
 		    System.err.println("Unsuccesful ! It possible the module has already been passed");
 		    System.err.println("Or it's result is not out yet");
 		}
-		else
-		{
+		else{
 		    System.out.println(modReg.getStudentId());
 		    System.out.println(modReg.getModuleName());
 		    System.out.println("Was Unsuccessful for unknown reasons!!!");
