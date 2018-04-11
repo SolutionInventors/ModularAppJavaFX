@@ -36,7 +36,7 @@ public class ModuleRegisterOperationsTest
 		    ("Enter the module name: ");
 	    
 	    
-	    if( ModuleRegisterManager.bookModule(modRegId, studId, moduleName)) {
+	    if( ModuleRegisterManager.bookModule(modRegId, true)) {
 		System.out.println("Successfully booked Student for module and  "
 			+ "also gave updated the dateCreated attribute.");
 		TestUtils.displayBean( BeanType.MODULE_REGISTER , 0);
@@ -60,7 +60,7 @@ public class ModuleRegisterOperationsTest
 		    ("Enter the module name: ");
 	    
 	    
-	    if( ModuleRegisterManager.setAttendance(modRegId, studId, moduleName, true)) {
+	    if( ModuleRegisterManager.setAttendance(modRegId,  true)) {
 		System.out.println("Attendance status updated.");
 		TestUtils.displayBean( BeanType.MODULE_REGISTER , 0);
 
@@ -83,7 +83,7 @@ public class ModuleRegisterOperationsTest
 	    
 	    String result = TestUtils.getStringInput
 		    ("Enter the Student Result: ");
-	    if( ModuleRegisterManager.setResultForModule(modRegId, studId, moduleName, result)) {
+	    if( ModuleRegisterManager.setResultForModule(modRegId, result)) {
 		System.out.println("REsult has been set.");
 		TestUtils.displayBean( BeanType.MODULE_REGISTER , 0);
 	    }

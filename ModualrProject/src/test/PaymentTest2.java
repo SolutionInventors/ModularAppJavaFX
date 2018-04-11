@@ -34,11 +34,8 @@ public class PaymentTest2
 	   Payment payment = new Payment( modRegId, amount);
 	   ModuleRegister modReg = ModuleRegisterManager.getModRegById(modRegId);
 	   
-	   if( PaymentManager.makePayment(payment)){
+	   if( PaymentManager.makePayment(modRegId)){
 	       System.out.println("Successfully made the required payment" );
-	   }
-	   else if( !payment.isValid(ValidationType.NEW_BEAN)){
-	       System.err.println("The Payment object was invalid.");
 	   }
 	   else if( PaymentManager.isPaymentComplete(payment.getRegId())){
 	       System.err.println("Payment unsuccessful because it is complete" );

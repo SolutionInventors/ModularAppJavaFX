@@ -3,6 +3,7 @@ package database.bean;
 import java.io.File;
 import java.sql.Date;
 
+import GUI.utilities.ModuleTabTable;
 import database.bean.student.Student;
 import utils.ValidationType;
 
@@ -79,6 +80,7 @@ public class ModuleRegister  implements Bean
 	setAttended(attended);
 	setResult(result);
 	setAmountPerUnit(amountPerUnit);
+	setNumberOfUnits(numberOfUnits);
     }
 
     /**
@@ -195,7 +197,6 @@ public class ModuleRegister  implements Bean
      */
     public String getResult()
     {
-
 	return result == null ? "NO RESULT" : result;
     }
 
@@ -310,13 +311,11 @@ public class ModuleRegister  implements Bean
 
     public String getStudentName()
     {
-	System.out.println(studentName);
 	return studentName;
     }
 
     public void setStudentName(String studentName)
     {
-	System.out.println(studentName);
 	this.studentName = studentName;
     }
 
@@ -333,5 +332,13 @@ public class ModuleRegister  implements Bean
     public void setNumberOfUnits(int numberOfUnits)
     {
 	this.numberOfUnits = numberOfUnits;
+    }
+
+
+
+    public boolean hasResult()
+    {
+	
+	return result != null ;
     }
 }

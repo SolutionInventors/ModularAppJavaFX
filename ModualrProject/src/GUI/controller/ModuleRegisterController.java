@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import GUI.utilities.ModuleRegisterTableGUI;
 import database.bean.ModuleRegister;
-import database.bean.Payment;
 import database.managers.ModuleRegisterManager;
 import database.managers.PaymentManager;
 import exception.InvalidAdminException;
@@ -198,16 +197,20 @@ public class ModuleRegisterController implements Initializable
 	}
 	if (entered != null && !entered.isEmpty())
 	{
-	    double fee = Double.valueOf(entered);
-	    Payment payment = new Payment(modregid,fee);
+	    /*double fee = Double.valueOf(entered);
+	    Payment payment = new Payment(modregid,fee);*/ //commented by chidi
 		try{
-		    PaymentManager.makePayment(payment);
+		    PaymentManager.makePayment(modregid);//just add the regID directly
 		}
 		catch (SQLException | InvalidAdminException e){
 		    e.printStackTrace();
 		}
 	
 		lblPaymentstatus.setText(modRegs[selection].paymentComplete() ? "Completed" : "Incomplete");
+		moduleRegisterTable.setItems(getModuleRegister());
+		moduleRegisterTable.getSelectionModel().select(selection);
+		getDetails(null);
+	
 	}
 	
 
@@ -226,8 +229,8 @@ public class ModuleRegisterController implements Initializable
 	attendance = !attendance;
 	
 	try{
-	    ModuleRegisterManager.setAttendance(modRegId, studId, modulename, attendance);
-	    System.out.println("I ran");
+	    boolean successful = ModuleRegisterManager.setAttendance(modRegId,  attendance);//changed by chidi
+	    
 	}
 	catch (SQLException | InvalidAdminException e){
 	    e.printStackTrace();
@@ -246,8 +249,8 @@ public class ModuleRegisterController implements Initializable
     @FXML
     private void updateBooking(ActionEvent event){
 	try{
-	    ModuleRegisterManager.bookModule(modRegId, studId, modulename);
-	}
+	    boolean successful  = ModuleRegisterManager.bookModule(modRegId, true); //changed by chidi :-you can change the true to a variable
+	 }
 	catch (SQLException | InvalidAdminException e)
 	{
 	    e.printStackTrace();
@@ -261,7 +264,7 @@ public class ModuleRegisterController implements Initializable
     @FXML
     private void updateResult(ActionEvent event){
 	try{
-	    ModuleRegisterManager.setResultForModule(modRegId, studId, modulename, "Pass");
+	    ModuleRegisterManager.setResultForModule(modRegId, "Pass");
 	}
 	catch (SQLException | InvalidAdminException e)
 	{

@@ -10,33 +10,27 @@ import java.util.List;
 import database.bean.Admin;
 import database.bean.Payment;
 import exception.InvalidAdminException;
-import utils.ValidationType;
 
 public final class PaymentManager
 {
     /**
-     * Makes a payment for a registered {@code ModuleTabTable}. The amount to be paid is 
-     * validated by first checking that the amount remaining amount is not
-     * more than zero. Also checks that the amount about to be paid is not 
-     * greater than the remaining amount.
-     * @param payment the {@code Payment} object containing information like the
-     * bankName, amount , teller number etc.
-     * @return {@code true} if the object was inserted successful.
+     * Completely pays for the moduleRegister object.
+     * 
+     * @param regID the ModuleRegister id that is being paid for. 
+     * @return true if it was successful else {@code false}
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static boolean makePayment( Payment payment) 
+    public static boolean makePayment(int regID) 
 	    throws SQLException, InvalidAdminException
     {
-	double remainingPayment = getRemaingPayment(payment.getRegId());
+	double remainingPayment = getRemaingPayment(regID);
 	
 	Admin currentAdmin = DatabaseManager.getCurrentAdmin(); 
-	if( (currentAdmin.canWrite() ||currentAdmin.isAccountant()) && payment.isValid(ValidationType.NEW_BEAN )  && remainingPayment > 0  && 
-		remainingPayment >= payment.getAmount() )
+	if( (currentAdmin.canWrite() ||currentAdmin.isAccountant()) && remainingPayment >0.0)
 	{
 	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call makePayment(?,?) }", payment.getRegId(), 
-			    payment.getAmount()) ; )
+		    ("{call makePayment(?,?) }", regID, remainingPayment) ; )
 	    {
 		int affected = statement.executeUpdate();
 		
@@ -55,10 +49,13 @@ public final class PaymentManager
      */
     public static double getRemaingPayment(int regID) throws SQLException
     {
+	
+	
 	int factor = 10000; 
 	double amountPaid = getAmountPaid( regID );
 	double totalPrice = ModuleRegisterManager.getTotalPriceForModule(regID);
 	double remainingPayment = ((totalPrice*factor) - (amountPaid*factor))/factor;
+	
 	return remainingPayment;
     }
 

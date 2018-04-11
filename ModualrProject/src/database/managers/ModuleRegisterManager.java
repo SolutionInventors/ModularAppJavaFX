@@ -41,6 +41,7 @@ public final class ModuleRegisterManager
 		if( stmt.executeUpdate() > 0 ) {
 		    modReg.setDateRegistered(stmt.getDate(3));
 		    modReg.setNumberOfUnits(stmt.getInt(4));
+		    
 		    return true;
 		}
 	    }
@@ -84,7 +85,8 @@ public final class ModuleRegisterManager
     public static double getTotalPriceForModule(int regID) throws SQLException
     {
 	ModuleRegister modReg = ModuleRegisterManager.getModRegById(regID);
-	double totalPrice = modReg.getAmountPerUnit();
+	double totalPrice = modReg.getAmountPerUnit() * modReg.getNumberOfUnits();
+	
 	return totalPrice;
     }
 
@@ -139,15 +141,15 @@ public final class ModuleRegisterManager
 
     }
 
-    public static boolean bookModule( int modRegId, String studId , String moduleName) 
+    public static boolean bookModule( int modRegId, boolean status ) 
 	    throws SQLException, InvalidAdminException{
 
 	ModuleRegister modReg = getModRegById(modRegId);
 
-	if( modReg!= null && !modReg.hasBooked() && modReg.paymentComplete() ){
-	    String sql  = "{call bookModule(?,?, ?) }";
+	if( modReg!= null  && modReg.paymentComplete() ){
+	    String sql  = "{call bookModule(?,?) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId, studId, moduleName))
+		    (sql, modRegId, status))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }
@@ -156,15 +158,15 @@ public final class ModuleRegisterManager
     }
 
 
-    public static boolean setAttendance( int modRegId, String studId, String moduleName , boolean attended ) 
+    public static boolean setAttendance( int modRegId,  boolean attended ) 
 	    throws SQLException, InvalidAdminException
     {
 
 	ModuleRegister modReg = getModRegById(modRegId);
-	if( modReg != null &&  modReg.hasBooked() && modReg.getResult() == null){
-	    String sql  = "{call attendModule(?,?,?, ? ) }";
+	if( modReg != null &&  modReg.hasBooked() && !modReg.hasResult()){
+	    String sql  = "{call attendModule(?,? ) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId, studId, moduleName, attended))
+		    (sql, modRegId,  attended))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }
@@ -173,7 +175,7 @@ public final class ModuleRegisterManager
     }
 
 
-    public static boolean setResultForModule( int modRegId, String studId, String moduleName, String result ) throws SQLException, InvalidAdminException{
+    public static boolean setResultForModule( int modRegId, String result ) throws SQLException, InvalidAdminException{
 
 	ModuleRegister modReg = getModRegById(modRegId);
 	result = result.toUpperCase().matches("P|PASSED") ? "Pass" : result;
@@ -182,9 +184,9 @@ public final class ModuleRegisterManager
 	if( modReg != null &&  modReg.hasAttended() && 
 		(result.toLowerCase().equals("pass") || result.toLowerCase().equals("fail")))
 	{
-	    String sql  = "{call setResult(?,?,?, ?) }";
+	    String sql  = "{call setResult(?,?) }";
 	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId, studId, moduleName, result))
+		    (sql, modRegId,result))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }
@@ -304,6 +306,7 @@ public final class ModuleRegisterManager
 			result.getString("Result"));
 		modReg.setDateRegistered( result.getDate("DateRegistered"));
 		modReg.setId(result.getInt("id"));
+		modReg.setPaymentStatus(PaymentManager.isPaymentComplete(modReg.getId()));
 		list.add(modReg);
 	    }
 	}
