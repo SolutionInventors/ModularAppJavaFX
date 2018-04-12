@@ -150,7 +150,7 @@ public class StatisticsManager
 
 	System.err.println("Failed!!");
 	
-	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "NONE", 0, 0 ,null , 0);
+	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "ALL", 0, 0 ,null , 0);
     }
 
     private static String[][] getIndividualCertTable() throws SQLException

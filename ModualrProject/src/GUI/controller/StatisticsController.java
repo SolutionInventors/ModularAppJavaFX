@@ -136,11 +136,9 @@ public class StatisticsController {
 	String certificate[][] = stat.getIndividualCertStats();
 	ObservableList<CertificateTableGUI> list = FXCollections.observableArrayList();
 	for ( int row = 0; row < certificate.length; row++ ){
-		// loop through columns of current row
-		for ( int column = 0; column < certificate[ row ].length; column++ )
 		    list.add(new CertificateTableGUI(certificate[ row ][ 0 ], certificate[ row ][ 1 ]));
 		
-	} // end outer for
+	} // end for
 		
 	
 	

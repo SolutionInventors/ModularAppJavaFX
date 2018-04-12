@@ -38,6 +38,12 @@ import utils.ValidationType;
 
 public class ModuleRegisterController implements Initializable
 {
+    
+    //add amount per unit
+    //number of units
+    //total cost for module
+    //switch booking and attendance
+    //status indicator
     @FXML private ComboBox<String> cmbCategory;
     @FXML private ImageView studentImage;
 

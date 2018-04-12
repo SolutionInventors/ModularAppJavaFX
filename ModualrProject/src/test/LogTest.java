@@ -35,7 +35,7 @@ public class LogTest
 	});
 	
 	ModuleLog[] modLog =  LogManager.getLog(ModuleLog.class,
-		TransactionType.NONE, 0);
+		TransactionType.ALL, 0);
 	System.out.println("-----ModuleLogs--------" );
 	Arrays.stream(modLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
@@ -49,7 +49,7 @@ public class LogTest
 	});
 	
 	PaymentLog[] payLog =  LogManager.getLog(PaymentLog.class,
-		TransactionType.NONE, 0);
+		TransactionType.ALL, 0);
 	System.out.println("-----PaymentLogs--------" );
 	Arrays.stream(payLog).forEach( log ->{
 	    System.out.println("Operation Date: " + log.getDateOfOperation());
@@ -68,7 +68,7 @@ public class LogTest
 	
 	CertificateRegisterLog[] certRegLog = 
 		LogManager.getLog(CertificateRegisterLog.class, 
-		TransactionType.NONE, 0);
+		TransactionType.ALL, 0);
 	
 	System.out.println( "---CertRegisterLog----" );
 	Arrays.stream(certRegLog).forEach( log ->{
@@ -77,7 +77,7 @@ public class LogTest
 	
 	ModularClassLog[] modularClassLog = 
 		LogManager.getLog(ModularClassLog.class, 
-		TransactionType.NONE, 0);
+		TransactionType.ALL, 0);
 	
 	System.out.println( "\n<<<<<<<Modular ClassLog>>>>>" );
 	Arrays.stream(modularClassLog).forEach( log ->{
@@ -85,7 +85,7 @@ public class LogTest
 	});
 	
 	ModuleRegisterLog[] moduleRegisterLog = LogManager.getLog(ModuleRegisterLog.class, 
-		TransactionType.NONE, 0); 
+		TransactionType.ALL, 0); 
 	
 	System.out.println( "\n<<<<<<<ModuleRegisterLog>>>>>>" );
 	Arrays.stream(moduleRegisterLog).forEach( log ->{
