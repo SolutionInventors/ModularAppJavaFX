@@ -10,21 +10,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.solutioninventors.tournament.GUI.controller.TieBreakerController">
+<AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.ModuleSelectorController">
    <children>
       <Label layoutX="27.0" layoutY="355.0" prefHeight="17.0" prefWidth="240.0">
          <font>
             <Font size="13.0" />
          </font>
       </Label>
-      <Button fx:id="btnPrevious" alignment="CENTER" contentDisplay="CENTER" layoutX="114.0" layoutY="423.0" mnemonicParsing="false" onAction="#previous" prefHeight="20.0" prefWidth="90.0" text="PREVIOUS" textAlignment="CENTER">
-        
+      <Button fx:id="btnSubmit" alignment="CENTER" contentDisplay="CENTER" layoutX="116.0" layoutY="386.0" mnemonicParsing="false" onAction="#next" prefHeight="20.0" prefWidth="90.0" text="SUBMIT" textAlignment="CENTER">
       </Button>
-      <Button fx:id="btnNext" alignment="CENTER" contentDisplay="CENTER" layoutX="242.0" layoutY="423.0" mnemonicParsing="false" onAction="#next" prefHeight="20.0" prefWidth="90.0" text="NEXT" textAlignment="CENTER">
-      </Button>
-      <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" layoutX="478.0" layoutY="423.0" mnemonicParsing="false" onAction="#cancel" prefHeight="20.0" prefWidth="90.0" text="CANCEL" textAlignment="CENTER" textFill="RED">
-      </Button>
-      <GridPane layoutX="57.0" layoutY="179.0" prefHeight="195.0" prefWidth="549.0">
+      <GridPane layoutX="29.0" layoutY="79.0" prefHeight="305.0" prefWidth="549.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="207.0" minWidth="10.0" prefWidth="203.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="68.0" />
@@ -32,12 +27,13 @@
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="123.0" minWidth="10.0" prefWidth="39.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="67.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="179.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="67.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="305.0" minHeight="10.0" prefHeight="278.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="190.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ListView fx:id="listPossibleBreaker" layoutX="10.0" layoutY="82.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-            <ListView fx:id="listSelectedBreaker" prefHeight="177.0" prefWidth="146.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <ListView fx:id="listModulesinCert" layoutX="10.0" layoutY="82.0" prefHeight="280.0" prefWidth="207.0" GridPane.rowIndex="1" />
+            <ListView fx:id="listModulesNotinCert" prefHeight="177.0" prefWidth="146.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Button fx:id="btnsendLeft" mnemonicParsing="false" onAction="#sendRight" text="&gt;&gt;">
@@ -58,13 +54,18 @@
                   <Font name="Trebuchet MS Bold" size="15.0" />
                </font>
             </Label>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
-               <children>
-                  <Button fx:id="btnsendUp" layoutX="2.0" layoutY="54.0" mnemonicParsing="false" onAction="#sendUp" rotate="-90.0" text="&gt;&gt;" />
-                  <Button fx:id="btnsendDown" layoutX="3.0" layoutY="94.0" mnemonicParsing="false" onAction="#senddown" rotate="90.0" text="&gt;&gt;" />
-               </children>
-            </AnchorPane>
+            
          </children>
       </GridPane>
+      <Label layoutX="65.0" layoutY="30.0" text="Module Name:">
+         <font>
+            <Font name="Trebuchet MS" size="22.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblModuleName" layoutX="225.0" layoutY="31.0">
+         <font>
+            <Font name="Trebuchet MS" size="22.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
