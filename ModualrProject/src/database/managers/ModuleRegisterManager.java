@@ -42,6 +42,13 @@ public final class ModuleRegisterManager
 		    modReg.setDateRegistered(stmt.getDate(3));
 		    modReg.setNumberOfUnits(stmt.getInt(4));
 		    
+		    String idQuery = "SELECT LAST_INSERT_ID(); "; 
+		    ResultSet result = 
+			    DatabaseManager.getPreparedStatement(idQuery)
+		    		.executeQuery();
+		    modReg.setId(result.getInt(1));
+		    result.close(); 
+		    
 		    return true;
 		}
 	    }

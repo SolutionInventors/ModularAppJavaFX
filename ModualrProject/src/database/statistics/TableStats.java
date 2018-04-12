@@ -15,7 +15,7 @@ public class TableStats
     private final int numberOfModulesAttended;
     private final int numberOfModulesPassed;
     private final int numberOfModulesFailed;
-    
+    private final int numberOfModulesPaidFor; 
    
     private final int totalNumberOfStudents;
     private final int numberOfActiveStudents;
@@ -70,7 +70,7 @@ public class TableStats
 	    int totalCertificates, String higestAwardedCertificate,String leastCertAwarded, 
 	    //class stats
 	    double aveStudentPerClass, int totalClass, 
-	    String[][] certsTable)
+	    String[][] certsTable, int modulesPaidFor)
     {
 	//setting Module stats
 	totalNumberOfModules = totalMods;
@@ -97,9 +97,15 @@ public class TableStats
 	//setting class stats
 	averageStudentPerClass = aveStudentPerClass; 
 	totalNumberOfClass = totalClass;
+	numberOfModulesPaidFor = modulesPaidFor; 
     }
 
 
+    public int getNumberOfModulesPaidFor()
+    {
+	return numberOfModulesPaidFor;
+    }
+    
     /**
      * Returns the total modules in the database 
      * @return
@@ -213,6 +219,7 @@ public class TableStats
     
     
     public String toString(){
+	System.out.println(getNumberOfModulesPaidFor());
 	return String.format("Highest Cerificate Awarded: %s\nTotal Number of Students: %s\n"
 		+ "Number of active students: %s\n"
 		+ "Number of student certified: %s\nNumber of classes: %s\n"
@@ -220,7 +227,8 @@ public class TableStats
 		+ "Number of Modules Failed: %s\nNumber of Modules Passed: %s\n"
 		+ "Nunmber of Modules Registered: %s\nNumber of Certificates: %s\n" + 
 		"Total Student Registered this Year: %s\n " +
-		"Least Certificate Awareded: %s ", 
+		"Least Certificate Awareded: %s\n"
+		+ "Total Modules Paid For: %s\n ", 
 		getHighestAwardedCertificate() ,
 		getTotalNumberOfStudents(), 
 		getNumberOfActiveStudents(), 
@@ -233,7 +241,8 @@ public class TableStats
 		getNumberOfModulesRegistered(), 
 		getTotalNumberOfCertificates(), 
 		getTotalStudentRegisteredThisYear(), 
-		getLeastCertificateAwarded());
+		getLeastCertificateAwarded(), 
+		getNumberOfModulesPaidFor());
     }
 
 

@@ -169,7 +169,8 @@ public class Student  implements Bean
      */
     public void setCertificateIssued(String certificateIssued)
     {
-	this.certificateIssued = Bean.capitalizeWords( certificateIssued);
+	this.certificateIssued = certificateIssued != null ? 
+		Bean.capitalizeWords( certificateIssued): "None"; 
     }
 
     /**

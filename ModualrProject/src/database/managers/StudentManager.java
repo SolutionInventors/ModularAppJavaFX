@@ -382,7 +382,7 @@ public final class StudentManager
 			result.getString("emailAddress"), file);
 		stud.setDateAdmitted(result.getDate("dateAdmitted"));
 
-
+		stud.setCertificateIssued(result.getString("certificateIssued")); 
 		list.add(stud);
 	    }
 	}

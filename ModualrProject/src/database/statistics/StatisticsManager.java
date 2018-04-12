@@ -102,19 +102,27 @@ public class StatisticsManager
 		"SELECT count(dateAdmitted) as dateCount " +
 			"	from student as stud " + 
 			" WHERE dateAdmitted > date_sub(now(), INTERVAL 1 YEAR); "; 
+	String regPaidSql = 
+		"Select  SUM(isPaymentComplete( reg.id)) as 'Modules Paid For' " +
+		"	FROM module_register as reg ;" ;
+	
 	ResultSet regStudThisYearResult = null ; 
-
+	ResultSet regPaidResult = null; 
 	ResultSet result = null;
 	try( 	
 		PreparedStatement stmt = DatabaseManager.getPreparedStatement
 		(sql );
 		PreparedStatement stmt2 = 
-			DatabaseManager.getPreparedStatement(regStudentThisYearSql))
+			DatabaseManager.getPreparedStatement(regStudentThisYearSql); 
+		PreparedStatement stmt3 = 
+			DatabaseManager.getPreparedStatement(regPaidSql))
 	{
-
+	    regPaidResult = stmt3.executeQuery();
+	  
 	    result =  stmt.executeQuery();
 	    regStudThisYearResult = stmt2.executeQuery(); 
 	    regStudThisYearResult.next(); 
+	    regPaidResult.next(); 
 	    if( result.next() ){
 		String[][] certTable = getIndividualCertTable(); 
 
@@ -130,16 +138,19 @@ public class StatisticsManager
 			result.getInt("Total Certs"), result.getString("Max certificate Awarded"),
 			result.getString("Min certificate Awarded"),
 			result.getDouble("Average Student Per Class"), result.getInt("Num of Class"), 
-			certTable); 
+			certTable , regPaidResult.getInt(1)); 
 	    }
 
 	}
 	finally{
 	    if( result != null ) result.close();
 	    if(regStudThisYearResult != null ) regStudThisYearResult.close();
+	    if(regPaidResult != null) regPaidResult.close(); 
 	}
 
-	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "NONE", 0, 0 ,null );
+	System.err.println("Failed!!");
+	
+	return new TableStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, "", "NONE", 0, 0 ,null , 0);
     }
 
     private static String[][] getIndividualCertTable() throws SQLException
@@ -285,7 +296,7 @@ public class StatisticsManager
 			"	COUNT( IF( reg.BookingStatus = 1 , 1, NULL)) AS 'Booked', "+
 			"	COUNT( IF( reg.AttendanceStatus = 1,1,NULL))   AS 'Attended', "+
 			"	COUNT( IF( reg.result = 'Pass',1, NULL)) AS 'Passed', "+ 
-			"	COUNT( IF( reg.result = 'Fail', 1, null)) as 'Failed' "+
+			"	COUNT( IF( reg.result = 'Fail', 1, null)) as 'Failed' "+	
 			"FROM module "+
 
 	    	"LEFT JOIN module_register as reg " +

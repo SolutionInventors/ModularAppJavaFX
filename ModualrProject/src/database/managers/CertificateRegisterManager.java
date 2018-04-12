@@ -55,7 +55,7 @@ public final class CertificateRegisterManager
      * @return {@code true} if all the modules were successfully added
      * @throws SQLException when a connection error occurs
      */
-    public static boolean addMultipleModules(final String certName, String[] modules) throws SQLException{
+    public static boolean addMultipleModules(final String certName, String... modules) throws SQLException{
 
 	ConnectionManager.setAutoCommiting(false); 
 
@@ -96,7 +96,7 @@ public final class CertificateRegisterManager
      * @return {@code true} if all the modules were successfully added
      * @throws SQLException when a connection error occurs
      */
-    public static boolean removeMultipleModules(final String certName, String[] modules) throws SQLException{
+    public static boolean removeMultipleModules(final String certName, String... modules) throws SQLException{
 
 	ConnectionManager.setAutoCommiting(false); 
 
@@ -169,6 +169,19 @@ public final class CertificateRegisterManager
 	}
 
 	
+    }
+    
+    public static boolean clearAllModules(String certName) throws SQLException, InvalidAdminException{
+	
+	String sql = "DELETE FROM certificateregister "
+		+ "WHERE certificateName = ? "; 
+	 try( PreparedStatement statement = 
+		 DatabaseManager.getPreparedStatement(sql, certName))
+	    {
+	     
+		statement.executeUpdate();
+		return true; 
+	    }
     }
     private static String[] getModulesHelper(String sql, Object ... arguments) throws SQLException
     {
