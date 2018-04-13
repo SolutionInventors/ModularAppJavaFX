@@ -218,7 +218,6 @@ public class ModuleController implements Initializable
 		    }
 		    catch (SQLException | InvalidAdminException ee)
 		    {
-			// FIXME Auto-generated catch block
 			ee.printStackTrace();
 		    }
 	}

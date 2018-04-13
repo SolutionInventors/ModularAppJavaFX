@@ -41,7 +41,7 @@
             <TableColumn fx:id="moduleName" prefWidth="114.0" text="Module Name" />
         </columns>
       </TableView>
-      <GridPane layoutX="473.0" layoutY="144.0" prefHeight="219.0" prefWidth="324.0">
+      <GridPane layoutX="473.0" layoutY="144.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="101.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="111.0" />
@@ -49,26 +49,35 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="25.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="56.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="67.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="38.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="43.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="lblPaymentstatus" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label fx:id="lblStudentName" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" />
-            <Label layoutX="10.0" layoutY="17.0" prefHeight="42.0" prefWidth="100.0" text="Payment Status" wrapText="true" GridPane.rowIndex="1" />
+            <Label fx:id="lblPaymentstatus" layoutX="10.0" layoutY="47.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label fx:id="lblStudentName" layoutX="10.0" layoutY="17.0" GridPane.columnIndex="1" />
+            <Label layoutX="10.0" layoutY="17.0" prefHeight="42.0" prefWidth="100.0" text="Payment Status" wrapText="true" GridPane.rowIndex="4" />
             <Label layoutX="10.0" layoutY="17.0" text="Student Name" />
-            <Label layoutX="110.0" layoutY="81.0" text="Result" GridPane.rowIndex="4" />
-            <Label layoutX="10.0" layoutY="17.0" text="Booking Status" GridPane.rowIndex="3" />
-            <Label layoutX="10.0" layoutY="17.0" text="Attended" GridPane.rowIndex="2" />
-            <Label fx:id="lblResult" layoutX="110.0" layoutY="81.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label fx:id="lblBookingStatus" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label fx:id="lblAttended" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button fx:id="btnPayment" mnemonicParsing="false" onAction="#updatePayment" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Button fx:id="btnResult" layoutX="222.0" layoutY="69.0" mnemonicParsing="false" onAction="#updateResult" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <Button fx:id="btnBooking" layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#updateBooking" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <Button fx:id="btnAttendance" layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#updateAttendance" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Label layoutX="110.0" layoutY="81.0" text="Result" GridPane.rowIndex="7" />
+            <Label layoutX="10.0" layoutY="17.0" text="Booking Status" GridPane.rowIndex="5" />
+            <Label layoutX="10.0" layoutY="17.0" text="Attended" GridPane.rowIndex="6" />
+            <Label fx:id="lblResult" layoutX="110.0" layoutY="81.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Label fx:id="lblBookingStatus" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label fx:id="lblAttended" layoutX="10.0" layoutY="17.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Button fx:id="btnPayment" mnemonicParsing="false" onAction="#updatePayment" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Button fx:id="btnResult" layoutX="222.0" layoutY="69.0" mnemonicParsing="false" onAction="#updateResult" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+            <Button fx:id="btnBooking" layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#updateBooking" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Button fx:id="btnAttendance" layoutX="10.0" layoutY="24.0" mnemonicParsing="false" onAction="#updateAttendance" text="Update" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <Label layoutX="10.0" layoutY="207.0" text="No of Units" GridPane.rowIndex="2" />
+            <Label layoutX="10.0" layoutY="18.0" text="Amount per Unit" GridPane.rowIndex="1" />
+            <Label layoutX="10.0" layoutY="93.0" text="Module Cost" GridPane.rowIndex="3" />
+            <Label fx:id="lblModuleCost" layoutX="10.0" layoutY="132.0" text="Module Cost" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label fx:id="lblnoofUnits" layoutX="10.0" layoutY="18.0" text="Module Cost" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="lblAmountperUnit" layoutX="10.0" layoutY="18.0" text="Module Cost" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <ImageView fx:id="studentImage" fitHeight="122.0" fitWidth="181.0" layoutX="473.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">

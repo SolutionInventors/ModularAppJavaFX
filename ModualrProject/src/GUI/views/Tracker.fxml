@@ -6,6 +6,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import java.util.ArrayList?>
+<!--    <?import java.util.ArrayList?> -->
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controller.TrackerController">
    <children>
@@ -15,7 +17,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="txtAreaStudentLog" layoutX="14.0" layoutY="38.0" prefHeight="371.0" prefWidth="384.0" />
+                        <TextArea fx:id="txtAreaStudentLog" editable="false" layoutX="14.0" layoutY="38.0" prefHeight="371.0" prefWidth="384.0" />
                         <ComboBox fx:id="cmbStudentLog" layoutX="93.0" layoutY="4.0" onAction="#itemsSelectedfrmStudent" prefWidth="150.0" promptText="cmbFilter" />
                         <Label layoutX="28.0" layoutY="8.0" text="Filter by" />
                      </children></AnchorPane>
@@ -25,33 +27,78 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="txtAreaModuleLog" layoutX="19.0" layoutY="45.0" prefHeight="371.0" prefWidth="384.0" />
-                        <ComboBox layoutX="81.0" layoutY="10.0" onAction="#itemsSelectedfrmmodule" prefWidth="150.0" promptText="cmbFilter" />
+                        <TextArea fx:id="txtAreaModuleLog" editable="false" layoutX="19.0" layoutY="45.0" prefHeight="371.0" prefWidth="384.0" />
+                        <ComboBox fx:id="cmbModule" layoutX="81.0" layoutY="10.0" onAction="#itemsSelectedfrmmodule" prefWidth="150.0" promptText="cmbFilter" />
                         <Label layoutX="23.0" layoutY="13.0" text="Filter by" />
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="REGISTRATION LOG">
+            <Tab text="Payment Log">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="txtAreaRegistrationLog" layoutX="34.0" layoutY="46.0" prefHeight="371.0" prefWidth="384.0" />
-                        <ComboBox layoutX="116.0" layoutY="8.0" onAction="#itemsSelectedfrmReg" prefWidth="150.0" promptText="cmbFilter" />
-                        <Label layoutX="42.0" layoutY="13.0" text="Filter by" />
-                     </children></AnchorPane>
+                        <TextArea fx:id="txtAreaPayment" editable="false" layoutX="22.0" layoutY="53.0" prefHeight="371.0" prefWidth="384.0" />
+                        <ComboBox fx:id="cmbPayment" layoutX="105.0" layoutY="17.0" onAction="#itemsSelectedfrmPayment" prefWidth="150.0" promptText="cmbFilter" />
+                        <Label layoutX="22.0" layoutY="21.0" text="Filter by" />
+                     </children>
+                  </AnchorPane>
               </content>
             </Tab>
             <Tab text="CLASS LOG">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="txtAreaClassLog" layoutX="27.0" layoutY="51.0" prefHeight="371.0" prefWidth="384.0" />
-                        <ComboBox layoutX="93.0" layoutY="13.0" onAction="#itemsSelectedfrmClass" prefWidth="150.0" promptText="cmbFilter" />
+                        <TextArea fx:id="txtAreaClassLog" editable="false" layoutX="27.0" layoutY="51.0" prefHeight="371.0" prefWidth="384.0" />
+                        <ComboBox fx:id="cmbClass" layoutX="93.0" layoutY="13.0" onAction="#itemsSelectedfrmClass" prefWidth="150.0" promptText="cmbFilter" />
                         <Label layoutX="33.0" layoutY="17.0" text="Filter by" />
                      </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Certficate Log">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="txtAreaCertificate" editable="false" layoutX="28.0" layoutY="39.0" prefHeight="371.0" prefWidth="384.0" />
+                        <ComboBox fx:id="cmbCert" layoutX="134.0" layoutY="9.0" onAction="#itemsSelectedfrmCert" prefWidth="150.0" promptText="cmbFilter" />
+                        <Label layoutX="43.0" layoutY="13.0" text="Filter by" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Certificate Register Log">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="txtAreaCertRegistration" editable="false" layoutX="34.0" layoutY="46.0" prefHeight="371.0" prefWidth="384.0" />
+                        <ComboBox fx:id="cmbCertReg" layoutX="116.0" layoutY="8.0" onAction="#itemsSelectedfrmReg" prefWidth="150.0" promptText="cmbFilter" />
+                        <Label layoutX="42.0" layoutY="13.0" text="Filter by" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Module Register Log">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="txtAreaModuleRegister" editable="false" layoutX="63.0" layoutY="39.0" prefHeight="371.0" prefWidth="384.0" />
+                        <ComboBox fx:id="cmbModReg" layoutX="146.0" layoutY="6.0" onAction="#itemsSelectedfrmModReg" prefWidth="150.0" promptText="cmbFilter" />
+                        <Label layoutX="77.0" layoutY="10.0" text="Filter by" />
+                     </children>
+                  </AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
    </children>
+   
+   <fx:define>
+        <ArrayList fx:id="cmbArray">
+            <fx:reference source="cmbStudentLog" />
+            <fx:reference source="cmbModule" />
+            <fx:reference source="cmbPayment" />
+            <fx:reference source="cmbClass" />
+            <fx:reference source="cmbCert" />
+            <fx:reference source="cmbCertReg" />
+            <fx:reference source="cmbModReg" />
+        </ArrayList>
+    </fx:define>
 </AnchorPane>

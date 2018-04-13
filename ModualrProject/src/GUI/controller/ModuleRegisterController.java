@@ -18,13 +18,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,11 +42,11 @@ import utils.ValidationType;
 public class ModuleRegisterController implements Initializable
 {
     
-    //add amount per unit
-    //number of units
-    //total cost for module
-    //switch booking and attendance
-    //status indicator
+    //add amount per unit ADDED
+    //number of units ADDED
+    //total cost for module DONE
+    //switch booking and attendance DONE
+    //status indicator PENDING
     @FXML private ComboBox<String> cmbCategory;
     @FXML private ImageView studentImage;
 
@@ -58,8 +61,11 @@ public class ModuleRegisterController implements Initializable
     @FXML private Label lblResult;
     @FXML private Label lblBookingStatus;
     @FXML private Label lblAttended;
-    @FXML private Label lblSearch;
-
+    @FXML private Label lblSearch;  
+    @FXML private Label lblAmountperUnit;
+    @FXML private Label lblnoofUnits;
+    @FXML private Label lblModuleCost;
+    
     @FXML private TextField txtSearch;
     @FXML private Button btnGO;
     @FXML private Button btnRegisterStudent;       
@@ -76,7 +82,7 @@ public class ModuleRegisterController implements Initializable
     private int selectedIndex;
     
     private int modRegId;
-    private String studId; 
+    private double moduleCost; 
     private String modulename;
     
     ObservableList<ModuleRegisterTableGUI> list = FXCollections.observableArrayList();
@@ -121,7 +127,14 @@ public class ModuleRegisterController implements Initializable
     public void getDetails(MouseEvent event)
     {
 	selection = moduleRegisterTable.getSelectionModel().getSelectedIndex();
+	double amountPerUnit = modRegs[selection].getAmountPerUnit();
+	int noofUnits = modRegs[selection].getNumberOfUnits();
+	moduleCost = amountPerUnit*noofUnits;
 	lblStudentName.setText(modRegs[selection].getStudentName());
+	lblAmountperUnit.setText(String.valueOf(amountPerUnit));
+	lblnoofUnits.setText(String.valueOf(noofUnits));
+	lblModuleCost.setText(String.valueOf(moduleCost ));
+	
 	lblPaymentstatus.setText(modRegs[selection].paymentComplete() ? "Completed" : "Incomplete");
 	lblResult.setText(modRegs[selection].getResult());
 	lblBookingStatus.setText(modRegs[selection].hasBooked() ? "Booked" : "Not Booked");
@@ -140,9 +153,9 @@ public class ModuleRegisterController implements Initializable
 	studentImage.setImage(localImage1);
 
 	
-	//used by other methods
+	//used by other methods CONFIRM THIS
 	modRegId = modRegs[selection].getId();
-	studId = modRegs[selection].getStudentId();
+	//studId = modRegs[selection].getStudentId(); 
 	modulename = modRegs[selection].getModuleName();
     }// end method get details
 
@@ -190,7 +203,7 @@ public class ModuleRegisterController implements Initializable
 	if (!moduleRegisterTable.getSelectionModel().isEmpty()){
 	   int modregid =  moduleRegisterTable.getSelectionModel().getSelectedItem().getRegisterID();
 	
-	dialog = new TextInputDialog();
+	/*dialog = new TextInputDialog();
 	dialog.setTitle("Update Payment");
 	dialog.setHeaderText("Please Input Amount");
 
@@ -202,7 +215,13 @@ public class ModuleRegisterController implements Initializable
 		entered = result.get();
 	}
 	if (entered != null && !entered.isEmpty())
-	{
+	{*/
+	   
+	   Alert alert = new Alert(AlertType.CONFIRMATION, "Please confirm that  "+lblStudentName.getText() + " has paid "+moduleCost, ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+		alert.showAndWait();
+
+		if (alert.getResult() == ButtonType.YES) {   
+	   
 	    /*double fee = Double.valueOf(entered);
 	    Payment payment = new Payment(modregid,fee);*/ //commented by chidi
 		try{
@@ -226,7 +245,7 @@ public class ModuleRegisterController implements Initializable
 	
 	}
 
-    }
+    }//end updatePayment
     
     @FXML
     private void updateAttendance(ActionEvent event){
