@@ -1,0 +1,7 @@
+TYPE=TRIGGERS
+triggers='CREATE DEFINER=`root`@`localhost` TRIGGER `certificateRegisterInsertTrigger` AFTER INSERT ON `certificateregister` FOR EACH ROW BEGIN\nINSERT INTO `certificateregisterlog`(`DateOfOperation`, `operationType`, `NewModuleName`, `OldModuleName`, `NewCertificateName`, `OldCertificateName`)\nVALUES (now(),\'INSERT\',new.ModuleName,NULL,new.CertificateName,NULL);\nEND' 'CREATE DEFINER=`root`@`localhost` TRIGGER `certificateRegisterUpdateTrigger` AFTER UPDATE ON `certificateregister` FOR EACH ROW BEGIN\nINSERT INTO `certificateregisterlog`(`DateOfOperation`, `operationType`, `NewModuleName`, `OldModuleName`, `NewCertificateName`, `OldCertificateName`)\nVALUES (now(),\'UPDATE\',new.ModuleName,old.ModuleName,\n        new.CertificateName, old.certificateName);\nEND' 'CREATE DEFINER=`root`@`localhost` TRIGGER `certificateRegisterDeleteTrigger` AFTER DELETE ON `certificateregister` FOR EACH ROW BEGIN\nINSERT INTO `certificateregisterlog`(`DateOfOperation`, `operationType`, `NewModuleName`, `OldModuleName`, `NewCertificateName`, `OldCertificateName`)\nVALUES (now(),\'DELETE\',NULL,\n        old.ModuleName,NULL, old.certificateName);\nEND'
+sql_modes=1342177280 1342177280 1342177280
+definers='root@localhost' 'root@localhost' 'root@localhost'
+client_cs_names='utf8mb4' 'utf8mb4' 'utf8mb4'
+connection_cl_names='utf8mb4_unicode_ci' 'utf8mb4_unicode_ci' 'utf8mb4_unicode_ci'
+db_cl_names='latin1_bin' 'latin1_bin' 'latin1_bin'
