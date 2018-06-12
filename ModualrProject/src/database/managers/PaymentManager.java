@@ -1,6 +1,5 @@
 package database.managers;
 
-import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,8 +28,11 @@ public final class PaymentManager
 	Admin currentAdmin = DatabaseManager.getCurrentAdmin(); 
 	if( (currentAdmin.canWrite() ||currentAdmin.isAccountant()) && remainingPayment >0.0)
 	{
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call makePayment(?,?) }", regID, remainingPayment) ; )
+	    String sql = ""
+	    	+ "INSERT INTO `payment`( `RegId`, `amount`) "
+	    	+ "VALUES (? ,? )";
+	    try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		    (sql, regID, remainingPayment) ; )
 	    {
 		int affected = statement.executeUpdate();
 		

@@ -1,11 +1,9 @@
 package database.managers;
 
 import java.io.File;
-import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.ModuleRegister;
@@ -33,20 +31,35 @@ public final class ModuleRegisterManager
 	
 	if(modAndStudentExists && modReg.isValid( ValidationType.NEW_BEAN ) && 
 		canRegister(modReg) ){
-	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
-		    ("{call registerForModule(?,?,?, ?)}", modReg.getStudentId(),modReg.getModuleName());)
+	    
+	    String sql =
+		    "SELECT  module.amountPerUnit FROM module  "
+		    + "	WHERE module.name = ? "
+		    + "INTO @price; "
+		    + "SELECT module.units FROM module "
+		    + "WHERE module.name = modName INTO @units; "
+		    + "INSERT INTO `module_register`( `dateRegistered`, "
+		    + "`moduleName`, `AttendanceStatus`, `studentId`, "
+		    + "`bookingStatus`, `amountPerUnit`, `result`, "
+		    + "`NumberOfUnits`) "
+		    + "VALUES (NOW(),modName,false,?,false, @price "
+		    + ",null, @units);";
+
+
+	    try( PreparedStatement stmt = DatabaseManager.getPreparedStatement
+		    (sql ,modReg.getModuleName(), modReg.getStudentId());)
 	    {
-		stmt.registerOutParameter(3, Types.DATE);
-		stmt.registerOutParameter(4, Types.INTEGER);
+		
 		if( stmt.executeUpdate() > 0 ) {
-		    modReg.setDateRegistered(stmt.getDate(3));
-		    modReg.setNumberOfUnits(stmt.getInt(4));
-		    
-		    String idQuery = "SELECT LAST_INSERT_ID(); "; 
+		    String dataQuery = ""
+		    	+ "SELECT dateRegistered, numberOfUnits, id; "
+		    	+ "WHERE id = LAST_INSERT_ID();"; 
 		    ResultSet result = 
-			    DatabaseManager.getPreparedStatement(idQuery)
+			    DatabaseManager.getPreparedStatement(dataQuery)
 		    		.executeQuery();
-		    modReg.setId(result.getInt(1));
+		    modReg.setDateRegistered(result.getDate(1));
+		    modReg.setNumberOfUnits(result.getInt(2));
+		    modReg.setId(result.getInt(3));
 		    result.close(); 
 		    
 		    return true;
@@ -69,14 +82,15 @@ public final class ModuleRegisterManager
      */
     public static boolean canRegister(ModuleRegister modReg) throws SQLException, InvalidAdminException{
 	String sql = 
-		"Select COUNT(IF(UCASE(result) ='PASS', 1, NULL)) AS numPassed,  " + 
-			"	COUNT(IF(result,NULL, 1)) AS registeredButNoResult FROM module_Register as reg " +  
+		""
+		+ "Select COUNT(IF(UCASE(result) ='PASS', 1, NULL)) AS numPassed,  " + 
+			"COUNT(IF(result,NULL, 1)) AS registeredButNoResult FROM module_Register as reg " +  
 			"WHERE UCASE(reg.studentId) = UCASE(?) AND	 UCASE(reg.moduleName) = UCASE(?) ";
 
 
 	ResultSet result = null;
 	if( modReg.isValid( ValidationType.NEW_BEAN )){
-	    try( CallableStatement stmt = DatabaseManager.getCallableStatement
+	    try( PreparedStatement stmt = DatabaseManager.getPreparedStatement
 		    (sql, modReg.getStudentId(), modReg.getModuleName());)
 	    {
 		result = stmt.executeQuery();
@@ -154,9 +168,12 @@ public final class ModuleRegisterManager
 	ModuleRegister modReg = getModRegById(modRegId);
 
 	if( modReg!= null  && modReg.paymentComplete() ){
-	    String sql  = "{call bookModule(?,?) }";
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId, status))
+	    String sql = ""
+	    	+ " UPDATE module_register as reg "
+	    	+ "SET reg.BookingStatus = ? "
+	    	+ "WHERE  reg.id = ?;";
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql, status, modRegId))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }
@@ -171,9 +188,12 @@ public final class ModuleRegisterManager
 
 	ModuleRegister modReg = getModRegById(modRegId);
 	if( modReg != null &&  modReg.hasBooked() && !modReg.hasResult()){
-	    String sql  = "{call attendModule(?,? ) }";
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId,  attended))
+	   String sql  = ""
+	    	+ " UPDATE module_register as reg "
+	    	+ "SET reg.AttendanceStatus = ? "
+	    	+ "WHERE  reg.id = ?; ";
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql,  attended, modRegId))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }
@@ -191,9 +211,12 @@ public final class ModuleRegisterManager
 	if( modReg != null &&  modReg.hasAttended() && 
 		(result.toLowerCase().equals("pass") || result.toLowerCase().equals("fail")))
 	{
-	    String sql  = "{call setResult(?,?) }";
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    (sql, modRegId,result))
+	    String sql  = ""
+	    	+ "UPDATE module_register as reg  "
+	    	+ "SET reg.Result = UCASE(?), reg.AttendanceStatus = 1 "
+	    	+ "WHERE reg.id = ? ; ";
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql,result, modRegId))
 	    {
 		if( statement.executeUpdate() > 0 ) return true;
 	    }

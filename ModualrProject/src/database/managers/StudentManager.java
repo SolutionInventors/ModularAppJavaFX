@@ -3,12 +3,10 @@ package database.managers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,15 +31,41 @@ public final class StudentManager
 	if( ( existingStudent.isValid(ValidationType.EXISTING_BEAN)  && 
 		newStudent.isValid(ValidationType.NEW_BEAN)) ) 
 	{
-	    try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		    "{CALL updateStudent(?, ?,?,? ,?,?,?) } ", existingStudent.getIdCardNumber(), 
-		    newStudent.getCertificateIssued(), newStudent.isActive(), 
-		    newStudent.getEmailAddress());)
+	   
+	    
+	    
+	    String dateSql = ""
+	    	+ " SELECT dateAdmitted FROM student  "
+	    	+ "WHERE id_card_number = ?;";
+	    
+	     String sql = ""
+	     	+ " UPDATE `student` "
+	     	+ "SET `certificateIssued`= ?, "
+	     	+ "`active`=? ,`emailAddress`=? "
+	     	+ "WHERE studentId = ?; ";
+	     ResultSet dateResult = null;
+	    try( PreparedStatement  statement =
+		    DatabaseManager.getPreparedStatement( 
+		    sql, newStudent.getCertificateIssued(), 
+		    newStudent.isActive(), 
+		    newStudent.getEmailAddress(), 
+		    existingStudent.getIdCardNumber());
+		 PreparedStatement dateStatement = 
+			 DatabaseManager.getPreparedStatement(
+			 dateSql, existingStudent.getIdCardNumber()))
 	    {
-		statement.registerOutParameter(5, Types.DATE);
 		int affected = statement.executeUpdate();
-		newStudent.setDateAdmitted( statement.getDate(5) );
-		if( affected == 1 ) return true;
+		
+		if( affected == 1 ){
+		    dateResult =dateStatement.executeQuery();
+		    dateResult.next();
+		    newStudent.setDateAdmitted( dateResult.getDate(0) );
+		    return true;
+		};
+	    }finally{
+		if(dateResult != null){
+		    dateResult.close();
+		}
 	    }
 	}
 
@@ -69,16 +93,16 @@ public final class StudentManager
 	    throws SQLException, InvalidAdminException
     {
 	if( existingStudent.isValid(ValidationType.EXISTING_BEAN) ) {
-	    String sql = "{call updateStudentImage( ?,? ,?)}";
+	   String sql = ""
+	   	+ "UPDATE student "
+	    	+ "SET student.image = ? WHERE id_card_number = ?";
+	    
 	    try( 
 		    FileInputStream inStream = new FileInputStream(image) ;
-		    CallableStatement stmt = DatabaseManager.getCallableStatement(sql,
-			    existingStudent.getIdCardNumber(), inStream))
+		    PreparedStatement stmt = DatabaseManager.getPreparedStatement(
+			    sql, inStream,existingStudent.getIdCardNumber()))
 	    {
-		stmt.registerOutParameter(3, Types.DATE);
 		int affected = stmt.executeUpdate();
-
-		existingStudent.setDateAdmitted( stmt.getDate(3) );
 		if( affected >= 1 ) return true;
 	    }
 
@@ -97,14 +121,14 @@ public final class StudentManager
     {
 	if( ( existingStudent.isValid(ValidationType.EXISTING_BEAN) && mail.length() >0 ) ) 
 	{
-	    try( CallableStatement  statement = DatabaseManager.getCallableStatement( 
-		    "{CALL updateMail(?, ?, ?) } ", existingStudent.getIdCardNumber(),mail);)
+	    String sql = ""
+	    	+ " UPDATE student  "
+	    	+ "SET emailAddress = ? "
+	    	+ " WHERE id_card_number = ?; ";
+	    try( PreparedStatement  statement = DatabaseManager.getPreparedStatement( 
+		    sql, mail, existingStudent.getIdCardNumber());)
 	    {
-		statement.registerOutParameter(3, Types.DATE);
-		int affected = statement.executeUpdate();
-
-		existingStudent.setDateAdmitted( statement.getDate(3) );
-		if( affected >= 1 ) return true;
+		return statement.executeUpdate() >= 1;
 	    }
 	}
 
@@ -226,27 +250,40 @@ public final class StudentManager
     {
 	if( newStudent.isValid(ValidationType.NEW_BEAN))
 	{
+	    String insertStudent = ""
+		    	+ " INSERT INTO `student`(`id_card_number` , `dateAdmitted`, `active`,"
+		    	+ " `emailAddress`, `className`, `image`, `FirstName`, `LastName`) "
+		    	+ " VALUES (?,  NOW(),true,?,?,?, ?, ?);";
+
+	    String otherInfoSql = ""
+	    	+ "INSERT INTO other_student_info"
+	    	+ "(`StudentID`, `HighestQualification`, `CurrentWorkPlace`,"
+	    	+ "`YearsWorkingExperience`, `LastCourseRead`) "
+	    	+ "VALUES(?, ?, ? , ?, ?)";
+	    
 	    try( FileInputStream inStream = new FileInputStream( newStudent.getImage());
-		    CallableStatement statement = 
-			    DatabaseManager.getCallableStatement("{call insertStudent(?,?,?,?,?, ?, ?) }",
-				    newStudent.getIdCardNumber() , newStudent.getEmailAddress(), inStream  , 
-				    newStudent.getModClassName(), newStudent.getFirstName(), 
-				    newStudent.getLastName()) ; 
-		    CallableStatement otherInfoStmt = 
-			    DatabaseManager.getCallableStatement("{call insertOtherInfo(?, ?, ? ?, ?,? )",
-				    studentData.getStudentID(), studentData.getHighestQualificationAttained(), 
-				    studentData.getCurrentWorkPlace(), studentData.getLastCourseRead(), 
-				    studentData.getYearsWorkingExperience()); )
+		    
+		   PreparedStatement statement = 
+			    DatabaseManager.getPreparedStatement(
+				    insertStudent , 
+				    newStudent.getIdCardNumber(), newStudent.getEmailAddress(),
+				    newStudent.getModClassName(), inStream,
+				    newStudent.getFirstName(),  newStudent.getLastName()
+				   ) ; 
+		    PreparedStatement otherInfoStmt = 
+			    DatabaseManager.getPreparedStatement(otherInfoSql,
+				    studentData.getStudentID(), 
+				    studentData.getHighestQualificationAttained(), 
+				    studentData.getCurrentWorkPlace(), 
+				    studentData.getYearsWorkingExperience(), 
+				    studentData.getLastCourseRead()); )
 	    {
-		statement.registerOutParameter(7,  Types.DATE);
 		int rowAffected1 = statement.executeUpdate();
 		int rowAffected2 = otherInfoStmt.executeUpdate(); 
-		
-		
 		if( rowAffected2 > 0 && rowAffected1 > 0  && StudentDataManager.insert( studentData) )
 		{
-		    newStudent.setDateAdmitted( statement.getDate( 7 ) );
-		    return true;
+		    newStudent.setDateAdmitted(ConnectionManager.getCurrentDate());
+		   return true;
 		}
 		return false; 
 	    }
@@ -286,10 +323,12 @@ public final class StudentManager
 
     }
 
+    
     @SuppressWarnings("resource")
-    public static boolean registerStudent(String studID, String className, AspiringStudent aspStudent) throws SQLException, InvalidAdminException{
-	AspiringStudentData aspData = AspiringStudentManager.getData(aspStudent); 
-
+    public static boolean registerStudent(
+	    String studID, String className, 
+	    AspiringStudent aspStudent, 
+	    AspiringStudentData aspData) throws SQLException, InvalidAdminException{
 	Biodata bio = new Biodata(studID, aspStudent.getStateOfOrigin(), 
 		aspStudent.getCountry(), aspStudent.getCurrentAddress(), 
 		aspStudent.getPermanentAddress(), aspStudent.getGender(),
@@ -299,8 +338,6 @@ public final class StudentManager
 	Student newStudent = new Student(aspStudent.getFirstName(), aspStudent.getLastName(),
 		studID, className, aspStudent.getEmail(), aspStudent.getImage()); 
 
-
-
 	StudentData studData = new StudentData(
 		aspStudent.getHighestQualification(),aspStudent.getCurrentWorkPlace(), 
 		aspStudent.getCourseRead(), aspStudent.getYearsExperience(), 
@@ -308,7 +345,7 @@ public final class StudentManager
 		aspData.getExperiences(),aspData.getMeansOfDiscovery(),
 		aspData.getSponsors() 
 		); 
-
+	studData.setAllID(studID);
 	Connection conn = ConnectionManager.getInstance().getConnection(); 
 	conn.setAutoCommit(false);
 	boolean success = registrationHelper(newStudent, studData) && 
@@ -319,6 +356,13 @@ public final class StudentManager
 	conn.setAutoCommit(true);
 
 	return success; 
+	
+    }
+    public static boolean registerStudent(String studID, String className, AspiringStudent aspStudent) throws SQLException, InvalidAdminException{
+	AspiringStudentData aspData = AspiringStudentManager.getData(aspStudent); 
+	
+	return registerStudent( studID,  className,  aspStudent, aspData);
+	
     }
 
     /**
@@ -399,8 +443,12 @@ public final class StudentManager
 	public static  boolean insert( StudentData studData)
 		throws InvalidAdminException, SQLException
 	{
-	    if( !studData.isValid(ValidationType.NEW_BEAN) ) return false;
+	    if( !studData.isValid(ValidationType.NEW_BEAN) ){
+		System.out.println("StudentData validation Failed");
+		return false;
+	    }
 
+	    System.out.println("StudentData validation Passed");
 
 	    boolean edu = Arrays.stream( studData.getEducation() )
 		    .allMatch( education-> {

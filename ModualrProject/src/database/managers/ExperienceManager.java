@@ -1,11 +1,9 @@
 package database.managers;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,29 +30,32 @@ public final class ExperienceManager
      * @throws InvalidBeanException
      */
     @SuppressWarnings("resource")
-    public static boolean insert(ProfessionalExperience experience) 
+    public static boolean insert(final ProfessionalExperience experience) 
 	    throws SQLException, InvalidAdminException
     {
 	if( experience.isValid(ValidationType.NEW_BEAN ) ){
-	    Connection conn = ConnectionManager.getInstance().getConnection();
+	    final Connection conn = ConnectionManager.getInstance().getConnection();
+	    final String sql = 
+		    "INSERT INTO `professional_experience`"
+		    + "(`StudentId`, `StartDate`, `EndDate`, `Employer`, `Job Title`) "
+		    + " VALUES( ?, ? ,? ,? ,?)";
 	    try(
-		    CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call addExperienceRecord(?,?,?,?, ?, ? ) }", experience.getStudentId(), 
-			    experience.getStartDate(), experience.getEndDate(), 
-			    experience.getEmployer(), experience.getJobTitle() ) ; )
+		    PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		    (sql, experience.getStudentId(), experience.getStartDate(), 
+			    experience.getEndDate(), experience.getEmployer(), experience.getJobTitle() ) ; )
 	    {
 		conn.setAutoCommit(false);
 		
-		statement.registerOutParameter(6, Types.INTEGER);
-		int affected = statement.executeUpdate();
+		final int affected = statement.executeUpdate();
 		JobResponsibility res;
 		boolean successful = true;
-		
-		if( affected >0 ){
-		    final int expId = statement.getInt(6);
+		final ResultSet result =  statement.getGeneratedKeys();
+		if( affected >0 && result.next()){
+		   
+		    final int expId = result.getInt(1);
 		    final String[] duties = experience.getDuties();
 
-		    for( String duty : duties ){
+		    for( final String duty : duties ){
 			res = new JobResponsibility(expId, duty );
 			
 			if( !ResponsibilityManager.insert( res ) ){
@@ -76,7 +77,7 @@ public final class ExperienceManager
 	return false;
     }
 
-    public static boolean update(Student existingStudent, ProfessionalExperience experience)
+    public static boolean update(final Student existingStudent, final ProfessionalExperience experience)
 	    throws  InvalidAdminException
     {
 	if( !experience.isValid(ValidationType.EXISTING_BEAN) ) return false;
@@ -84,37 +85,49 @@ public final class ExperienceManager
     }
 
     
-    public static ProfessionalExperience[] getExpriences(AspiringStudent student) {
-	return null ; 
+    public static ProfessionalExperience[] getExpriences(final AspiringStudent student) throws SQLException, InvalidAdminException {
+	final String sql = 
+		"SELECT * FROM `aspiringexperience` "+ 
+		"WHERE AspId = ?;"	;
+
+	return getExperienceHelper(sql, String.valueOf(student.getId()), true );
     }
     
-    public static ProfessionalExperience[] getExpriences(Student student) 
+    
+    public static ProfessionalExperience[] getExperienceHelper(String sql, String id, boolean isAspStudent)
+		    throws SQLException, InvalidAdminException{
+        ResultSet result = null;
+        List<ProfessionalExperience> list = new LinkedList<>();
+        
+        try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+        	(sql,id);)
+        {
+            String idCol = isAspStudent ? "ID": "studentId";
+        
+            result = statement.executeQuery();
+            ProfessionalExperience temp; 
+            while( result.next()){
+        	String[] duties = 
+        		ResponsibilityManager.getDuties( 
+        			result.getInt(idCol), isAspStudent);
+        	temp = new ProfessionalExperience(result.getString(idCol),
+        		result.getDate("BeginDate"), result.getDate("EndDate"),
+        		result.getString("Job Title"), result.getString("Employer"), duties);
+        	list.add( temp );
+            }
+        
+        }
+        finally{
+            if( result != null ) result.close();
+        }
+        return list.toArray( new ProfessionalExperience[list.size()] );
+    }
+    public static ProfessionalExperience[] getExpriences(final Student student) 
 	    throws SQLException, InvalidAdminException
     {
-	String sql = "SELECT * FROM `professional_experience` "+ 
+	final String sql = "SELECT * FROM `professional_experience` "+ 
 			"WHERE StudentId = ?;"	;
 
-	ResultSet result = null;
-	List<ProfessionalExperience> list = new LinkedList<>();
-
-	try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
-		(sql, student.getIdCardNumber());)
-	{
-
-	    result = statement.executeQuery();
-	    ProfessionalExperience temp; 
-	    while( result.next()){
-		String[] duties = ResponsibilityManager.getDuties( result.getInt("id"));
-		temp = new ProfessionalExperience(result.getString("studentId"),
-			result.getDate("StartDate"), result.getDate("EndDate"),
-			result.getString("Job Title"), result.getString("Employer"), duties);
-		list.add( temp );
-	    }
-
-	}
-	finally{
-	    if( result != null ) result.close();
-	}
-	return list.toArray( new ProfessionalExperience[list.size()] );
+	return getExperienceHelper(sql, student.getIdCardNumber(), false);
     }
 }

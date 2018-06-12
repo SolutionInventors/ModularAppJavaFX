@@ -42,7 +42,7 @@ public class ProfessionalExperience implements Bean
     public ProfessionalExperience( String studId, Date startDate, Date endDate, 
 	    String jobTitle, String employer, String... duties )
     {
-	setStudId( studId);
+	setStudentId( studId);
 	setStartDate(startDate);
 	setEndDate(endDate);
 	setJobTitle(jobTitle);
@@ -53,7 +53,7 @@ public class ProfessionalExperience implements Bean
     /**
      * Sets the studentId by first removing any extra spaces
      */
-    public  void setStudId(String studId)
+    public  void setStudentId(String studId)
     {
 	studentId =  Bean.removeExtraSpaces( studId.toUpperCase() );
     }

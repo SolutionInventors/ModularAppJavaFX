@@ -69,6 +69,8 @@ public class ClassTest
 	    String newName = TestUtils.getStringInput("Enter the new class name: ");
 	    
 	    modClass = new ModularClass(name );
+	    System.out.println("Validation Result:: "+ modClass.isValid(ValidationType.EXISTING_BEAN ));
+	    
 	    ModularClass newClass = new ModularClass( newName);
 	   
 		if( ModularClassManager.update(modClass, newClass) ){
@@ -76,8 +78,8 @@ public class ClassTest
 		    TestUtils.displayBean(BeanType.MODULAR_CLASS , 0 );
 		    
 		}
-		else if( modClass.isValid(ValidationType.EXISTING_BEAN ) &&
-			newClass.isValid(ValidationType.NEW_BEAN)){
+		else if( !(modClass.isValid(ValidationType.EXISTING_BEAN ) &&
+			newClass.isValid(ValidationType.NEW_BEAN))){
 		    System.err.println("Invalid Bean format");
 		}
 			

@@ -27,7 +27,7 @@ public class Phone  implements Bean
      * database.
      */
     public Phone( String studentID , String phoneNumber ){
-	setStudentID( studentID );
+	setStudentId( studentID );
 	setNumber(phoneNumber);
 	
     }
@@ -47,7 +47,7 @@ public class Phone  implements Bean
      * unnecessary space in the containing {@code String}
      * @param studentID
      */
-    public void setStudentID(String studentID)
+    public void setStudentId(String studentID)
     {
 	this.studentID = Bean.removeExtraSpaces(studentID).toUpperCase();
     }

@@ -1,10 +1,8 @@
 package database.managers;
 
-import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.Module;
@@ -17,18 +15,16 @@ public final class ModuleManager
 	    throws SQLException,  InvalidAdminException
     {
 
+	String sql = 
+		"INSERT INTO `module`(`dateCreated`, `name`, `units`, `amountPerUnit`) "
+		+ "VALUES (NOW(),?,?,?);";
 	if( newModule.isValid( ValidationType.NEW_BEAN ) ){
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call createNewModule( ?,?,?,?)}" , newModule.getName() , 
-			    newModule.getNumberOfUnits(), newModule.getAmountPerUnit());)
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql , newModule.getName() , 
+			    newModule.getNumberOfUnits(),
+			    newModule.getAmountPerUnit());)
 	    {
-		statement.registerOutParameter(4, Types.DATE);
-
-		int affected = statement.executeUpdate();
-		if( affected > 0 ) {
-		    newModule.setDateCreated( statement.getDate(4 ) );
-		    return true;
-		}
+		return statement.executeUpdate() > 0 ;
 	    }
 	}
 
@@ -42,23 +38,19 @@ public final class ModuleManager
 	if( ( existingModule.isValid( ValidationType.EXISTING_BEAN) &&
 		newModule.isValid(  ValidationType.NEW_BEAN) ))
 	{
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call updateModule( ?,?,?,?, ?) }" , existingModule.getName() , 
-			    newModule.getName() , newModule.getNumberOfUnits(),
-			    newModule.getAmountPerUnit());)
+	    String sql = "UPDATE `module` "
+	    	+ "SET `name`= ?,`units`= ?,`amountPerUnit`=? "
+	    	+ "WHERE module.name =  ?;";
+
+	
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql, newModule.getName() , newModule.getNumberOfUnits(),
+			    newModule.getAmountPerUnit(), existingModule.getName() );)
 	    {
-		statement.registerOutParameter( 5, Types.DATE);
-		int affected = statement.executeUpdate();
-		if( affected > 0 ) {
-		    newModule.setDateCreated( statement.getDate(5 ) );
-		    return true;
-		}
+		return statement.executeUpdate() > 0;
+		
 	    }
-
 	}
-
-
-
 	return false;
 
     }
@@ -67,17 +59,13 @@ public final class ModuleManager
 	    throws SQLException, InvalidAdminException
     {
 	if( existingModule.isValid( ValidationType.EXISTING_BEAN) ){
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call removeModule( ? )}" , existingModule.getName() );)
+	    String sql = "DELETE FROM `module` WHERE module.name = ?;";
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql , existingModule.getName() );)
 	    {
-		System.out.println("ModuleTo remove: "+ existingModule.getName());
-		int affected =  statement.executeUpdate(); 
-		if( affected > 0 ) return true;
+		return statement.executeUpdate()> 0;
 	    }
 	}
-
-
-
 	return false;
 
     }

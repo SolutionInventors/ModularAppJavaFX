@@ -88,7 +88,7 @@ public interface Bean extends Serializable
      */
     public static String capitalizeWords(String string)
     {
-	if( string.length() <= 0  ) return string;
+	if( string == null || string.length() <= 0  ) return string;
 	string = removeExtraSpaces(string);
 	List<String> list =  Arrays.stream( string.split( " " ) )
 		.map( s-> s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase())

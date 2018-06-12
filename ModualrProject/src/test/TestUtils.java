@@ -151,15 +151,6 @@ public class TestUtils
 		    "\n\tAmount Per Unit: " + modules[i].getAmountPerUnit() +"\n");
 		}
 		break;
-		
-	    case PHONE:
-		Phone[] phones  =  PhoneManager.getAllByIndex(startIndex);
-		for ( int i = 0 ; i < phones.length ; i++ ){
-
-		    System.out.println( (i+1) + ". " + phones[i].getStudentID() + "(" + 
-			    phones[i].getNumber() + ")");
-		}
-		break;
 	    case BIODATA:
 		break;
 

@@ -1,6 +1,6 @@
 package database.managers;
 
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -31,9 +31,17 @@ public class BiodataManager
 	    throws SQLException, InvalidAdminException
     {
 	if( data.isValid(ValidationType.NEW_BEAN )){
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call insertBiodata(?,?,?,?, ?,?,?, ?, ?,?) }", 
-			    data.getStudentID(),data.getTitle(), data.getPermanentAddress(), 
+	    String sql = 
+		    "INSERT INTO biodata"
+		    + "( studentId, Title,  PermanentAddress, CurrentAddress, "
+		    + "Religion, stateOfOrigin, country, gender, dateOfBirth, "
+		    + "placeOfBirth)"
+		    
+			+  "VALUES( ?, ?, ?,  ? ,"
+			+ "?, ?, ?, ?, ?,   ?); ";
+
+	    try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		    (sql, data.getStudentID(),data.getTitle(), data.getPermanentAddress(), 
 			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
 			    data.getCountry(), data.getGender(), data.getDateOfBirth(), 
 			    data.getPlaceOfBirth()); ) 
@@ -61,12 +69,18 @@ public class BiodataManager
     {
 	if( (data.isValid(ValidationType.NEW_BEAN ) ))
 	{
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call updateBiodata(?,?,?,?, ?,?,?, ?, ?,?,?, ?, ?) }", 
-			    data.getStudentID(),data.getTitle(),data.getPermanentAddress(), 
-			    data.getCurrentAddress(), data.getReligion(), data.getStateOfOrigin(),
+	    String sql = 
+		    "UPDATE biodata SET Title= ?, "
+		    + "PermanentAddress= ?, "
+		    + "CurrentAddress = ?, Religion = ?, "
+		    + "stateOfOrigin = ? , country = ?, "
+		    + "gender = ?, dateOfBirth = ?, placeOfBirth =? "
+		    + "WHERE  studentId = ? ;";
+	    try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		    (sql, data.getTitle(),data.getPermanentAddress(),data.getCurrentAddress(), 
+			    data.getReligion(),data.getStateOfOrigin(),
 			    data.getCountry(), data.getGender(), data.getDateOfBirth(),
-			    data.getPlaceOfBirth()); ) 
+			    data.getPlaceOfBirth(), data.getStudentID()); ) 
 	    {
 		int affected = statement.executeUpdate();
 		if( affected >0 ) return true ;	
@@ -89,7 +103,7 @@ public class BiodataManager
 	    throws SQLException, InvalidAdminException
     {
 	ResultSet result = null;
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
+	try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
 		("SELECT * FROM biodata WHERE studentId = ?", studentID);)
 	{
 	    if( statement.execute()){

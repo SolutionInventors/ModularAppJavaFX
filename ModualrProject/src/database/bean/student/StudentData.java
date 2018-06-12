@@ -65,12 +65,14 @@ public class StudentData implements Bean
 	lastCourseRead = courseRead;
 	this.lastInstituteAttended = lastInstituteAttended; 
 	
+	System.out.println("Biodata studID::" + data.getStudentID());
 	setBiodata(data);
 	setEducation(edu);
 	setPhoneNumbers(phoneNumbers);
 	setExperiences(experiences);
-	setMeansOfDiscovery(meansOfDis);
 	setSponsors(sponsors);
+	setMeansOfDiscovery(meansOfDis);
+	
     }
 
 
@@ -84,8 +86,8 @@ public class StudentData implements Bean
     @Override
     public boolean isValid(ValidationType type)
     {
-	return  haveSameID()&& isSponsorValid(type) && isMeansValid(type)  && isBioValid(type) && 
-		isEducationValid(type) && areExperiencesValid(type) && isPhoneValid(type);
+	return  haveSameID() && isSponsorValid(type) && isMeansValid(type)  && 
+		isEducationValid(type) && isPhoneValid(type) && areExperiencesValid(type)  && isBioValid(type) ;
     }
     
     /**
@@ -97,7 +99,8 @@ public class StudentData implements Bean
      */
     public boolean isBioValid(ValidationType type)
     {
-	return getBiodata().isValid(type);
+	boolean bio = getBiodata().isValid(type);
+	return bio;
     }
 
 
@@ -157,12 +160,16 @@ public class StudentData implements Bean
     }
 
     public boolean haveSameID(){
-	return isNotNull() && 
+
+	boolean id = isNotNull() && 
 		Arrays.stream( getEducation()).allMatch(edu-> edu.getStudentId().equals(STUDENT_ID) ) &&
 		Arrays.stream(getExperiences()).allMatch(exp-> exp.getStudentId().equals(STUDENT_ID)) &&
 		Arrays.stream(getMeansOfDiscovery()).allMatch(m-> m.getStudentId().equals(STUDENT_ID) ) &&
 		Arrays.stream(getPhoneNumbers()).allMatch(p->p.getStudentID().equals(STUDENT_ID) );
+	
+	return id;
     }
+    
     /**
      * Checks that none of this object's attributes is {@code null}
      * @return true only if there are no {@code null } values
@@ -171,7 +178,8 @@ public class StudentData implements Bean
     {
 	return getEducation() != null && getExperiences() != null && getBiodata() != null &&
 		getMeansOfDiscovery() != null && getPhoneNumbers() != null && 
-		getEducation().length > 0 && getMeansOfDiscovery().length >0 && getPhoneNumbers().length > 0;
+		getEducation().length > 0 && 
+		getMeansOfDiscovery().length >0;
     }
 
 
@@ -320,6 +328,20 @@ public class StudentData implements Bean
     public String getLastInstituteAttended()
     {
 	return lastInstituteAttended;
+    }
+
+
+    public void setAllID(String studID)
+    {
+	this.biodata.setStudentId(studID);
+	Arrays.stream(this.education)
+	.forEach(education -> education.setStudentId(studID));
+	Arrays.stream(this.experiences)
+	.forEach(experience -> experience.setStudentId(studID));
+	Arrays.stream(this.meansOfDiscovery)
+	.forEach(means -> means.setStudentId(studID));
+	Arrays.stream(this.phoneNumbers)
+	.forEach(phone -> phone.setStudentId(studID));
     }
 
 }

@@ -44,12 +44,17 @@ public final class AdminManager
 		newAdmin.isValid(ValidationType.NEW_BEAN) )
 	{
 	    HashClass.hashAdmin(newAdmin);
-	    try(CallableStatement  statement = 
-		    DatabaseManager.getCallableStatement( "{CALL insertAdmin(?, ?, ?,? ) } ", 
-			    newAdmin.getUsername(),  newAdmin.getPassword() ,
-			    newAdmin.getEmailAddress(), newAdmin.getAccessType()) ;)
+	    
+	    String sql = 
+		    " INSERT into admin( username, password, Email, accessType) " + 
+			    	" VALUES( ?, ?, ?, ? );";
+	    
+	    try(PreparedStatement stmt = DatabaseManager.getPreparedStatement(
+		    sql, 			   
+		    newAdmin.getUsername(),  newAdmin.getPassword() ,
+		    newAdmin.getEmailAddress(), newAdmin.getAccessType());)
 	    {
-		int affected = statement.executeUpdate();
+		int affected = stmt.executeUpdate();
 		if( affected > 0 ) return true;
 	    }
 	}
@@ -67,17 +72,28 @@ public final class AdminManager
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static boolean updatePassword( Admin existingAdmin, String newPassword )
+    public static boolean updatePassword( String previousPassword, String newPassword )
 	    throws SQLException, InvalidAdminException
     {
+	Admin currentAdmin = DatabaseManager.getCurrentAdmin();
+	if(currentAdmin == null )  return false;
+	Admin existingAdmin = new Admin(currentAdmin.getUsername(), previousPassword);
+	System.out.println(existingAdmin.getPassword() + " :: " + existingAdmin.getUsername());
 	Admin newAdmin = new Admin(existingAdmin.getUsername(), newPassword);
 
 	if( validateAdmin(existingAdmin) && newAdmin.validatePassword())
 	{
 	    HashClass.hashAdmin(newAdmin);
-	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdmin(?, ?, ?  ) } ", 
-		    existingAdmin.getUsername(), 
-		    existingAdmin.getUsername() , newAdmin.getPassword());)
+	    
+	    String sql = 
+		    "UPDATE `admin` "+
+		    	"SET `password`= ?"+
+		    	" WHERE username = ? ; ";
+	    
+	    
+	    try(PreparedStatement statement = DatabaseManager.getPreparedStatement(
+		    sql,  newAdmin.getPassword(), 
+		    existingAdmin.getUsername()); )
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ){
@@ -173,6 +189,7 @@ public final class AdminManager
 	String title = "Confirmation Number no-reply ";
 	String[] addr = {to}; 
 
+	System.out.println("Got to sendMail methods");
 	return ConnectionManager.sendMail(addr, body, title);
     }
     /**
@@ -183,14 +200,19 @@ public final class AdminManager
      * @throws SQLException
      * @throws InvalidAdminException
      */
-    public static boolean updateMail( Admin existingAdmin, String email )
+    public static boolean updateMail( String email )
 	    throws SQLException, InvalidAdminException
     {
-
+	
+	Admin existingAdmin = DatabaseManager.getCurrentAdmin();
+		
 	if( validateAdmin(existingAdmin))
 	{
-	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdminMail(?, ? ) } ", 
-		    existingAdmin.getUsername(), email);)
+	    String sql = "UPDATE `admin` SET `Email`= ? "+
+			"WHERE username = ?;";
+
+	    try(PreparedStatement statement =  DatabaseManager.getPreparedStatement(
+			sql, email, existingAdmin.getUsername());)
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
@@ -264,8 +286,10 @@ public final class AdminManager
 	if(currentAdmin != null && 
 		!currentAdmin.getUsername().matches(existingAdminUsername ) &&
 		currentAdmin.isSuper()){
-	    try( CallableStatement stmt =
-		    DatabaseManager.getCallableStatement("removeAdmin(?)", existingAdminUsername); ){
+	    
+	    String sql =  "DELETE FROM admin WHERE username = ? ; ";
+	    try( PreparedStatement stmt =
+		    DatabaseManager.getPreparedStatement(sql, existingAdminUsername); ){
 		int affected = stmt.executeUpdate(); 
 		if(affected > 0 ) return true; 
 		else return false;
@@ -280,8 +304,12 @@ public final class AdminManager
 
 	if( validateAdmin(existingAdmin))
 	{
-	    try(CallableStatement  statement = DatabaseManager.getCallableStatement( "{CALL updateAdminUsername(?, ? ) } ", 
-		    existingAdmin.getUsername(), newUsername);)
+	    String sql = "UPDATE admin SET username  = ? "+
+		    		"WHERE username =  ? ;";
+	    
+	    try(PreparedStatement  statement = 
+	    		DatabaseManager.getPreparedStatement( 
+	    			sql, newUsername,  existingAdmin.getUsername());)
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
@@ -379,8 +407,10 @@ public final class AdminManager
      */
     protected static boolean validateAdmin( Admin admin) throws SQLException
     {
+	
 	Admin adminFromDb = getAdmin(admin.getUsername()); 
 	if( adminFromDb != null ){
+	   
 	    boolean isValid=  
 		    HashClass.comparePassword(
 			    adminFromDb.getPassword(),

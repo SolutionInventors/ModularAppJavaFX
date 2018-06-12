@@ -52,6 +52,7 @@ public class AspiringStudent
 	setCourseRead(courseRead);
 	setYearsExperience(yearsExperience);
 	setLastInstituteAttended(lastInstituteAttended);
+	setCurrentAddress(currentAddress);
     }
     
     public int getId()

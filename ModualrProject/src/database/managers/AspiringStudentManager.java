@@ -9,10 +9,11 @@ import java.util.Map;
 import database.bean.student.AspiringStudent;
 import database.bean.student.AspiringStudentData;
 import database.bean.student.Student;
+import exception.InvalidAdminException;
 
 public class AspiringStudentManager
 {
-    public static Map<AspiringStudent, AspiringStudentData> getAspiringStudents(int startIndex) throws SQLException{
+    public static Map<AspiringStudent, AspiringStudentData> getAspiringStudents(int startIndex) throws SQLException, InvalidAdminException{
 	String sql = "SELECT * FROM aspiringStudent "
 		+ "LIMIT ?, 30"; 
 	
@@ -22,7 +23,6 @@ public class AspiringStudentManager
 	    result =  stmt.executeQuery(); 
 	    
 	    while(result.next()){
-		
 		String firstName = result.getString("firstName"); 
 		String lastName = result.getString("lastName"); 
 		
@@ -33,14 +33,14 @@ public class AspiringStudentManager
 				lastName, result.getString("title"),
 				result.getDate("DateOfBirth"), result.getString("PlaceOfBirth"), 
 				result.getString("Religion"), result.getString("PermanentAddress"),
-				result.getString("CurrentAddress"), result.getString("email"), 
+				result.getString("CurrentAddress"), result.getString("emailAddress"), 
 				result.getString("StateOfOrigin"),result.getString("Country"), 
 				result.getString("gender"), 
 				Student.getImageFromStream(firstName + "  " +
 					lastName,result.getBinaryStream("image")),
 				result.getString("highestQualification"), 
 				result.getString("currentWorkPlace"), 
-				result.getString("courseRead"), 
+				result.getString("CourseRead"), 
 				result.getInt("YearsExperience"), 
 				result.getString("LastInstituteAttended")
 
@@ -49,13 +49,13 @@ public class AspiringStudentManager
 		map.put(aspStudent, aspData); 
 			
 	    }
+	    return map;
 	}finally{
 	    if(result!=null ) result.close();
 	}
-	return null ;
     }
 
-    public static AspiringStudentData getData(AspiringStudent aspStudent ) 
+    public static AspiringStudentData getData(AspiringStudent aspStudent ) throws SQLException, InvalidAdminException 
     {
 	int aspID = aspStudent.getId(); 
 	AspiringStudentData studData = new AspiringStudentData(aspID);
@@ -64,7 +64,7 @@ public class AspiringStudentManager
 	studData.setExperiences(ExperienceManager.getExpriences(aspStudent));
 	studData.setMeansOfDiscovery(DiscoveryManager.getDiscoveryMeans(aspStudent) );
 	studData.setPhoneNumbers(PhoneManager.getPhoneNumber(aspStudent) );
-	
+	studData.setSponsors(SponsorManager.getSponsors(aspStudent));
 	return studData; 
     }
 

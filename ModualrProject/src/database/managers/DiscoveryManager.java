@@ -1,6 +1,7 @@
 package database.managers;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -23,9 +24,13 @@ public final class DiscoveryManager
 	    throws SQLException, InvalidAdminException
     {
 	if( means.isValid(ValidationType.NEW_BEAN )){
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call addMeansOfDiscovery(?,?) }", means.getStudentId(), 
-			    means.getMeans()) ; )
+	    String sql = 
+		    "INSERT INTO `means_of_discovery`(`StudentID`, `Means`)  "
+		    + "VALUES (?,? );";
+	    
+	    try( PreparedStatement statement =  
+		    DatabaseManager.getPreparedStatement
+		    (sql, means.getStudentId(), means.getMeans()) ; )
 	    {
 		int affected = statement.executeUpdate();
 		if( affected >0 ) return true ;
@@ -52,9 +57,14 @@ public final class DiscoveryManager
 		oldDisc.isValid(ValidationType.EXISTING_BEAN)&& 
 		oldDisc.getStudentId().equals( newMeans.getStudentId()) ))
 	{
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call updateDiscoveryRecord(? ,?, ? ) }", 
-			    newMeans.getStudentId(), newMeans.getMeans(), oldDisc.getMeans()); )
+	    String sql = 
+		    "UPDATE means_of_discovery SET `Means` = ? "
+	    	+ " where StudentID = ? AND Means = ?;";
+	
+   
+	    try( PreparedStatement statement =  
+		    DatabaseManager.getPreparedStatement
+		    (sql,  newMeans.getMeans(), oldDisc.getStudentId(),oldDisc.getMeans()); )
 	    {
 		int affected = statement.executeUpdate();
 		if( affected >0 ) return true ;
@@ -65,16 +75,35 @@ public final class DiscoveryManager
 
     public static MeanOfDiscovery[] getDiscoveryMeans(Student student) throws SQLException, InvalidAdminException
     {
+	String sql = 
+		"SELECT means from means_of_discovery "
+		+ "WHERE studentId = ? ";
+	
+	return getDiscoveryMeansHelper(sql, student.getIdCardNumber());
+    }
+
+    public static MeanOfDiscovery[] getDiscoveryMeans(AspiringStudent aspStudent) throws SQLException
+    {
+	String sql = 
+		"SELECT means from aspiringmeans "
+		+ "WHERE aspID = ? ";
+	
+	return getDiscoveryMeansHelper(sql, String.valueOf(aspStudent.getId()));
+    }
+    
+    public static MeanOfDiscovery[] getDiscoveryMeansHelper(String sql, String id) throws SQLException
+    {
 	List<MeanOfDiscovery> list = new LinkedList<>();
 
 	ResultSet result =  null;
-	try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		("{call getMeanOfDiscovery(? ) }", student.getIdCardNumber()); )
+	try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		(sql, id); )
 	{
+	    
 	    result = statement.executeQuery();
 	    while( result.next() ){
 		MeanOfDiscovery mean = new 
-			MeanOfDiscovery(student.getIdCardNumber(), result.getString(1) );
+			MeanOfDiscovery(id, result.getString(1) );
 		list.add( mean );
 	    }
 	}
@@ -83,11 +112,5 @@ public final class DiscoveryManager
 	}
 
 	return list.toArray( new MeanOfDiscovery[ list.size()] );
-    }
-
-    public static MeanOfDiscovery[] getDiscoveryMeans(AspiringStudent aspStudent)
-    {
-	// TODO Auto-generated method stub
-	return null;
     }
 }

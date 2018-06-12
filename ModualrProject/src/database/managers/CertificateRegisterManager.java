@@ -1,6 +1,5 @@
 package database.managers;
 
-import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,9 +33,13 @@ public final class CertificateRegisterManager
 	    throws SQLException,  InvalidAdminException
     {
 	if( certModule.isValid( ValidationType.NEW_BEAN) ){
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call addModToCert(?,?) }", certModule.getCertificateName(), 
-			    certModule.getModuleName() ))
+	    String sql =
+		    "INSERT INTO `certificateRegister`(`certificateName`, `moduleName`) "
+		    + "VALUES ( TRIM(?), TRIM(?) );" ;
+	    
+	    try( PreparedStatement statement = 
+		    DatabaseManager.getPreparedStatement
+		    (sql, certModule.getCertificateName(), certModule.getModuleName() ))
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
@@ -141,9 +144,12 @@ public final class CertificateRegisterManager
     {
 
 	if( certModule.isValid( ValidationType.EXISTING_BEAN)){
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call removeModFromCert(?,?) }", certModule.getCertificateName(), 
-			    certModule.getModuleName() ))
+	    String sql = 
+		    "DELETE FROM `certificateRegister` "
+		    + "WHERE `certificateName` = ? AND `moduleName` = ? ; ";
+
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql, certModule.getCertificateName(), certModule.getModuleName() ))
 	    {
 		int affected = statement.executeUpdate();
 

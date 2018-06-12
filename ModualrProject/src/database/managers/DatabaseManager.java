@@ -5,8 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import database.bean.Admin;
+import database.bean.student.Student;
 import exception.InvalidAdminException;
 
 /**
@@ -23,34 +25,6 @@ public final class DatabaseManager
 {
     private static Admin currentAdmin = null ;
 
-
-    /** 
-     * Creates a {@code CallableStatement } object with its the specified arguments and
-     * returns the {@code CallableStatement} object
-     * @param sqlCall a String representing the statement that calls a procedure
-     * @param arguments the arguments that would be passed into the sql procedure object as an argument.
-     * This can be ignpred if there are no  arguments
-     * @return a {@code CallableStatement} object that can be executed
-     * @throws SQLException when an error occurs at the database level.
-     * @throws InvalidAdminException 
-     */
-    @SuppressWarnings("resource")
-    public static CallableStatement getCallableStatement(String sqlCall, Object ... arguments ) throws SQLException, InvalidAdminException{
-	Connection conn = ConnectionManager.getInstance().getConnection();
-
-	if( currentAdmin != null && currentAdmin.canWrite()){
-	    CallableStatement statement =  conn.prepareCall(
-		    sqlCall,
-		    ResultSet.TYPE_FORWARD_ONLY,
-		    ResultSet.CONCUR_READ_ONLY);
-
-	    for( int i =  0 ; i < arguments.length ; i++ )
-		statement.setObject( i +1, arguments[ i ] );
-	    return statement;
-	}
-	throw new InvalidAdminException("The Admin that wants to make the change is not in database");
-    }
-
     /**
      * Gets a {@code PreparedStatement} object with all its attributes
      * set to the required value<br>
@@ -64,9 +38,8 @@ public final class DatabaseManager
     public static PreparedStatement getPreparedStatement(String sqlCall, Object ... arguments ) throws SQLException{
 	Connection conn = ConnectionManager.getInstance().getConnection();
 	PreparedStatement statement =  conn.prepareStatement(
-		sqlCall,
-		ResultSet.TYPE_FORWARD_ONLY,
-		ResultSet.CONCUR_READ_ONLY);
+		sqlCall, 
+		Statement.RETURN_GENERATED_KEYS);
 
 	for( int i =  0 ; i < arguments.length ; i++ )
 	    statement.setObject( i+1 , arguments[ i ] );
@@ -109,6 +82,7 @@ public final class DatabaseManager
 	return currentAdmin;
     }
 
+    
     /**
      * Checks if the current {@code Admin} is in the database. 
      * This method does not connect to the database. The  {@code Admin} object has already 

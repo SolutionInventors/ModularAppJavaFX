@@ -1,11 +1,8 @@
 package database.managers;
 
-import java.sql.CallableStatement;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 
 import database.bean.Certificate;
@@ -39,13 +36,17 @@ public final class CertificateManager
 	    throws SQLException,  InvalidAdminException
     {
 	if( cert.isValid( ValidationType.NEW_BEAN )){
-	    try(CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call createCertificate(?,?)}", cert.getName());){
-		int affected = statement.executeUpdate();
-		statement.registerOutParameter( 2 , Types.DATE );
-		if( affected > 0 ){
-		    Date creationDate = statement.getDate(2);
-		    cert.setDateCreated( creationDate);
+	    
+	    String sql = 
+		    " INSERT INTO `certificate`( `dateCreated`, `name`)  "
+		    + "VALUES ( NOW() , TRIM(?)); ";
+
+
+	    try(PreparedStatement statement = 
+		    DatabaseManager.getPreparedStatement
+		    (sql, cert.getName());){
+		if(statement.executeUpdate() > 0 ){
+		    cert.setDateCreated( ConnectionManager.getCurrentDate());
 		    return true;
 		}
 	    } 
@@ -71,8 +72,9 @@ public final class CertificateManager
 	    throws  SQLException, InvalidAdminException
     {
 	if( cert.isValid( ValidationType.EXISTING_BEAN )){
-	    try(CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call removeCertificate(?)}", cert.getName())){
+	    String sql =  "DELETE FROM `certificate` WHERE certificate.name = ?;";
+	    try(PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql, cert.getName())){
 
 		int  affected = statement.executeUpdate();
 		if( affected > 0 ) return true;
@@ -98,8 +100,13 @@ public final class CertificateManager
 	if( newCert .isValid( ValidationType.NEW_BEAN ) ||
 		!oldCert.isValid(ValidationType.EXISTING_BEAN) 	) 
 	{
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call updateCertificate(?,?)}", oldCert.getName() , newCert.getName()))
+	    String sql = 
+		    "UPDATE `certificate` "
+		    + "SET `name`= TRIM(?) "
+		    + "WHERE name = ?;";
+	    
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql, newCert.getName(), oldCert.getName() ))
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ) return true;

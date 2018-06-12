@@ -36,10 +36,6 @@ import database.bean.student.Student;
  */
 public final class ConnectionManager
 {
-    private static final String MYSQLURL = "jdbc:mysql://localhost/modularappdatabase";
-    private static final String USERNAME = "iitModularAppAdmin";
-    private static final String PASSWORD = "O97G9JN>G=F6O?DHLM86";
-
     private static  Date currentDate = null ;
     private static ConnectionManager instance = null ;
     private ConnectionManager(){}
@@ -76,6 +72,7 @@ public final class ConnectionManager
 
 	boolean sessionDebug = false;
 
+	System.out.println("Got Here......");
 	try {
 
 	    //Get the session object  
@@ -147,7 +144,11 @@ public final class ConnectionManager
     {
 	try
 	{
-	    conn = DriverManager.getConnection(MYSQLURL, USERNAME, PASSWORD );
+	    DatabaseConfig dbConfig = DatabaseConfig.getInstance();
+	    conn = DriverManager.getConnection(
+		    dbConfig.getDatabaseUrl(),
+		    dbConfig.getUsername(), 
+		    dbConfig.getPassword() );
 
 	    ResultSet result = null;
 	    try( Statement stmt = conn.createStatement();)
@@ -155,8 +156,8 @@ public final class ConnectionManager
 		result = stmt.executeQuery("SELECT NOW();");
 		if( result.next()){
 		    currentDate =  result.getDate(1);
-		    initialiseStudentFile(); 
 		    System.out.println( "Connected" );
+		    if(!DatabaseConfig.noDbConfig) initialiseStudentFile();
 		    return true;
 		}
 	    }
@@ -171,9 +172,8 @@ public final class ConnectionManager
 	return false;
     }
 
-
-
-    private static void initialiseStudentFile()
+    
+    public static void initialiseStudentFile()
     {
 	String sql = "SELECT DefaultImage FROM resources "; 
 
@@ -206,6 +206,9 @@ public final class ConnectionManager
 
     }
 
+
+
+    
 
     /**THis gets the only {@code Connection } object in this project*/
     public Connection getConnection() 

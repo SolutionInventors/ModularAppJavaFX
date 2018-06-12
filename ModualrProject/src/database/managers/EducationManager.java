@@ -1,6 +1,6 @@
 package database.managers;
 
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -20,8 +20,14 @@ public final class EducationManager
 	    throws SQLException, InvalidAdminException
     {
 	if( education.isValid(ValidationType.NEW_BEAN )){
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call addEducationRecord(?,?,?,?, ?,?) }", education.getStudentId(), 
+	    String sql = 
+		    "INSERT INTO `educational_background`"
+		    + "(`StudentId`, `BeginDate`, `EndDate`, `Institution`, "
+		    + "`CourseRead`, `QualificationName`) "
+		    + "VALUES (? , ? ,? ,? ,? ,?);";
+	    
+	    try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
+		    (sql, education.getStudentId(), 
 			    education.getBeginDate(), education.getEndDate(),
 			    education.getInstitution(), education.getCourseRead(), 
 			    education.getQualification()); )
@@ -44,9 +50,14 @@ public final class EducationManager
 		existing.isValid(ValidationType.EXISTING_BEAN) && 
 		newBean.getStudentId().equals( newBean.getStudentId()) ))
 	{
-	    final String sql = "{call updateEducationRecord(?,?,?,?,?,?,?,?,?,?)}";
+	    final String sql = 
+	    "UPDATE educational_background "
+	    + "SET StudentId = ? , Institution = ?  ,"
+	    + " BeginDate = ?, EndDate = ?, CourseRead = ?  "
+	    + "WHERE StudentId = ? AND Institution = ? AND BeginDate = ?"
+	    + " AND EndDate = ? AND  CourseRead = ?; ";
 
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
+	    try( PreparedStatement statement =  DatabaseManager.getPreparedStatement
 		    (sql, newBean.getStudentId(), newBean.getInstitution(), newBean.getBeginDate(), 
 			    newBean.getEndDate(), newBean.getCourseRead() , existing.getStudentId(), 
 			    existing.getInstitution(), existing.getBeginDate(), existing.getEndDate(), 
@@ -70,8 +81,11 @@ public final class EducationManager
 	    List<EducationalBackground> list = new LinkedList<>();
 
 	    ResultSet result =  null;
-	    try( CallableStatement statement =  DatabaseManager.getCallableStatement
-		    ("{call getEducationRecord(? ) }", student.getIdCardNumber()); )
+	    String sql = 
+		    "SELECT * FROM educational_background "
+		    + "WHERE  studentId = ? ";
+	    try( PreparedStatement statement =  
+	    	DatabaseManager.getPreparedStatement(sql, student.getIdCardNumber()); )
 	    {
 		result = statement.executeQuery();
 
@@ -96,8 +110,38 @@ public final class EducationManager
     }
     
     public static EducationalBackground[] 
-	    getEducationInfo( AspiringStudent student ) {
-		return null;
+	    getEducationInfo( AspiringStudent student ) throws SQLException {
+	 List<EducationalBackground> list = new LinkedList<>();
+
+	    ResultSet result =  null;
+	    String sql = 
+		    "SELECT * FROM aspiringstudenteducation "
+		    + "WHERE  AspID = ? ";
+	    
+	    try( PreparedStatement statement =  
+	    	DatabaseManager.getPreparedStatement(
+	    		sql, student.getId()); )
+	    {
+		result = statement.executeQuery();
+
+		EducationalBackground temp;
+		while( result.next())
+		{
+		    temp = new EducationalBackground(
+			    result.getString("AspID"), 
+			    result.getDate("beginDate"), result.getDate("endDate"),
+			    result.getString("institution") , result.getString("CourseRead") ,
+			    result.getString( "Qualification" ) );
+		    list.add( temp);
+
+		}
+	    }
+	    finally{
+		if( result != null && !result.isClosed()) result.close();
+	    }
+	    return list.toArray( new EducationalBackground[ list.size() ]);
+	
+
 	
     }
     

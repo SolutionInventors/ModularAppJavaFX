@@ -23,13 +23,14 @@ public final class ModularClassManager
 	if(!DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 
 	if( newClass.isValid(ValidationType.NEW_BEAN)){
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call createNewClass(?,?) }", newClass.getName() ))
+	    String sql = 
+		    "INSERT INTO `modular_class`(`name`, `dateCreated`) "
+	    	+ "VALUES (?, NOW()); ";
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql, newClass.getName() ))
 	    {
-		statement.registerOutParameter(2, Types.DATE);
 		int affected = statement.executeUpdate();
 		if( affected > 0 ){
-		    newClass.setDateCreated( statement.getDate(2)); 
 		    return true;
 		}
 
@@ -44,8 +45,11 @@ public final class ModularClassManager
     {
 
 	if( existingClass.isValid( ValidationType.EXISTING_BEAN) ){
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call removeClass(?) }", existingClass.getName() ))
+	    final String sql = 
+		    "DELETE FROM modular_class "
+		    + "WHERE  name = ? ";
+	    try( PreparedStatement statement = 
+		    DatabaseManager.getPreparedStatement(sql, existingClass.getName() ))
 	    {
 		int affected = statement.executeUpdate();
 		if( affected > 0 ){
@@ -66,17 +70,15 @@ public final class ModularClassManager
 	if( ( oldClass.isValid(ValidationType.EXISTING_BEAN)&&
 		newClass.isValid(ValidationType.NEW_BEAN) ))
 	{
-	    try( CallableStatement statement = DatabaseManager.getCallableStatement
-		    ("{call updateClass(?, ?, ?) }", oldClass.getName(),
-			    newClass.getName()))
+	    String sql = 
+		    "UPDATE Modular_class as class SET class.name = ? "
+		    + "WHERE class.name = ?;";
+	    try( PreparedStatement statement = DatabaseManager.getPreparedStatement
+		    (sql,newClass.getName(), oldClass.getName()))
 	    {
-		statement.registerOutParameter(3, Types.DATE);
 		int affected = statement.executeUpdate();
-		if( affected > 0 ){
-		    newClass.setDateCreated( statement.getDate(3) );
-		    return true;
-		}
-
+		System.out.println("Got Here....");
+		return affected > 0 ;
 	    }
 
 	}

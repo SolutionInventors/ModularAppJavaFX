@@ -26,7 +26,7 @@ public class Biodata implements Bean
     private String currentAddress;
     private String stateOfOrigin;
     private String country;
-    private String gender;
+    private String gender ="Male";
     private Date dateOfBirth;
     private String placeOfBirth;
     private String religion;
@@ -175,14 +175,13 @@ public class Biodata implements Bean
     public void setGender(String gender)
     {
 	gender = Bean.removeExtraSpaces( gender);
+	
 	if( gender != null ){
-	    gender = gender.equalsIgnoreCase("M") ? "Male": gender;
-	    gender = gender.equalsIgnoreCase("F") ? "Female": gender;
+	    gender = gender.toLowerCase().matches("f|female") ? "Female": gender;
 	    this.gender = Bean.capitalizeWords( gender);
-	}
-	else
-	    this.gender = "";
-
+	} 
+	if(gender.equals("") ) this.gender = "Male";  
+	System.out.println(this.gender);
     }
 
     /**
@@ -262,7 +261,8 @@ public class Biodata implements Bean
 		return getDateOfBirth() != null && 
 		getCountry().length() > 0  && getStudentID().length() > 0 && 
 		getPermanentAddress().length() >0 &&
-		getCurrentAddress().length() >0 && getTitle().length() >0 &&
+		getCurrentAddress().length() >0 && 
+		getTitle().length() >0 &&
 		validateGender() ;
 	}
 	return false;

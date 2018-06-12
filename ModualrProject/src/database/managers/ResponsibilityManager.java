@@ -1,9 +1,8 @@
 package database.managers;
 
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,33 +14,52 @@ public class ResponsibilityManager
     public static boolean insert( JobResponsibility res ) 
 	    throws SQLException, InvalidAdminException
     {
-	try( CallableStatement  statement  = 
-		DatabaseManager.getCallableStatement(  "{CALL insertDuty(?, ?, ? ) } ", 
-			res.getExpId(), res.getRole());)
+	
+	
+	String sql = ""
+		+ "INSERT into responsibilty(  experienceId, duty) "
+		+ "VALUES(?, ? );";
+	try( PreparedStatement  statement  = 
+		DatabaseManager.getPreparedStatement(  
+			sql, res.getExpId(), res.getRole());
+		ResultSet idResult = 
+			DatabaseManager.getPreparedStatement
+			("SELECT LAST_INSERT_ID()").executeQuery())
 	{
-	    statement.registerOutParameter(3, Types.INTEGER);
 	    int affected = statement.executeUpdate();
 	    if( affected > 0 ){
-		res.setId( statement.getInt(3));
+		idResult.next();
+		res.setId( idResult.getInt(1));
 		return true; 
 	    } 
 	}
 	return false;
     }
 
-    public static String[] getDuties(int expId) 
+    public static String[] getDuties(int expId, boolean aspStudent) 
 	    throws SQLException, InvalidAdminException
     {
 	List<String> list = new LinkedList<>();
 	ResultSet result = null;
-	try( CallableStatement  statement  = 
-		DatabaseManager.getCallableStatement(  "{CALL getDuties(?) } ", expId);)
+	String sql = "";
+	if(aspStudent){
+	    sql = ""
+			+ "SELECT duty FROM aspiringjobresponsibility "
+			+ "WHERE AspExpID = ?";
+	} else {
+	    sql = ""
+			+ "SELECT duty FROM responsibility "
+			+ "WHERE experienceId = ?";
+	}
+	try( PreparedStatement  statement  = 
+		DatabaseManager.getPreparedStatement(  
+			sql, expId);)
         {
-	    if( statement.execute() ){
-		result = statement.getResultSet();
-		while( result.next()){
-		    list.add(result.getString(1) );
-		}
+	    result = statement.executeQuery();
+
+	   while( result.next()){
+		String data = result.getString(1);
+		list.add(result.getString(1) );
 	    }
         }
 	finally{

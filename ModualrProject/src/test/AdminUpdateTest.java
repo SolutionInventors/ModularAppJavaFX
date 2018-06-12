@@ -19,27 +19,25 @@ public class AdminUpdateTest
 	Scanner input = new Scanner( System.in);
 
 	System.out.println("-----------------UPDATIND A NEW ADMIN PASSWORD---------------");
-	String  name = TestUtils.getStringInput("Input existing username: ");
-	String pass = TestUtils.getStringInput("Input existing password: ");
-	Admin existingAdmin = new Admin( name,pass);
+	
+	String previousPassword = TestUtils.getStringInput("Please re-enter your current password: ");
+	String newPass = TestUtils.getStringInput("Input new password: ");
 
-	String newPass = TestUtils.getStringInput("Input new password");
-
+	
 	try
 	{
-	    if( AdminManager.updatePassword(existingAdmin, newPass) ){
+	    if( AdminManager.updatePassword(previousPassword, newPass) ){
 		System.out.println("Update Successful");
-		System.out.println( existingAdmin.getPassword());
+		System.out.println( currentAdmin.getPassword());
 
 	    }
 	    else
 		System.err.println("Wasn't Updated");
 
-	    existingAdmin.setPassword(newPass);
-
+	    Admin existingAdmin = DatabaseManager.getCurrentAdmin();
 	    System.out.println( "--------UPDATING EMAIL -----------");
 	    String email = TestUtils.getStringInput( "Enter new email: " );
-	    if( AdminManager.updateMail(existingAdmin, email) ){
+	    if( AdminManager.updateMail( email) ){
 		System.out.println("Update Successful");
 		existingAdmin.setPassword(newPass);
 	    }

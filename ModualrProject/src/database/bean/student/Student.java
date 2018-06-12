@@ -1,5 +1,7 @@
 package database.bean.student;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -294,6 +296,7 @@ public class Student  implements Bean
     public static void setDefaultImage(InputStream inStream)
     {
 	defaultImage = getImageFromStream("default-image", inStream);
+	System.out.println(defaultImage.exists());
     }
 
     /**
@@ -308,7 +311,7 @@ public class Student  implements Bean
 	FileOutputStream output = null;
 	try{
 	    if( inputStream.available() <=0 ) return defaultImage;
-	    studentImage = new File( "res\\" + fileName + ".jpg" );
+	    studentImage = new File( "res\\" + fileName + ".png" );
 	    output = new FileOutputStream( studentImage );
 	    
 	    byte[] buffer = new byte[1024];

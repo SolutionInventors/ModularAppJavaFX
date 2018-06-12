@@ -31,6 +31,7 @@ public class AdminTest
 	newAdmin.setAccessType(accessType);
 
 	System.out.println("Attempting to verify mail.....");
+	AdminManager.generateNumber();
 	if( AdminManager.sendMail(mail)){
 	    System.out.println("A verification number was sent to the mail..." );
 	    String testNum = TestUtils.getStringInput("Input the number: ");

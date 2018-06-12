@@ -64,5 +64,4 @@ public class AspiringStudentData
         this.sponsors = sponsors;
     }
     
-    
 }

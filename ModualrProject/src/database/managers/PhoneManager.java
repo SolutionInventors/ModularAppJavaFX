@@ -27,10 +27,14 @@ public final class PhoneManager
 	    throws SQLException, InvalidAdminException
     {
 	if( newNumber.isValid(ValidationType.NEW_BEAN) ){
-
-	    try( CallableStatement  statement  = DatabaseManager.getCallableStatement( 
-		    "{CALL addPhoneNumber(?, ? ) } ", 
-		    newNumber.getStudentID(), newNumber.getNumber());)
+	    
+	   
+	    String sql =""
+	    	+ "INSERT INTO `phone`(`StudentId`, `phone_number`)  "
+	    	+ " VALUES (studId, number ); ";
+	    
+	    try( PreparedStatement  statement  = DatabaseManager.getPreparedStatement( 
+		    sql, newNumber.getStudentID(), newNumber.getNumber());)
 	    {
 
 		int affected = statement.executeUpdate();
@@ -61,9 +65,13 @@ public final class PhoneManager
 		newPhone.isValid(ValidationType.NEW_BEAN) && 
 		newPhone.getStudentID().equals(oldPhone.getStudentID()))) 
 	{
-	    try(CallableStatement statement  = DatabaseManager.getCallableStatement( 
-		    "{CALL updatePhone(?, ? ,?) } ", oldPhone.getStudentID(),
-		    oldPhone.getNumber(), newPhone.getNumber() ); )
+	   String sql = ""
+	    	+ "UPDATE `phone`  SET `phone_number`= ? "
+	    	+ " WHERE `studentId`= ?  AND `phone_number`= ?; ";
+	    try(PreparedStatement statement  = 
+		    DatabaseManager.getPreparedStatement( 
+		    sql, newPhone.getNumber(),
+		    oldPhone.getNumber() , oldPhone.getStudentID() ); )
 	    {
 
 		int affected = statement.executeUpdate();
@@ -87,8 +95,14 @@ public final class PhoneManager
     public static boolean removePhone( Phone phone ) throws SQLException, InvalidAdminException
     {
 	if( phone.isValid( ValidationType.EXISTING_BEAN ) ){
-	    try(  CallableStatement  statement  = DatabaseManager.getCallableStatement( 
-		    "{CALL removePhoneNumber(?, ? ) } ", phone.getStudentID(), phone.getNumber());)
+	   
+		
+	    String sql = ""
+	    	+ " DELETE FROM phone  "
+	    	+ "WHERE phone.student_id = ? AND phone.phone_number = ?;";
+	    try(  PreparedStatement  statement  =
+		    DatabaseManager.getPreparedStatement( 
+		    sql, phone.getStudentID(), phone.getNumber());)
 	    {
 		int affected = statement.executeUpdate();
 
@@ -136,15 +150,20 @@ public final class PhoneManager
     }
 
 
-    public static Phone[] getAllByIndex( int startIndex) 
+    public static Phone[] getAllByIndex( int startIndex, String studentId) 
 	    throws SQLException, InvalidAdminException
     {
 	if( !DatabaseManager.validateAdmin() ) throw new InvalidAdminException();
 
 	ResultSet result  = null;
 	ArrayList<Phone> list;
-	try(CallableStatement   statement = DatabaseManager.getCallableStatement( 
-		"{CALL getAllPhoneNumbers(? ) } ", startIndex) ;)
+	String sql = ""
+		+ "SELECT student_id, phone_number "
+		+ "FROM phone "
+		+ "WHERE student_id = ? "
+		+ "LIMIT ? , 20";
+	try(PreparedStatement   statement = DatabaseManager.getPreparedStatement( 
+		sql, studentId, startIndex) ;)
 	{
 	    result  = statement.executeQuery();
 	    list = new ArrayList<Phone>();
@@ -161,10 +180,30 @@ public final class PhoneManager
 
     }
 
-    public static Phone[] getPhoneNumber(AspiringStudent aspStudent)
+    public static Phone[] getPhoneNumber(AspiringStudent aspStudent) throws SQLException
     {
-	// TODO Auto-generated method stub
-	return null;
+	ResultSet result  = null;
+	ArrayList<Phone> list;
+	String sql = ""
+		+ "SELECT AspID, phone "
+		+ "FROM aspiringstudentphone "
+		+ "WHERE AspID = ? "
+		+ "LIMIT ? , 20";
+	try(PreparedStatement   statement = DatabaseManager.getPreparedStatement( 
+		sql, aspStudent.getId(), 0) ;)
+	{
+	    result  = statement.executeQuery();
+	    list = new ArrayList<Phone>();
+
+	    while(  result.next() )
+		list.add( new Phone( result.getString("AspId") , 
+			result.getString("phone" )));
+	}
+	finally{
+	    if( result != null ) result.close();
+	}
+
+	return list.toArray( new Phone[ list.size() ] );
     }
 
 }
